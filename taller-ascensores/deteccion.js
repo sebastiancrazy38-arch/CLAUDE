@@ -58,7 +58,7 @@
   function htmlCodigo(c) {
     const e = equipo(c.equipo) || {};
     return `<article class="cod">
-      <header><span class="cod-num">${esc(c.codigo)}</span><div><p class="cod-eq">${esc([e.marca, e.nombre].filter(Boolean).join(' · ') || c.equipo)}</p><h3>${esc(c.nombre)}</h3></div></header>
+      <header><span class="cod-num">${esc(c.codigo)}</span><div><p class="cod-eq">${esc([e.marca, e.nombre].filter(Boolean).join(' · ') || c.equipo)}</p><h3>${esc(c.nombre)}</h3>${c.verificado ? '<p class="cod-ok">Comprobado en el manual</p>' : ''}</div></header>
       <p class="cod-simple">${esc(c.simple)}</p>
       <div class="cod-cols">
         ${c.causas && c.causas.length ? `<section><h4>Por qué pasa</h4><ul>${c.causas.map(x => `<li>${esc(x)}</li>`).join('')}</ul></section>` : ''}
@@ -276,7 +276,7 @@
     }
   }
   function mostrarValor(val, p) {
-    const texto = val ? (p.formato ? p.formato.replace('{n}', String(val)).replace('{n2}', String(val).padStart(2, '0')) : String(val)) : '0';
+    const texto = !val ? '0' : p.tabla && p.tabla[val] ? p.tabla[val] : p.formato ? p.formato.replace('{n}', String(val)).replace('{n2}', String(val).padStart(2, '0')) : String(val);
     CX.ultimo = { valor: val, texto, codigos: val ? explicar(texto) : [] };
   }
   async function cicloTexto() {
