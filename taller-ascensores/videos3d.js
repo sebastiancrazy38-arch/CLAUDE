@@ -333,8 +333,10 @@
       if (izq && x < w * 0.3) izq = false; else if (!izq && x > w * 0.8) izq = true;   // que no se corte en el borde
       html += '<span class="v3-rot' + (izq ? ' izq' : '') + '" style="left:' + x.toFixed(1) + 'px;top:' + y.toFixed(1) + 'px">' + esc(r.t) + '</span>';
     });
-    if (K._tabla) html += '<div class="v3-tabla">' + K._tabla.map(function (f) { return '<div><span>' + esc(f[0]) + '</span><b class="' + (f[2] || '') + '">' + esc(f[1]) + '</b></div>'; }).join('') + '</div>';
-    if (K._aviso) html += '<p class="v3-aviso' + (K._aviso.malo ? ' mal' : ' ok') + '">' + esc(K._aviso.t) + '</p>';
+    var arriba = '';
+    if (K._tabla) arriba += '<div class="v3-tabla">' + K._tabla.map(function (f) { return '<div><span>' + esc(f[0]) + '</span><b class="' + (f[2] || '') + '">' + esc(f[1]) + '</b></div>'; }).join('') + '</div>';
+    if (K._aviso) arriba += '<p class="v3-aviso' + (K._aviso.malo ? ' mal' : ' ok') + '">' + esc(K._aviso.t) + '</p>';
+    if (arriba) html += '<div class="v3-arriba">' + arriba + '</div>';   // tabla y aviso en una fila: nunca se tapan
     if (capa._html !== html) { capa._html = html; capa.innerHTML = html; }
   }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }

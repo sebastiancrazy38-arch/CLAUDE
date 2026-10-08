@@ -38,9 +38,10 @@
     const qq = String(q || '').trim(); if (!qq) return [];
     const texto = sinTilde(qq), r = [];
     codigos().forEach(c => { if (filtro && !filtro(c)) return; const p = coincide(c, qq); if (p) r.push({ c, p }); });
-    // si no es un código conocido, se busca como palabra (encoder, puerta, freno…)
-    if (!r.length && texto.length > 2) codigos().forEach(c => {
-      if (filtro && !filtro(c)) return;
+    // si no es un código conocido, o es una palabra sin números (encoder, puerta, freno…), se busca también en el texto
+    const palabra = !/\d/.test(texto) && texto.length > 3, ya = new Set(r.map(x => x.c));
+    if ((!r.length || palabra) && texto.length > 2) codigos().forEach(c => {
+      if ((filtro && !filtro(c)) || ya.has(c)) return;
       const t = sinTilde([c.nombre, c.simple, (c.causas || []).join(' ')].join(' '));
       if (texto.split(/\s+/).every(w => t.indexOf(w) >= 0)) r.push({ c, p: 1 });
     });
@@ -220,6 +221,7 @@
     if (CX.ultimo) {
       const u = CX.ultimo;
       h += `<div class="det-lectura"><span>Falla actual</span><b>${esc(u.texto)}</b></div>`;
+      if (u.codigos && new Set(u.codigos.map(c => c.equipo)).size > 1) h += `<p class="entrada">Este código existe en ${new Set(u.codigos.map(c => c.equipo)).size} equipos distintos. Elige el tuyo en «Explicar los códigos con» para ver solo su significado.</p>`;
       if (u.codigos && u.codigos.length) h += u.codigos.slice(0, 3).map(htmlCodigo).join('');
       else if (u.valor) h += `<div class="aviso"><b>Código ${esc(u.texto)} sin explicación en la base.</b><p>Elige el equipo correcto en «Explicar los códigos con», o búscalo en el manual del equipo.</p></div>`;
       else h += `<div class="aviso ok"><b>El equipo no reporta falla.</b></div>`;

@@ -256,11 +256,12 @@ a { color: var(--azul); }
 .v3-rot.izq { transform: translate(calc(-100% - 14px), -50%); }
 .v3-rot.izq::before { left: auto; right: -14px; }
 .v3-rot.izq::after { left: auto; right: -18px; }
-.v3-tabla { position: absolute; left: 8px; top: 8px; display: grid; gap: 1px; min-width: 150px; padding: 6px 9px; background: #121b22; border-radius: 3px; font-family: var(--f-dato); font-size: 11px; color: #9fb0bf; box-shadow: 0 2px 8px rgb(0 0 0 / 0.25); }
+.v3-arriba { position: absolute; left: 8px; right: 8px; top: 8px; display: flex; align-items: flex-start; gap: 8px; pointer-events: none; }
+.v3-tabla { flex: none; display: grid; gap: 1px; min-width: 150px; padding: 6px 9px; background: #121b22; border-radius: 3px; font-family: var(--f-dato); font-size: 11px; color: #9fb0bf; box-shadow: 0 2px 8px rgb(0 0 0 / 0.25); }
 .v3-tabla div { display: flex; justify-content: space-between; gap: 14px; }
 .v3-tabla b { font-weight: 500; color: #eef2f5; }
 .v3-tabla b.ok { color: #4cd68f; } .v3-tabla b.mal { color: #ff6b5e; } .v3-tabla b.ac { color: #ffc62b; }
-.v3-aviso { position: absolute; left: 50%; top: 8px; transform: translateX(-50%); max-width: calc(100% - 16px); margin: 0; padding: 3px 11px; background: #121b22; color: #eef2f5; border-left: 4px solid #3ccf7f; border-radius: 2px; font-family: var(--f-titulo); font-weight: 700; font-size: 16px; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.v3-aviso { min-width: 0; margin: 0 auto; padding: 3px 11px; background: #121b22; color: #eef2f5; border-left: 4px solid #3ccf7f; border-radius: 2px; font-family: var(--f-titulo); font-weight: 700; font-size: 16px; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .v3-aviso.mal { border-left-color: #ff4a3b; }
 .v3-girar { position: absolute; right: 8px; bottom: 6px; padding: 1px 7px; border-radius: var(--r); font-size: 11px; color: var(--tinta2); background: color-mix(in srgb, var(--sup2) 75%, transparent); pointer-events: none; }
 .video-pantalla.v3 .video-grande { z-index: 2; }

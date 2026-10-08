@@ -792,4 +792,847 @@
       }
     }
   });
+  // =====================================================================================
+  // 4) Botonera de cabina: vista desde adentro. La pared del frente (con la puerta) está en z = 0
+  //    y la cabina queda hacia +z. La placa de la botonera va a la derecha de la puerta.
+  // =====================================================================================
+  // botones: 0-3 pisos 1 a 4, 4 abrir, 5 cerrar, 6 alarma (posición relativa a la placa)
+  var BC = { x: 0.5, y: 1.2, z: 0.025, bt: [[0.03, -0.04], [0.03, 0.05], [0.03, 0.14], [0.03, 0.23], [0.03, -0.14], [0.03, -0.23], [0.0, -0.34]] };
+  function bcPos(i) { return [BC.x + BC.bt[i][0], BC.y + BC.bt[i][1], BC.z]; }
+  function pulsador(K, s, padre, x, y, mBoton, r) {
+    var g = K.grupo([], x, y, 0.006); padre.add(g);
+    g.boton = K.cil(r || 0.016, 0.012, mBoton || K.M.acero, 0, 0, 0.006, 'z', 20); g.add(g.boton);
+    g.aro = K.toro((r || 0.016) + 0.004, 0.0035, s.apag, 0, 0, 0.004); g.add(g.aro);
+    g.hundir = function (k) { g.boton.position.z = 0.006 - 0.005 * k; };
+    g.luz = function (on, m) { g.aro.material = on ? (m || s.amar) : s.apag; };
+    return g;
+  }
+  // la mano aprieta el botón i en el segundo t0 (lista de [i, t0])
+  function bcAprieta(s, K, t, lista) {
+    lista.forEach(function (q) {
+      var p = bcPos(q[0]), t0 = q[1], k = K.ph(t, t0 - 0.6, t0) * (1 - K.ph(t, t0 + 0.4, t0 + 1.0));
+      if (k <= 0.001) return;
+      s.mano.visible = true; s.mano.position.set(p[0] + 0.004, p[1] - 0.004, p[2] + 0.045 + 0.3 * (1 - k));
+      if (K.entre(t, t0 - 0.03, t0 + 0.42)) s.bt[q[0]].hundir(1);
+    });
+  }
+  function bcPuerta(s, a) { s.hojasB[0].position.x = -0.35 - 0.4 * a; s.hojasB[1].position.x = 0.05 + 0.4 * a; }
+  function bcBase(s, K) {
+    s.mano.visible = false; s.son.visible = false;
+    s.bt.forEach(function (b) { b.hundir(0); b.luz(false); });
+    s.placa.position.set(BC.x, BC.y, BC.z); s.placa.rotation.y = 0;
+    K.marcar([s.placa, s.bt[0], s.bt[1], s.bt[2], s.bt[3], s.bt[4], s.bt[5], s.bt[6], s.conect], null);
+  }
+  V3.escena('ele-botonera-cabina', ['botonera_cabina'], {
+    fov: 36, poster: 6,
+    construir: function (K) {
+      var M = K.M, s = mats(K);
+      // cabina: pared del frente con el vano de la puerta (x de -0.55 a 0.25), costados, piso y techo
+      K.add(K.caja(0.2, 2.2, 0.02, M.panel, -0.65, 1.1, 0)); K.add(K.caja(0.5, 2.2, 0.02, M.panel, 0.5, 1.1, 0));
+      K.add(K.caja(0.8, 0.2, 0.02, M.panel, -0.15, 2.1, 0));
+      K.add(K.caja(0.02, 2.2, 1.6, M.panel, -0.75, 1.1, 0.8)); K.add(K.caja(0.02, 2.2, 1.6, M.panel, 0.75, 1.1, 0.8));
+      K.add(K.caja(1.5, 0.04, 1.6, M.piso, 0, -0.02, 0.8)); K.add(K.caja(1.5, 0.04, 1.6, M.grisClaro, 0, 2.22, 0.8));
+      K.add(K.caja(0.8, 0.012, 0.6, s.luz, 0, 2.195, 0.75));
+      K.add(K.caja(0.04, 0.04, 1.2, M.inox, -0.72, 0.95, 0.85));
+      K.add(K.caja(0.8, 0.02, 0.06, M.acero, -0.15, 0.01, -0.02));
+      // hojas de la puerta de cabina (abren al centro, se esconden detrás de las paredes)
+      s.hojasB = [-0.35, 0.05].map(function (x) { return K.add(K.caja(0.4, 2.0, 0.025, M.inox, x, 1.0, -0.035)); });
+      // pasillo del piso, visto por la puerta
+      K.add(K.caja(2.2, 0.05, 1.2, M.hall, -0.15, -0.025, -0.65)); K.add(K.caja(2.4, 2.6, 0.05, M.muro, -0.15, 1.3, -1.2));
+      s.hall = K.cartel('PISO 1', 0.42, 0.12, '#e2dfd6', '#59636d'); s.hall.position.set(-0.15, 1.65, -1.17); K.add(s.hall);
+      // tarjeta y conectores detrás de la placa (se ven cuando se saca la placa)
+      s.conect = K.add(K.grupo([K.caja(0.12, 0.42, 0.006, s.pcb, 0, 0, 0)], BC.x, BC.y, 0.013));
+      for (var c = 0; c < 6; c++) s.conect.add(K.caja(0.035, 0.022, 0.012, s.blancoP, -0.02, 0.18 - c * 0.075, 0.008));
+      [0x2e5f90, 0xd03a2c, 0x1e2125].forEach(function (col, i) { s.conect.add(K.caja(0.004, 0.42, 0.004, K.mat(col), 0.035 + i * 0.008, 0, 0.006)); });
+      // la placa con sus botones y la pantalla
+      s.placa = K.add(K.grupo([K.caja(0.2, 1.0, 0.012, M.inox, 0, 0, 0)], BC.x, BC.y, BC.z));
+      s.pant = K.cartel('1', 0.15, 0.08, '#10161b', '#ff5a3c'); s.pant.position.set(0, 0.38, 0.0065); s.placa.add(s.pant);
+      s.bt = BC.bt.map(function (b, i) { return pulsador(K, s, s.placa, b[0], b[1], i === 6 ? M.amarillo : M.acero, i === 6 ? 0.022 : 0.016); });
+      ['1', '2', '3', '4', '<|>', '>|<'].forEach(function (txt, i) {
+        var e = K.cartel(txt, 0.045, 0.026, '#d6dbdf', '#1e2125'); e.position.set(-0.04, BC.bt[i][1], 0.0065); s.placa.add(e);
+      });
+      var al = K.cartel('ALARMA', 0.1, 0.026, '#d6dbdf', '#b0281c'); al.position.set(0, -0.395, 0.0065); s.placa.add(al);
+      for (var p = 0; p < 12; p++) s.placa.add(K.cil(0.003, 0.002, M.negro, -0.03 + (p % 4) * 0.02, -0.44 - Math.floor(p / 4) * 0.016, 0.007, 'z', 6));
+      s.mano = mano(K); s.son = ondas(K, 3, 0xffc62b);
+      return s;
+    },
+    funciona: {
+      dur: 18,
+      subt: [[0, 'La botonera de cabina es el panel de adentro: los números de los pisos, abrir y cerrar puerta, y la alarma.'],
+        [4.5, 'Aprietas tu piso: el botón se prende y la orden viaja al tablero.'],
+        [8.5, 'La puerta se cierra y la pantalla de arriba va contando los pisos mientras subes.'],
+        [13, 'Al llegar, el botón se apaga y se abre la puerta. El botón amarillo es la alarma, para pedir ayuda.']],
+      cam: [[0, [-0.25, 1.55, 1.95], [0.15, 1.2, 0]], [3.8, [-0.2, 1.5, 1.85], [0.2, 1.22, 0]], [4.8, [0.22, 1.38, 0.72], [0.5, 1.3, 0.02]], [8.4, [0.22, 1.38, 0.72], [0.5, 1.3, 0.02]],
+        [9.4, [-0.1, 1.45, 1.65], [0.12, 1.3, 0]], [13.2, [-0.1, 1.45, 1.65], [0.12, 1.3, 0]], [15.2, [0.24, 1.1, 0.72], [0.5, 1.0, 0.02]], [18, [0.24, 1.12, 0.74], [0.5, 1.02, 0.02]]],
+      anim: function (t, s, K) {
+        bcBase(s, K);
+        bcAprieta(s, K, t, [[2, 5.2], [5, 8.9], [6, 16.3]]);
+        var a = K.kf(t, [[0, 1], [9.0, 1], [10.4, 0], [13.6, 0], [15.0, 1]]), viaja = K.entre(t, 10.6, 13.4);
+        var piso = t < 11.6 ? 1 : t < 12.6 ? 2 : 3, on3 = K.entre(t, 5.25, 13.4);
+        bcPuerta(s, a);
+        s.bt[2].luz(on3); s.bt[5].luz(K.entre(t, 8.9, 9.4)); s.bt[6].luz(K.entre(t, 16.3, 18), s.rojo);
+        s.son.poner(t, bcPos(K.entre(t, 5.2, 6.4) ? 2 : 6), K.entre(t, 5.2, 6.4) || t > 16.3, 0.05);
+        escribe(s, s.pant, 'p', (viaja ? '▲ ' : '') + piso, '#ff5a3c');
+        escribe(s, s.hall, 'h', 'PISO ' + (t > 12 ? 3 : 1), '#59636d', '#e2dfd6');
+        K.marcar(s.placa, t < 4.5 && K.parpadeo(t, 1) ? 'foco' : null);
+        K.marcar(s.bt[2], K.entre(t, 5.2, 8.5) ? 'foco' : null);
+        K.marcar(s.bt[6], t > 15.4 ? 'foco' : null);
+        var pp = BC.y + 0.38;
+        if (t < 4.5) { K.rotulo('Botonera de cabina', [BC.x + 0.1, BC.y + 0.1, 0.04]); K.rotulo('Pantalla', [BC.x + 0.07, pp, 0.04]); K.rotulo('Puerta', [-0.15, 1.2, -0.03], 'izq'); }
+        else if (t < 8.5) K.rotulo(on3 ? 'Se prende: piso 3 anotado' : 'Botón del piso 3', bcPos(2));
+        else if (t < 13) { if (t < 10.4) K.rotulo('Cerrar puerta', bcPos(5)); K.rotulo('Pantalla: piso ' + piso, [BC.x + 0.07, pp, 0.04]); }
+        else if (t < 15.4) K.rotulo('Llegó: botón apagado', bcPos(2));
+        else K.rotulo('Alarma: pide ayuda', bcPos(6));
+        K.tabla([['BOTÓN 3', on3 ? 'PRENDIDO' : 'APAGADO', on3 ? 'ac' : ''], ['PUERTA', a > 0.98 ? 'ABIERTA' : a < 0.02 ? 'CERRADA' : 'MOVIENDO', ''], ['CABINA', viaja ? 'SUBE: PISO ' + piso : 'PISO ' + piso, viaja ? 'ok' : '']]);
+        if (t > 16.4) K.aviso('Alarma sonando: piden ayuda');
+      }
+    },
+    falla: {
+      dur: 19,
+      subt: [[0, 'Falla 1: un botón gastado. Lo aprietas y no se prende: la cabina no va a ese piso.'],
+        [4.5, 'Falla 2: el botón de abrir se quedó hundido. La puerta empieza a cerrar y se vuelve a abrir.'],
+        [9.5, 'Con el ascensor detenido, se saca la placa: detrás están los botones y sus conectores.'],
+        [14, 'Arreglo: cambiar el botón malogrado, revisar su conector y probar que cada botón se prenda y regrese solo.']],
+      cam: [[0, [0.22, 1.36, 0.72], [0.5, 1.28, 0.02]], [4.2, [0.22, 1.36, 0.72], [0.5, 1.28, 0.02]], [5.2, [-0.12, 1.42, 1.65], [0.1, 1.15, 0]], [9.2, [-0.12, 1.42, 1.65], [0.1, 1.15, 0]],
+        [10.4, [0.0, 1.3, 0.9], [0.5, 1.18, 0.06]], [14, [0.0, 1.3, 0.9], [0.5, 1.18, 0.06]], [15.2, [0.22, 1.34, 0.75], [0.5, 1.25, 0.02]], [19, [0.22, 1.34, 0.76], [0.5, 1.25, 0.02]]],
+      anim: function (t, s, K) {
+        bcBase(s, K);
+        var mal = K.parpadeo(t, 2) ? 'mal' : null, a = 1;
+        escribe(s, s.hall, 'h', 'PISO 1', '#59636d', '#e2dfd6'); escribe(s, s.pant, 'p', '1', '#ff5a3c');
+        if (t < 4.5) {
+          bcAprieta(s, K, t, [[1, 1.2], [1, 2.9]]);
+          K.marcar(s.bt[1], mal);
+          K.rotulo('Botón 2: no se prende', bcPos(1));
+          K.tabla([['BOTÓN 2', 'NO MARCA', 'mal'], ['CABINA', 'NO SE MUEVE', 'mal']]);
+        } else if (t < 9.5) {
+          s.bt[4].hundir(1); s.bt[4].luz(true);
+          a = K.kf(t, [[4.5, 1], [5.3, 1], [6.4, 0.4], [6.9, 1], [7.6, 1], [8.7, 0.4], [9.2, 1]]);
+          K.marcar(s.bt[4], mal);
+          K.rotulo('Abrir: se quedó hundido', bcPos(4));
+          K.tabla([['BOTÓN ABRIR', 'HUNDIDO', 'mal'], ['PUERTA', 'CIERRA Y REABRE', 'mal']]);
+          if (t > 5.5) K.aviso('La puerta no termina de cerrar');
+        } else {
+          var saca = K.ph(t, 9.8, 10.8) * (1 - K.ph(t, 15.2, 16.2)), nuevo = t > 14.6;
+          s.placa.position.z = BC.z + 0.17 * saca; s.placa.position.x = BC.x + 0.06 * saca; s.placa.rotation.y = 0.35 * saca;
+          if (!nuevo) { s.bt[4].hundir(1); K.marcar([s.bt[1], s.bt[4]], mal); }
+          else { K.marcar([s.bt[1], s.bt[4]], t < 17 ? 'foco' : null); bcAprieta(s, K, t, [[1, 17.2]]); s.bt[1].luz(t > 17.25); }
+          K.marcar(s.conect, saca > 0.5 && t < 14.6 ? 'foco' : null);
+          if (saca > 0.5) K.rotulo(nuevo ? 'Botones nuevos' : 'Conectores', nuevo ? [BC.x + 0.1, BC.y - 0.05, 0.2] : [BC.x - 0.02, BC.y + 0.1, 0.03], 'izq');
+          if (t > 16.4) K.rotulo('Ya se prende', bcPos(1));
+          var det = K.entre(t, 9.5, 16.4);
+          K.tabla([['ASCENSOR', det ? 'DETENIDO' : 'EN SERVICIO', det ? 'ac' : 'ok'], ['BOTONES', nuevo ? 'NUEVOS' : 'MALOGRADOS', nuevo ? 'ok' : 'mal']]);
+          if (t > 17.4) K.aviso('Botones nuevos: todo normal', false);
+        }
+        bcPuerta(s, a);
+      }
+    }
+  });
+
+  // ---------- cinta plana (cable viajero): tramos de caja que siguen una lista de puntos ----------
+  // el ancho va en z (cinta que se dobla en el plano x-y) o en x si yz = true (se dobla en el plano y-z)
+  function cinta(K, n, ancho, grosor, m, yz) {
+    var g = K.add(new K.T.Group()), geo = yz ? new K.T.BoxGeometry(ancho, 1, grosor) : new K.T.BoxGeometry(grosor, 1, ancho), Yv = K.v(0, 1, 0), d = K.v();
+    g.seg = [];
+    for (var i = 0; i < n; i++) { var b = new K.T.Mesh(geo, m); g.add(b); g.seg.push(b); }
+    g.poner = function (pts) {
+      g.seg.forEach(function (b, i) {
+        var a = pts[Math.min(i, pts.length - 2)], c = pts[Math.min(i + 1, pts.length - 1)];
+        d.set(c[0] - a[0], c[1] - a[1], c[2] - a[2]); var L = Math.max(1e-4, d.length());
+        b.position.set((a[0] + c[0]) / 2, (a[1] + c[1]) / 2, (a[2] + c[2]) / 2); b.scale.y = L * 1.06; b.quaternion.setFromUnitVectors(Yv, d.divideScalar(L));
+      });
+    };
+    return g;
+  }
+  function puntosDe(c, n) { var r = []; for (var i = 0; i <= n; i++) r.push(c.en(i / n)); return r; }
+
+  // =====================================================================================
+  // 5) Caja de conexiones del techo de cabina: llega el cable viajero y reparte a la puerta, el ventilador,
+  //    el sensor de piso y la botonera de inspección. Techo de la cabina en y = 2.24.
+  // =====================================================================================
+  var CT = { x: 0.22, y: 2.3, z: -0.3 };
+  function ctBase(s, K) {
+    s.tapa.visible = true; s.tapa.rotation.x = 0; s.tapaS.visible = false;
+    s.sulf.visible = false; s.gotas.forEach(function (g) { g.visible = false; });
+    s.fx.forEach(function (f) { f.visible = false; }); s.chis.visible = false;
+    s.plug.position.x = 0.4; s.ledS.material = s.apag; s.leds.forEach(function (l) { l.material = s.apag; });
+    s.perilla.rotation.y = 0; s.marcas.position.y = 0;
+    K.marcar([s.caja, s.plug, s.viaj, s.oper, s.vent, s.sens, s.insp, s.bornes], null);
+  }
+  V3.escena('ele-caja-techo', ['caja_techo'], {
+    fov: 36, poster: 7,
+    construir: function (K) {
+      var M = K.M, T = K.T, s = mats(K);
+      // pared del hueco con marcas que corren cuando la cabina se mueve
+      K.add(K.caja(3.4, 4.6, 0.06, M.muro, 0.2, 1.6, -1.0));
+      s.marcas = K.add(new T.Group());
+      for (var i = 0; i < 8; i++) s.marcas.add(K.caja(0.5, 0.05, 0.03, M.aceroOsc, -0.6, -0.4 + i * 0.7, -0.96));
+      // cabina y techo
+      K.add(K.caja(1.2, 2.2, 1.4, M.inox, 0, 1.1, 0)); K.add(K.caja(1.26, 0.04, 1.46, M.aceroOsc, 0, 2.22, 0));
+      // operador de puertas con su polea al frente
+      s.oper = K.add(K.grupo([K.caja(1.0, 0.12, 0.16, M.hierro, 0, 0, 0), K.cil(0.05, 0.14, M.aceroOsc, -0.38, 0.03, 0.04, 'x')], 0, 2.3, 0.6));
+      s.poleaO = K.polea(0.05, 0.03, M.acero, M.hierro); s.poleaO.position.set(0.42, 0, 0.1); s.oper.add(s.poleaO);
+      // ventilador del techo
+      s.vent = K.add(K.grupo([K.cil(0.12, 0.05, M.gris, 0, 0, 0, null, 24)], -0.3, 2.27, 0.12));
+      s.aspV = K.grupo([], 0, 0.035, 0); s.vent.add(s.aspV);
+      for (var a = 0; a < 4; a++) { var bl = K.caja(0.1, 0.006, 0.035, M.negro, 0.055, 0, 0); var pa = K.grupo([bl]); pa.rotation.y = a * PI / 2; s.aspV.add(pa); }
+      // botonera de inspección (amarilla) con selector y botón de parada
+      s.insp = K.add(K.grupo([K.caja(0.22, 0.12, 0.16, M.amarillo, 0, 0, 0), K.cil(0.025, 0.03, M.rojo, -0.06, 0.075, 0)], -0.38, 2.3, -0.42));
+      s.perilla = K.grupo([K.cil(0.022, 0.02, M.negro, 0, 0, 0, null, 14), K.caja(0.05, 0.016, 0.012, M.negro, 0, 0.015, 0)], 0.05, 0.07, 0); s.insp.add(s.perilla);
+      // sensor de piso en el costado
+      s.sens = K.add(K.grupo([K.caja(0.06, 0.08, 0.1, M.negro, 0, 0, 0)], -0.57, 2.3, 0.0));
+      s.ledS = K.esfera(0.01, s.apag, 0, 0.045, 0.03); s.sens.add(s.ledS);
+      // la caja: fondo y paredes (hueca para ver adentro), bornes y tarjeta
+      var cajaM = K.mat(0x9aa3ab, { roughness: 0.6 });
+      s.caja = K.add(K.grupo([K.caja(0.32, 0.01, 0.24, cajaM, 0, -0.055, 0), K.caja(0.32, 0.12, 0.01, cajaM, 0, 0, -0.115), K.caja(0.32, 0.12, 0.01, cajaM, 0, 0, 0.115),
+        K.caja(0.01, 0.12, 0.24, cajaM, -0.155, 0, 0), K.caja(0.01, 0.12, 0.24, cajaM, 0.155, 0, 0)], CT.x, CT.y, CT.z));
+      s.bornes = K.grupo([], 0, -0.03, -0.06); s.caja.add(s.bornes);
+      for (var b = 0; b < 9; b++) s.bornes.add(K.caja(0.022, 0.04, 0.035, b % 3 === 2 ? M.amarillo : K.mat(0x8a96a3), -0.11 + b * 0.027, 0, 0));
+      s.caja.add(K.caja(0.2, 0.006, 0.08, s.pcb, -0.02, -0.045, 0.05));
+      s.leds = [0, 1, 2].map(function (j) { var l = K.esfera(0.007, s.apag, -0.08 + j * 0.03, -0.038, 0.07); s.caja.add(l); return l; });
+      s.tapa = K.grupo([K.caja(0.33, 0.012, 0.25, cajaM, 0, 0, 0.125)], 0, 0.066, -0.125); s.caja.add(s.tapa);
+      s.tapaS = K.add(K.caja(0.33, 0.012, 0.25, cajaM, 0.3, 2.25, 0.15)); s.tapaS.rotation.y = 0.5;
+      // sulfato y agua (falla)
+      s.sulf = K.add(new T.Group()); var sm = K.mat(0x7fc8a9, { roughness: 1, metalness: 0 });
+      for (var q = 0; q < 9; q++) s.sulf.add(K.esfera(0.009 + K.ruido(q) * 0.006, sm, CT.x - 0.11 + q * 0.027, CT.y - 0.005, CT.z - 0.045));
+      s.gotas = [0, 1, 2].map(function () { return K.add(K.gota(K.mat(0x5aa9e6, { roughness: 0.1, metalness: 0.1 }))); });
+      // cable viajero: sube por el costado de la cabina y entra a la caja con su conector
+      var neg = K.mat(0x2b2f34, { roughness: 0.8 });
+      s.cViaj = camino([[0.665, -0.6, -0.3], [0.665, 2.18, -0.3], [0.6, 2.28, -0.3], [0.43, 2.28, -0.3]]);
+      s.viaj = cinta(K, 20, 0.07, 0.012, neg); s.viaj.poner(puntosDe(s.cViaj, 20));
+      s.plug = K.add(K.caja(0.05, 0.05, 0.08, M.negro, 0.4, 2.29, -0.3));
+      // ramales que salen de la caja
+      var ram = [[[0.22, 2.27, -0.18], [0.24, 2.26, 0.2], [0.3, 2.3, 0.52]], [[0.1, 2.27, -0.2], [-0.15, 2.26, 0.0], [-0.22, 2.28, 0.07]],
+        [[0.06, 2.27, -0.35], [-0.12, 2.27, -0.42], [-0.27, 2.29, -0.42]], [[0.06, 2.27, -0.26], [-0.3, 2.26, -0.1], [-0.54, 2.3, 0]]];
+      var colR = [0x2e5f90, 0xd03a2c, 0x2e7a5c, 0xb9743a];
+      s.cRam = ram.map(function (p, i) { K.add(K.tubo(p, 0.008, K.mat(colR[i]))); return camino(p.map(function (q) { return [q[0], q[1] + 0.012, q[2]]; })); });
+      s.fx = s.cRam.map(function () { return cuentas(K, 4, 0xff8a2a, 0.011); });
+      s.fv = cuentas(K, 7, 0xff8a2a, 0.012); s.sv = cuentas(K, 7, 0x4aa3ff, 0.012);
+      s.fx.push(s.fv, s.sv);
+      s.cViajB = camino([[0.43, 2.3, -0.3], [0.6, 2.3, -0.3], [0.68, 2.18, -0.3], [0.68, 0.3, -0.3]]);
+      s.chis = K.add(K.chispas(12));
+      return s;
+    },
+    funciona: {
+      dur: 18,
+      subt: [[0, 'La caja de conexiones va sobre el techo de la cabina. Ahí llega el cable viajero, el cable plano que viene del tablero.'],
+        [4.5, 'Adentro tiene bornes y una tarjeta. De ahí sale la corriente a la puerta, al ventilador y al sensor de piso.'],
+        [9, 'Y al revés: los avisos de la cabina se juntan aquí y bajan por el cable viajero hasta el tablero.'],
+        [13.5, 'Al lado está la botonera de inspección: el técnico la pasa a inspección y mueve la cabina despacito.']],
+      cam: [[0, [1.9, 3.3, 1.9], [0.15, 2.0, -0.2]], [4.0, [1.8, 3.2, 1.8], [0.15, 2.1, -0.2]], [5.2, [0.85, 2.95, 0.45], [0.18, 2.3, -0.25]], [8.6, [0.85, 2.95, 0.45], [0.18, 2.3, -0.25]],
+        [9.8, [1.6, 3.1, 1.2], [0.2, 2.0, -0.2]], [13.2, [1.6, 3.1, 1.2], [0.2, 2.0, -0.2]], [14.4, [0.35, 2.95, 0.6], [-0.38, 2.32, -0.42]], [18, [0.4, 3.0, 0.7], [-0.38, 2.3, -0.42]]],
+      anim: function (t, s, K) {
+        ctBase(s, K);
+        s.tapa.rotation.x = -1.9 * K.ph(t, 4.4, 5.4);
+        var on = t > 5.6, vuelta = K.entre(t, 9, 13.5);
+        s.fv.correr(s.cViaj, t, 0.5, true);
+        s.fx.slice(0, 4).forEach(function (f, i) { f.correr(s.cRam[i], t, 0.25, on && !vuelta); });
+        s.sv.correr(s.cViajB, t, 0.5, vuelta);
+        s.poleaO.rotation.z = -K.integ(function (x) { return x > 5.8 ? 6 : 0; }, t);
+        s.aspV.rotation.y = K.integ(function (x) { return x > 5.8 ? 14 : 0; }, t);
+        s.ledS.material = on && K.parpadeo(t, 0.7) ? s.verde : s.apag;
+        s.leds.forEach(function (l, i) { l.material = on ? (i === 2 && vuelta ? (K.parpadeo(t, 3) ? s.azul : s.apag) : s.verde) : s.apag; });
+        var insp = t > 14.6;
+        s.perilla.rotation.y = -1.2 * K.ph(t, 14.4, 14.8);
+        s.marcas.position.y = -((t > 15 ? (t - 15) * 0.18 : 0) % 0.7);
+        var pulso = K.parpadeo(t, 1) ? 'foco' : null;
+        K.marcar(s.caja, t < 4.5 ? pulso : null); K.marcar(s.viaj, t < 4.5 ? pulso : vuelta ? 'foco' : null);
+        K.marcar(s.bornes, K.entre(t, 5.4, 9) ? 'foco' : null); K.marcar(s.insp, t > 13.5 ? 'foco' : null);
+        if (t < 4.5) { K.rotulo('Caja de conexiones', [CT.x, CT.y + 0.08, CT.z]); K.rotulo('Cable viajero', [0.665, 1.3, -0.3]); }
+        else if (t < 9) { K.rotulo('Bornes', [CT.x - 0.1, CT.y - 0.02, CT.z - 0.06], 'izq'); if (on) { K.rotulo('A la puerta', [0.3, 2.38, 0.55]); K.rotulo('Ventilador', [-0.3, 2.34, 0.12], 'izq'); K.rotulo('Sensor de piso', [-0.57, 2.36, 0], 'izq'); } }
+        else if (t < 13.5) { K.rotulo('Avisos al tablero', s.sv.children[0]); K.rotulo('Caja de conexiones', [CT.x, CT.y + 0.08, CT.z], 'izq'); }
+        else { K.rotulo('Botonera de inspección', [-0.38, 2.37, -0.42]); if (insp) K.rotulo('Selector en inspección', [-0.33, 2.38, -0.42], 'izq'); }
+        K.tabla([['CABLE VIAJERO', 'CONECTADO', 'ok'], ['PUERTA Y SENSORES', on ? 'CON CORRIENTE' : '…', on ? 'ok' : ''], ['MODO', insp ? 'INSPECCIÓN (LENTO)' : 'NORMAL', insp ? 'ac' : 'ok']]);
+      }
+    },
+    falla: {
+      dur: 19,
+      subt: [[0, 'Falla 1: la caja quedó sin tapa y le cayó agua de una filtración. Los bornes se mojan y se sulfatan.'],
+        [4.5, 'Fallan varias cosas a la vez: la puerta no responde, el ventilador se para y se pierde la lectura del piso.'],
+        [9.5, 'Falla 2: el conector del cable viajero quedó flojo. Con la vibración del viaje se suelta a ratos.'],
+        [14, 'Arreglo: con el ascensor detenido y la energía cortada, secar y ajustar bornes y conectores, y poner bien la tapa.']],
+      cam: [[0, [0.85, 2.95, 0.45], [0.2, 2.3, -0.28]], [4.2, [0.85, 2.95, 0.45], [0.2, 2.3, -0.28]], [5.4, [1.7, 3.2, 1.6], [0.1, 2.15, -0.1]], [9.2, [1.7, 3.2, 1.6], [0.1, 2.15, -0.1]],
+        [10.4, [0.9, 2.75, 0.3], [0.38, 2.29, -0.3]], [13.8, [0.9, 2.75, 0.3], [0.38, 2.29, -0.3]], [14.8, [0.95, 3.0, 0.55], [0.25, 2.28, -0.25]], [19, [1.0, 3.05, 0.6], [0.25, 2.28, -0.25]]],
+      anim: function (t, s, K) {
+        ctBase(s, K);
+        var mal = K.parpadeo(t, 2) ? 'mal' : null, arreglo = t >= 14, listo = t > 17.8;
+        var tapada = K.ph(t, 16.8, 17.6);
+        s.tapa.visible = tapada > 0; s.tapa.rotation.x = -1.9 * (1 - tapada); s.tapaS.visible = tapada <= 0;
+        var limpio = K.ph(t, 15.0, 16.0);
+        s.sulf.visible = limpio < 1; s.sulf.scale.setScalar(K.ph(t, 0, 4) * (1 - limpio * 0.99) + 0.001);
+        s.gotas.forEach(function (g, i) { var k = (t * 0.8 + i / 3) % 1; g.visible = t < 14; g.position.set(CT.x - 0.06 + i * 0.05, 3.2 - k * 0.92, CT.z - 0.03); });
+        var suelto = K.entre(t, 9.5, 16.2), corta = suelto && K.ruido(Math.floor(t * 4)) > 0.5;
+        s.plug.position.x = suelto ? 0.4 + 0.03 * K.ph((t * 4) % 1, 0, 0.3) * (corta ? 1 : 0.3) : 0.4;
+        s.chis.emitir(t, [0.38, 2.31, -0.3], suelto && corta && t < 14, 0.08);
+        // con agua o con el conector suelto, la cabina se queda sin varias cosas
+        var vivo = t < 4.5 ? true : t < 9.5 ? false : t < 14 ? !corta : listo;
+        s.fv.correr(s.cViaj, t, 0.5, vivo || t < 9.5);
+        s.fx.slice(0, 4).forEach(function (f, i) { f.correr(s.cRam[i], t, 0.25, vivo); });
+        s.poleaO.rotation.z = -K.integ(function (x) { return (x < 4.5 || (x > 17.8)) ? 6 : 0; }, t);
+        s.aspV.rotation.y = K.integ(function (x) { return x < 4.8 ? 14 * (1 - K.ph(x, 4.5, 4.8)) : x > 17.8 ? 14 : 0; }, t);
+        s.ledS.material = vivo && K.parpadeo(t, 0.7) ? s.verde : s.apag;
+        s.leds.forEach(function (l, i) { l.material = vivo ? s.verde : (i === 0 && !arreglo ? (K.parpadeo(t, 3) ? s.rojo : s.apag) : s.apag); });
+        if (t < 4.5) { K.marcar(s.bornes, mal); K.rotulo('Agua', [CT.x, 2.9, CT.z], 'izq'); K.rotulo('Bornes sulfatados', [CT.x + 0.1, CT.y, CT.z - 0.06]); K.rotulo('Sin tapa', [0.3, 2.27, 0.15]); }
+        else if (t < 9.5) { K.marcar([s.oper, s.vent, s.sens], mal); K.marcar(s.caja, mal); K.rotulo('Puerta', [0.0, 2.38, 0.6]); K.rotulo('Ventilador', [-0.3, 2.34, 0.12], 'izq'); K.rotulo('Sensor de piso', [-0.57, 2.36, 0], 'izq'); }
+        else if (t < 14) { K.marcar(s.plug, mal); K.rotulo('Conector flojo', [0.4, 2.33, -0.3]); }
+        else { K.marcar([s.bornes, s.plug], limpio > 0.5 ? 'foco' : null); K.rotulo(limpio < 1 ? 'Secar y limpiar' : t < 16.6 ? 'Conector ajustado' : 'Tapa puesta', [CT.x, CT.y + 0.06, CT.z]); }
+        K.tabla([['CAJA', arreglo ? (listo ? 'SECA Y TAPADA' : 'EN ARREGLO') : t < 9.5 ? 'MOJADA' : 'CONECTOR FLOJO', listo ? 'ok' : arreglo ? 'ac' : 'mal'],
+          ['PUERTA, VENTILADOR, SENSOR', vivo ? 'FUNCIONAN' : 'NO RESPONDEN', vivo ? 'ok' : 'mal'], ['ENERGÍA', K.entre(t, 14.4, 17.8) ? 'CORTADA' : 'CON TENSIÓN', K.entre(t, 14.4, 17.8) ? 'ac' : '']]);
+        if (K.entre(t, 5, 9.5)) K.aviso('Fallan varias cosas a la vez');
+        if (K.entre(t, 14.4, 17.8)) K.aviso('Ascensor detenido y energía cortada', false);
+        if (t > 18) K.aviso('Cabina normal otra vez', false);
+      }
+    }
+  });
+
+  // =====================================================================================
+  // 6) Interruptor principal: llave general con manija roja, candado y tarjeta (bloqueo antes de trabajar)
+  //    Pared del cuarto en z = -0.3; tablero del edificio a la izquierda, tablero del ascensor y motor a la derecha.
+  // =====================================================================================
+  var IP = { hub: [-0.55, 1.53, -0.12] };
+  function ipBase(s, K) {
+    s.cand.visible = false; s.tarj.visible = false; s.humo.visible = false;
+    s.tapa.rotation.y = 0; s.manija.rotation.z = 0; s.palanca.rotation.z = 0;
+    s.bIn.forEach(function (b) { b.material = s.cobreM; });
+    s.tec.visible = true; s.tec.caminar(0, 0); s.tec.brazoD.rotation.x = 0; s.tec.brazoI.rotation.x = 0;
+    K.marcar([s.tapa, s.polea, s.bIn[1], s.tabE, s.cand], null);
+  }
+  // pone el candado y la tarjeta colgando de la punta de la manija (manija en 0)
+  function ipCandado(s, K, t, k) {
+    s.cand.visible = k > 0; s.tarj.visible = k > 0.95;
+    var p0 = [-0.36, 1.4, 0.15], p1 = [-0.625, 1.49, -0.085];
+    s.cand.position.set(K.mix(p0[0], p1[0], k), K.mix(p0[1], p1[1], k), K.mix(p0[2], p1[2], k));
+    s.tarj.rotation.z = Math.sin(t * 2.2) * 0.12;
+  }
+  V3.escena('ele-interruptor', ['interruptor_principal'], {
+    fov: 36, poster: 15,
+    construir: function (K) {
+      var M = K.M, s = mats(K);
+      K.add(K.piso(3.2, 0xb9c1c8)); K.add(K.caja(4.2, 2.8, 0.06, M.muro, 0, 1.4, -0.33));
+      s.cobreM = K.mat(0xc98a4a, { metalness: 0.6, roughness: 0.35 }); s.quem = K.mat(0x231a14, { roughness: 1, metalness: 0 });
+      // tablero del edificio (gris) con su palanca
+      s.tabE = K.add(K.grupo([K.caja(0.2, 0.28, 0.1, M.grisClaro, 0, 0, 0)], -1.05, 1.5, -0.25));
+      s.palanca = K.grupo([K.caja(0.025, 0.07, 0.02, M.negro, 0, 0.03, 0)], 0, 0, 0.055); s.tabE.add(s.palanca);
+      var et = K.cartel('EDIFICIO', 0.16, 0.04, '#cdd3d8', '#1e2125'); et.position.set(0, 0.1, 0.051); s.tabE.add(et);
+      // caja del interruptor: cuerpo gris, bornes adentro y tapa amarilla con bisagra a la izquierda
+      K.add(K.caja(0.26, 0.36, 0.13, M.gris, -0.55, 1.5, -0.22));
+      s.bIn = [-0.6, -0.55, -0.5].map(function (x) { return K.add(K.caja(0.035, 0.05, 0.04, s.cobreM, x, 1.6, -0.16)); });
+      [-0.6, -0.55, -0.5].forEach(function (x) { K.add(K.caja(0.035, 0.05, 0.04, s.cobreM, x, 1.4, -0.16)); });
+      s.tapa = K.add(K.grupo([K.caja(0.26, 0.36, 0.012, M.amarillo, 0.13, 0, 0)], -0.68, 1.5, -0.149));
+      s.manija = K.grupo([K.cil(0.035, 0.03, M.rojo, 0, 0, 0, 'z', 20), K.caja(0.035, 0.15, 0.025, M.rojo, 0, 0, 0.018)], 0.13, 0.03, 0.02); s.tapa.add(s.manija);
+      var e1 = K.cartel('1', 0.03, 0.03, '#f2b705', '#1e2125'); e1.position.set(0.13, 0.145, 0.007); s.tapa.add(e1);
+      var e0 = K.cartel('0', 0.03, 0.03, '#f2b705', '#1e2125'); e0.position.set(0.235, 0.03, 0.007); s.tapa.add(e0);
+      // candado (con arco) y tarjeta de aviso
+      s.cand = K.add(K.grupo([K.caja(0.04, 0.045, 0.02, K.mat(0x2e5f90), 0, -0.02, 0), K.toro(0.014, 0.003, M.acero, 0, 0.002, 0, PI)]));
+      s.tarj = K.grupo([K.cil(0.002, 0.06, M.negro, 0, -0.07, 0, null, 6), K.caja(0.17, 0.1, 0.004, M.blanco, 0, -0.15, 0)], 0, -0.03, 0.012); s.cand.add(s.tarj);
+      var nt = K.cartel('NO OPERAR', 0.15, 0.04, '#f2f3f4', '#b0281c'); nt.position.set(0, -0.15, 0.003); s.tarj.add(nt);
+      // tablero del ascensor y motor con su polea
+      s.tab = K.add(K.caja(0.6, 1.5, 0.3, K.mat(0xcfcab9, { roughness: 0.7, metalness: 0.2 }), 0.45, 0.95, -0.15));
+      s.ledT = K.add(K.esfera(0.014, s.verde, 0.62, 1.5, 0.005));
+      var tt = K.cartel('TABLERO', 0.24, 0.06, '#e8e4d6', '#59636d'); tt.position.set(0.45, 1.36, 0.002); K.add(tt);
+      K.add(K.caja(0.5, 0.5, 0.3, M.hierro, 1.3, 0.25, -0.12)); K.add(K.cil(0.2, 0.3, M.aceroOsc, 1.3, 0.75, -0.08, 'z', 30));
+      s.polea = K.add(K.polea(0.18, 0.08, M.acero, M.hierro)); s.polea.position.set(1.3, 0.75, 0.12);
+      [-0.025, 0, 0.025].forEach(function (z) { K.add(K.cil(0.005, 0.75, M.hierro, 1.12, 0.375, 0.12 + z, null, 6)); K.add(K.cil(0.005, 0.75, M.hierro, 1.48, 0.375, 0.12 + z, null, 6)); });
+      // cables y corriente: red del edificio → tablero del edificio → interruptor → tablero → motor
+      var neg = K.mat(0x1b1d20, { roughness: 0.7 });
+      var pR = [[-1.05, 2.8, -0.27], [-1.05, 1.64, -0.27]], pI = [[-1.05, 1.64, -0.27], [-1.05, 1.86, -0.26], [-0.55, 1.86, -0.26], [-0.55, 1.68, -0.22]];
+      var pO = [[-0.55, 1.32, -0.22], [-0.55, 1.2, -0.27], [0.15, 1.2, -0.27]], pM = [[0.75, 0.35, -0.15], [0.95, 0.05, -0.15], [1.05, 0.3, -0.15]];
+      [pR, pI, pO, pM].forEach(function (p) { K.add(K.tubo(p, 0.012, neg)); });
+      function fr(p) { return camino(p.map(function (q) { return [q[0], q[1], q[2] + 0.016]; })); }
+      s.cR = fr(pR); s.cI = fr(pI); s.cO = fr(pO); s.cM = fr(pM);
+      s.fR = cuentas(K, 5, 0xffc62b, 0.011); s.fI = cuentas(K, 7, 0xffc62b, 0.011); s.fO = cuentas(K, 7, 0xff8a2a, 0.011); s.fM = cuentas(K, 5, 0xff8a2a, 0.011);
+      s.humo = humo(K, 8, 0x55585c);
+      s.tec = K.add(K.persona(1.7, 0x2e5f90, true));
+      return s;
+    },
+    funciona: {
+      dur: 18,
+      subt: [[0, 'El interruptor principal es la llave general del ascensor. Está al lado de la puerta del cuarto del tablero.'],
+        [4, 'Con la manija en 1, la corriente pasa al tablero y al motor, y el ascensor trabaja.'],
+        [8.5, 'Antes de trabajar, el técnico la gira a 0: el tablero y el motor se quedan sin corriente.'],
+        [13, 'Luego pone su candado y una tarjeta. Nadie puede volver a prenderla mientras él trabaja.']],
+      cam: [[0, [0.9, 1.75, 3.3], [-0.1, 1.05, -0.2]], [4, [1.1, 1.7, 3.2], [0.0, 1.0, -0.2]], [8.6, [0.7, 1.8, 1.3], [-0.55, 1.4, -0.2]],
+        [11.6, [0.7, 1.8, 1.3], [-0.55, 1.4, -0.2]], [12.8, [0.25, 1.7, 0.95], [-0.58, 1.45, -0.15]], [18, [0.28, 1.7, 1.0], [-0.58, 1.45, -0.15]]],
+      anim: function (t, s, K) {
+        ipBase(s, K);
+        var gira = K.ph(t, 9.5, 10.1), on = gira < 0.5;
+        s.manija.rotation.z = -PI / 2 * gira;
+        // el técnico entra caminando, se voltea hacia la llave, la gira y pone el candado
+        var x = K.kf(t, [[0, -2.2], [5, -2.2], [8, -0.33], [14.8, -0.33], [16.4, -1.25]]);
+        s.tec.position.set(x, 0, 0.45); s.tec.rotation.y = K.kf(t, [[0, PI / 2], [8, PI / 2], [8.6, PI], [14.8, PI], [15.2, -PI / 2], [16.4, -PI / 2], [16.9, -PI * 0.85]]);
+        if (K.entre(t, 5, 8) || K.entre(t, 15.1, 16.4)) s.tec.caminar(t);
+        s.tec.brazoD.rotation.x = -1.75 * (K.ph(t, 8.8, 9.4) * (1 - K.ph(t, 10.4, 11)) + K.ph(t, 12.8, 13.4) * (1 - K.ph(t, 14.2, 14.8)));
+        var kc = K.ph(t, 13.2, 14.0);
+        if (t > 12.8) ipCandado(s, K, t, kc);
+        if (K.entre(t, 12.8, 13.2)) { s.cand.visible = true; s.cand.position.set(-0.36, 1.4, 0.15); }
+        s.fR.correr(s.cR, t, 0.3, true); s.fI.correr(s.cI, t, 0.3, true);
+        s.fO.correr(s.cO, t, 0.3, on); s.fM.correr(s.cM, t, 0.3, on);
+        s.polea.rotation.z = -K.integ(function (q) { return q < 9.8 && K.entre(q % 6, 0.5, 4.5) ? 2.5 : 0; }, t);
+        s.ledT.material = on ? s.verde : s.apag;
+        K.marcar(s.manija, t < 4 && K.parpadeo(t, 1) ? 'foco' : K.entre(t, 9.3, 11) ? 'foco' : null);
+        K.marcar(s.cand, K.entre(t, 14, 16) ? 'foco' : null);
+        if (t < 4) { K.rotulo('Interruptor principal', [-0.45, 1.68, -0.14]); K.rotulo('Manija', IP.hub, 'izq'); }
+        else if (t < 8.5) { K.rotulo('Al tablero', s.cO.en(0.7)); K.rotulo('Al motor', [1.3, 1.0, 0.15]); K.rotulo('Llave en 1', IP.hub, 'izq'); }
+        else if (t < 13) { K.rotulo(on ? 'Llave en 1' : 'Llave en 0: sin corriente', IP.hub, 'izq'); if (!on) K.rotulo('La entrada sigue con corriente', [-0.55, 1.86, -0.24], 'der'); }
+        else { if (kc > 0.9) { K.rotulo('Candado', [-0.6, 1.47, -0.08], 'izq'); K.rotulo('Tarjeta: NO OPERAR', [-0.6, 1.32, -0.07]); } }
+        K.tabla([['LLAVE', on ? '1 (PRENDIDA)' : '0 (APAGADA)', on ? 'ok' : 'ac'], ['MOTOR Y TABLERO', on ? 'CON CORRIENTE' : 'SIN CORRIENTE', on ? '' : 'ok'], ['CANDADO', kc > 0.9 ? 'PUESTO' : 'NO', kc > 0.9 ? 'ok' : '']]);
+        if (t > 14.6) K.aviso('Llave bloqueada: se puede trabajar seguro', false);
+      }
+    },
+    falla: {
+      dur: 19,
+      subt: [[0, 'Peligro: este técnico trabaja en la máquina sin apagar la llave y sin candado.'],
+        [4, 'Alguien llama al ascensor y la máquina arranca de golpe. Le puede atrapar la mano.'],
+        [8.5, 'Falla 2: un borne flojo se calienta. La caja huele a quemado, se pone negra y la llave salta.'],
+        [13.5, 'Arreglo: con la luz del edificio cortada, se ajustan o cambian los bornes. Y siempre: llave en 0, candado y tarjeta.']],
+      cam: [[0, [0.6, 1.8, 3.2], [0.2, 0.9, -0.2]], [8.2, [0.7, 1.8, 3.2], [0.25, 0.9, -0.2]], [9.2, [-0.25, 1.65, 0.95], [-0.62, 1.5, -0.2]],
+        [13.4, [-0.25, 1.65, 0.95], [-0.62, 1.5, -0.2]], [14.4, [-0.45, 1.7, 1.25], [-0.75, 1.5, -0.2]], [19, [-0.42, 1.68, 1.2], [-0.72, 1.5, -0.2]]],
+      anim: function (t, s, K) {
+        ipBase(s, K);
+        var mal = K.parpadeo(t, 2) ? 'mal' : null;
+        // 1) trabajando sin bloquear: la máquina arranca sola
+        var arranca = t > 5, salta = K.ph(t, 11.5, 11.65), cortaE = K.ph(t, 14.0, 14.4);
+        var on = t < 11.5 && t >= 0;
+        s.manija.rotation.z = t < 13.5 ? -PI / 2 * salta : -PI / 2;
+        s.tec.visible = t < 8.5;
+        var atras = K.ph(t, 5.1, 5.5);
+        s.tec.position.set(1.3, 0, 0.62 + 0.35 * atras); s.tec.rotation.y = PI;
+        s.tec.brazoD.rotation.x = -0.75 + 1.05 * atras; s.tec.brazoI.rotation.x = -0.75 + 1.05 * atras;
+        s.polea.rotation.z = -K.integ(function (q) { return q > 5 && q < 11.5 ? 3 : 0; }, t);
+        s.ledT.material = on ? s.verde : s.apag;
+        // 2) borne flojo que se quema; 3) arreglo con la luz del edificio cortada
+        var caliente = K.entre(t, 8.5, 14), abierta = K.ph(t, 14.6, 15.3) * (1 - K.ph(t, 16.6, 17.3)), nuevo = t > 15.9;
+        s.bIn[1].material = t > 8.8 && !nuevo ? s.quem : s.cobreM;
+        s.tapa.rotation.y = -1.9 * abierta;
+        s.palanca.rotation.z = PI * 0.85 * cortaE;
+        s.humo.poner(t, [-0.5, 1.7, -0.12], caliente, 0.35, 0.04);
+        s.fR.correr(s.cR, t, 0.3, true); s.fI.correr(s.cI, t, 0.3, cortaE < 0.5);
+        s.fO.correr(s.cO, t, 0.3, on); s.fM.correr(s.cM, t, 0.3, on && arranca);
+        if (t > 17.4) ipCandado(s, K, t, K.ph(t, 17.4, 18.0));
+        if (t < 8.5) {
+          K.marcar(s.manija, mal); K.rotulo('Llave en 1, sin candado', IP.hub, 'izq');
+          if (arranca) { K.marcar(s.polea, mal); K.rotulo('¡Arrancó!', [1.3, 1.0, 0.15]); K.aviso('Peligro: la máquina arrancó sola'); }
+          K.tabla([['LLAVE', '1 (PRENDIDA)', 'mal'], ['CANDADO', 'NO', 'mal'], ['MÁQUINA', arranca ? 'GIRANDO' : 'QUIETA', arranca ? 'mal' : '']]);
+        } else if (t < 13.5) {
+          K.marcar(s.tapa, mal); K.rotulo(t < 11.5 ? 'Huele a quemado' : 'La llave saltó a 0', [-0.5, 1.72, -0.14], 'izq');
+          K.tabla([['BORNE', 'FLOJO Y CALIENTE', 'mal'], ['LLAVE', t < 11.5 ? '1' : 'SALTÓ A 0', 'mal']]);
+          if (t > 11.6) K.aviso('Ascensor sin corriente');
+        } else {
+          K.marcar(s.tabE, cortaE > 0.5 && t < 15 ? 'foco' : null);
+          K.marcar(s.bIn[1], abierta > 0.5 ? (nuevo ? 'foco' : mal) : null);
+          if (t < 14.8) K.rotulo('Luz del edificio: cortada', [-1.05, 1.6, -0.2], 'izq');
+          else if (abierta > 0.5) K.rotulo(nuevo ? 'Borne nuevo y ajustado' : 'Borne quemado', [-0.55, 1.6, -0.14]);
+          if (t > 18) K.rotulo('Candado y tarjeta', [-0.6, 1.47, -0.08], 'izq');
+          K.tabla([['LUZ DEL EDIFICIO', cortaE > 0.5 ? 'CORTADA' : 'CON TENSIÓN', cortaE > 0.5 ? 'ac' : ''], ['BORNE', nuevo ? 'NUEVO' : 'QUEMADO', nuevo ? 'ok' : 'mal'], ['CANDADO', t > 18 ? 'PUESTO' : 'NO', t > 18 ? 'ok' : '']]);
+          if (t > 18) K.aviso('Llave en 0, con candado y tarjeta', false);
+        }
+      }
+    }
+  });
+
+  // =====================================================================================
+  // 7) Rescate automático: apagón, la caja de baterías se prende, la cabina baja despacio al piso 1 y abre.
+  //    Pisos 1 y 2 en y = 0 y 2.8; tablero y caja de rescate junto a la puerta del piso 2 (lado del pasillo).
+  // =====================================================================================
+  var RS = { y: [0, 2.8], top: 4.4, xp: 0.6 };
+  function rsCab(s, cy, a) {
+    s.cabR.position.y = cy;
+    s.hojasR[0].position.x = -(0.2 + 0.4 * a); s.hojasR[1].position.x = 0.2 + 0.4 * a;
+    s.hojasP[0].position.x = -(0.2 + 0.4 * a); s.hojasP[1].position.x = 0.2 + 0.4 * a;
+    s.cwR.position.y = 3.3 - cy;
+    s.sogas[0].pon([RS.xp - 0.2, RS.top, -0.2], [RS.xp - 0.2, cy + 2.3, -0.2]);
+    s.sogas[1].pon([RS.xp + 0.2, RS.top, -0.2], [RS.xp + 0.2, 3.3 - cy + 0.45, -0.2]);
+    s.polR.rotation.z = cy / 0.2;
+  }
+  function rsBase(s, K, luz) {
+    s.luces.forEach(function (l) { l[0].intensity = l[1] * (0.42 + 0.58 * luz); });
+    s.lamp.forEach(function (l) { l.material = luz > 0.5 ? s.luz : s.apag; });
+    s.luzCab.material = luz > 0.5 ? s.luz : s.apag;
+    s.bat.forEach(function (b) { b.scale.set(1, 1, 1); });
+    s.gente.visible = false; s.gente.caminar(0, 0);
+    s.fRed.visible = false; s.fBat.visible = false; s.fMot.visible = false;
+    K.marcar([s.cajaR, s.bat[0], s.bat[1], s.bat[2], s.bat[3], s.cabR, s.tabR], null);
+  }
+  function rsCarga(s, n, color) { s.barras.forEach(function (b, i) { b.material = i < n ? color : s.apag; }); }
+  V3.escena('ele-rescate', ['rescate'], {
+    fov: 38, poster: 11,
+    construir: function (K) {
+      var M = K.M, T = K.T, s = mats(K);
+      s.luces = []; K.sc.traverse(function (o) { if (o.isLight) s.luces.push([o, o.intensity]); });
+      var muro = K.mat(0xc3c8cc, { roughness: 0.95, metalness: 0, transparent: true, opacity: 0.28, depthWrite: false });
+      K.add(K.caja(3.6, 5.2, 0.05, K.mat(0x80878e, { roughness: 1, metalness: 0 }), 0.2, 2.2, -1.5));
+      s.lamp = []; s.hojasP = [];
+      RS.y.forEach(function (y0, f) {
+        K.add(K.caja(1.3, 2.8, 0.1, muro, -1.05, y0 + 1.2, 0)); K.add(K.caja(1.3, 2.8, 0.1, muro, 1.05, y0 + 1.2, 0)); K.add(K.caja(0.8, 0.6, 0.1, muro, 0, y0 + 2.3, 0));
+        K.add(K.caja(3.4, 0.2, 0.6, M.hall, 0, y0 - 0.1, 0.35));
+        K.add(K.caja(0.05, 2.05, 0.03, M.inox, -0.425, y0 + 1.025, 0.06), K.caja(0.05, 2.05, 0.03, M.inox, 0.425, y0 + 1.025, 0.06), K.caja(0.9, 0.05, 0.03, M.inox, 0, y0 + 2.05, 0.06));
+        var hp = [-1, 1].map(function (l) { return K.add(K.caja(0.4, 2.0, 0.025, M.aceroOsc, l * 0.2, y0 + 1.0, -0.08)); });
+        if (!f) s.hojasP = hp;
+        s.lamp.push(K.add(K.caja(0.5, 0.03, 0.18, s.luz, -0.9, y0 + 2.55, 0.6)));
+        var pc = K.cartel('PISO ' + (f + 1), 0.22, 0.06, '#e2dfd6', '#59636d'); pc.position.set(-0.75, y0 + 1.6, 0.052); K.add(pc);
+      });
+      // cabina con sus puertas, contrapeso, máquina arriba y cables
+      s.cabR = K.add(new T.Group()); s.cabR.position.set(0, 0, -0.85);
+      s.cabR.add(K.caja(1.2, 0.08, 1.4, M.aceroOsc, 0, -0.04, 0), K.caja(1.2, 2.2, 0.04, M.panel, 0, 1.1, -0.68), K.caja(0.04, 2.2, 1.4, M.panel, -0.58, 1.1, 0), K.caja(0.04, 2.2, 1.4, M.panel, 0.58, 1.1, 0));
+      s.cabR.add(K.caja(1.2, 0.06, 1.4, M.gris, 0, 2.23, 0), K.caja(0.2, 2.2, 0.04, M.panel, -0.5, 1.1, 0.68), K.caja(0.2, 2.2, 0.04, M.panel, 0.5, 1.1, 0.68), K.caja(0.8, 0.2, 0.04, M.panel, 0, 2.1, 0.68));
+      s.luzCab = K.caja(0.7, 0.01, 0.6, s.luz, 0, 2.195, 0); s.cabR.add(s.luzCab);
+      s.hojasR = [-1, 1].map(function (l) { return K.add(K.caja(0.4, 2.0, 0.025, M.inox, l * 0.2, 1.0, 0.72), s.cabR); });
+      s.gente = K.persona(1.62, 0xb5651d); s.gente.position.set(-0.1, 0, 0.1); s.cabR.add(s.gente);
+      s.cwR = K.add(K.grupo([K.caja(0.14, 0.9, 0.42, M.pesa, 0, 0, 0)], RS.xp + 0.2, 3.3, -0.2));
+      s.cwR.children[0].position.y = 0;
+      s.polR = K.add(K.polea(0.2, 0.1, M.acero, M.hierro)); s.polR.position.set(RS.xp, RS.top, -0.2);
+      K.add(K.cil(0.18, 0.3, M.aceroOsc, RS.xp, RS.top, -0.45, 'z', 30));
+      s.sogas = [K.add(K.cable(0.008, M.hierro)), K.add(K.cable(0.008, M.hierro))];
+      // tablero y caja de rescate en el pasillo del piso 2
+      var gabM = K.mat(0xcfcab9, { roughness: 0.7, metalness: 0.2 });
+      s.tabR = K.add(K.grupo([K.caja(0.36, 1.6, 0.16, gabM, 0, 0, 0)], 1.12, 3.6, 0.13));
+      s.ledTR = K.esfera(0.012, s.verde, 0.12, 0.6, 0.082); s.tabR.add(s.ledTR);
+      s.pantR = K.cartel('LISTO', 0.28, 0.08, '#0d1418', '#3ccf7f'); s.pantR.position.set(0, 0.45, 0.081); s.tabR.add(s.pantR);
+      var et = K.cartel('TABLERO', 0.24, 0.06, '#e8e4d6', '#59636d'); et.position.set(0, 0.7, 0.081); s.tabR.add(et);
+      s.cajaR = K.add(K.grupo([K.caja(0.36, 0.62, 0.18, K.mat(0x6d7680, { roughness: 0.6 }), 0, 0, 0)], 1.56, 3.32, 0.14));
+      var er = K.cartel('RESCATE', 0.26, 0.06, '#e8e8e8', '#1e2125'); er.position.set(0, 0.25, 0.091); s.cajaR.add(er);
+      s.bat = [0, 1, 2, 3].map(function (i) {
+        var b = K.grupo([K.caja(0.07, 0.14, 0.05, K.mat(0x23272b, { roughness: 0.5 }), 0, 0, 0), K.cil(0.008, 0.012, M.rojo, -0.018, 0.075, 0, null, 8), K.cil(0.008, 0.012, M.negro, 0.018, 0.075, 0, null, 8)], -0.12 + i * 0.08, -0.08, 0.115);
+        s.cajaR.add(b); return b;
+      });
+      s.barras = [0, 1, 2, 3].map(function (i) { var b = K.caja(0.05, 0.022, 0.006, s.apag, -0.09 + i * 0.06, 0.13, 0.092); s.cajaR.add(b); return b; });
+      s.ledR = K.esfera(0.013, s.apag, 0.14, 0.19, 0.092); s.cajaR.add(s.ledR);
+      // caminos: red → tablero; baterías → tablero; tablero → máquina
+      var neg = K.mat(0x1b1d20, { roughness: 0.7 });
+      var pRed = [[1.12, 5.0, 0.13], [1.12, 4.42, 0.13]], pBat = [[1.5, 3.64, 0.22], [1.5, 3.8, 0.22], [1.3, 3.8, 0.22]], pMot = [[1.12, 4.42, 0.08], [1.12, 4.6, 0.0], [0.95, 4.6, -0.3], [0.75, 4.42, -0.45]];
+      [pRed, pBat, pMot].forEach(function (p) { K.add(K.tubo(p, 0.01, neg)); });
+      s.cRedR = camino(pRed); s.cBat = camino(pBat.map(function (q) { return [q[0], q[1], q[2] + 0.014]; })); s.cMot = camino(pMot.map(function (q) { return [q[0], q[1] + 0.014, q[2]]; }));
+      s.fRed = cuentas(K, 5, 0xffc62b, 0.014); s.fBat = cuentas(K, 5, 0x3ccf7f, 0.014); s.fMot = cuentas(K, 6, 0xff8a2a, 0.014);
+      return s;
+    },
+    funciona: {
+      dur: 19,
+      subt: [[0, 'El rescate automático es una caja con baterías, al lado del tablero. Mientras hay luz, se mantiene cargada.'],
+        [4.5, 'Se va la luz: la cabina se queda entre dos pisos, a oscuras y con gente adentro.'],
+        [8.5, 'A los pocos segundos, las baterías se prenden solas y le dan fuerza al tablero y al motor.'],
+        [12.5, 'La cabina baja despacio hasta el piso más cercano y abre las puertas. La gente sale tranquila.']],
+      cam: [[0, [2.3, 4.1, 2.4], [1.3, 3.45, 0.1]], [3.6, [2.4, 4.0, 2.6], [1.3, 3.4, 0.1]], [4.8, [3.6, 2.1, 5.0], [0.3, 1.9, -0.3]], [8.2, [3.6, 2.1, 5.0], [0.3, 1.9, -0.3]],
+        [9.2, [2.2, 3.95, 2.3], [1.32, 3.45, 0.1]], [10.6, [2.2, 3.95, 2.3], [1.32, 3.45, 0.1]], [12.0, [3.4, 1.8, 4.6], [0.2, 1.5, -0.3]], [14.0, [1.9, 1.7, 3.6], [0.0, 1.0, 0.0]], [19, [2.0, 1.7, 3.8], [0.0, 1.0, 0.1]]],
+      anim: function (t, s, K) {
+        var apagon = t > 4.6, resc = t > 8.6;
+        rsBase(s, K, apagon ? 0 : 1);
+        var cy = K.kf(t, [[0, 0.3], [4.6, 1.3], [10.4, 1.3], [13.2, 0]]), a = K.ph(t, 13.4, 14.6);
+        rsCab(s, cy, a);
+        s.luzCab.material = !apagon ? s.luz : resc ? s.amar : s.apag;
+        s.gente.visible = a > 0.05; var sale = K.ph(t, 14.6, 17.5);
+        s.gente.position.z = 0.1 + 1.3 * sale; if (K.entre(t, 14.6, 17.5)) s.gente.caminar(t);
+        s.fRed.correr(s.cRedR, t, 0.3, !apagon); s.fBat.correr(s.cBat, t, 0.25, resc); s.fMot.correr(s.cMot, t, 0.3, K.entre(t, 10.2, 13.2));
+        s.ledTR.material = !apagon ? s.verde : resc ? s.amar : s.apag;
+        s.ledR.material = !apagon ? s.verde : resc ? (K.parpadeo(t, 1.5) ? s.amar : s.apag) : s.apag;
+        rsCarga(s, t > 13.2 ? 3 : 4, s.verde);
+        escribe(s, s.pantR, 'p', !apagon ? 'LISTO' : !resc ? '' : t < 13.2 ? 'RESCATE' : 'PISO 1', '#ffc62b');
+        K.marcar(s.cajaR, t < 4.5 && K.parpadeo(t, 1) ? 'foco' : null);
+        K.marcar(s.bat, K.entre(t, 8.6, 10.6) ? 'foco' : null);
+        if (t < 4.5) { K.rotulo('Rescate automático', [1.56, 3.66, 0.2]); K.rotulo('Baterías', [1.56, 3.24, 0.24], 'izq'); K.rotulo('Tablero', [1.12, 4.2, 0.2], 'izq'); }
+        else if (t < 8.5) K.rotulo('Cabina entre pisos', [0.6, cy + 1.6, -0.2]);
+        else if (t < 11) K.rotulo('Baterías encendidas', [1.56, 3.24, 0.24], 'izq');
+        else if (t < 13.4) K.rotulo('Baja despacio', [0.6, cy + 1.3, -0.2]);
+        else K.rotulo('Piso 1: puertas abiertas', [0.4, 1.9, 0.0]);
+        K.tabla([['LUZ DEL EDIFICIO', apagon ? 'APAGÓN' : 'NORMAL', apagon ? 'mal' : 'ok'], ['RESCATE', !apagon ? 'CARGANDO' : resc ? 'TRABAJANDO' : 'ESPERANDO', resc ? 'ac' : ''], ['CABINA', t < 13.2 ? (apagon && !K.entre(t, 10.2, 13.2) ? 'ENTRE PISOS' : 'MOVIENDO') : 'EN PISO 1', t >= 13.2 ? 'ok' : '']]);
+        if (K.entre(t, 4.7, 8.6)) K.aviso('Se fue la luz');
+        if (t > 14.6) K.aviso('Rescate listo: gente afuera', false);
+      }
+    },
+    falla: {
+      dur: 19,
+      subt: [[0, 'Falla: las baterías están viejas. Se ven hinchadas y casi no guardan carga.'],
+        [4.5, 'Se va la luz. El rescate intenta mover la cabina, pero no tiene fuerza y se queda a medio camino.'],
+        [9.5, 'La gente queda atrapada entre pisos y a oscuras, hasta que llega un técnico a sacarla.'],
+        [14, 'Arreglo: probar el rescate cortando la luz cada cierto tiempo y cambiar todas las baterías juntas cuando ya no cargan.']],
+      cam: [[0, [2.05, 3.7, 1.55], [1.5, 3.3, 0.1]], [4.2, [2.05, 3.7, 1.6], [1.5, 3.3, 0.1]], [5.4, [3.6, 2.1, 5.0], [0.3, 1.9, -0.3]], [9.2, [3.6, 2.1, 5.0], [0.3, 1.9, -0.3]],
+        [10.2, [2.9, 1.9, 3.9], [0.2, 1.7, -0.4]], [13.6, [2.9, 1.9, 3.9], [0.2, 1.7, -0.4]], [14.8, [2.05, 3.7, 1.6], [1.5, 3.3, 0.1]], [19, [2.1, 3.7, 1.7], [1.5, 3.3, 0.1]]],
+      anim: function (t, s, K) {
+        var arreglo = t >= 14, apagon = K.entre(t, 4.6, 14), resc = K.entre(t, 6.6, 14), mal = K.parpadeo(t, 2) ? 'mal' : null;
+        rsBase(s, K, apagon ? 0 : 1);
+        var nuevo = t > 15.6, hincha = nuevo ? 1 : 1.18;
+        s.bat.forEach(function (b, i) { b.scale.set(hincha, 1, hincha + (nuevo ? 0 : 0.08 * (i % 2))); });
+        var cy = K.kf(t, [[0, 1.3], [7.2, 1.3], [8.6, 0.95]]);
+        rsCab(s, cy, 0);
+        s.luzCab.material = !apagon ? s.luz : s.apag;
+        s.fRed.correr(s.cRedR, t, 0.3, !apagon); s.fBat.correr(s.cBat, t, 0.12, K.entre(t, 6.6, 8.8)); s.fMot.correr(s.cMot, t, 0.15, K.entre(t, 7.2, 8.6));
+        s.ledTR.material = !apagon ? s.verde : K.entre(t, 6.6, 8.8) ? s.amar : s.apag;
+        s.ledR.material = nuevo ? s.verde : K.parpadeo(t, 2) ? s.rojo : s.apag;
+        if (nuevo) rsCarga(s, Math.min(4, 1 + Math.floor((t - 15.6) * 2)), s.verde); else rsCarga(s, t > 8.6 && t < 14 ? 0 : 1, s.rojo);
+        escribe(s, s.pantR, 'p', !apagon ? (nuevo && t > 17 ? 'PRUEBA OK' : 'LISTO') : t > 8.6 ? 'BATERÍA' : 'RESCATE', !apagon ? '#3ccf7f' : '#ff5a3c');
+        if (t < 4.5) { K.marcar(s.bat, mal); K.rotulo('Baterías hinchadas', [1.56, 3.2, 0.26], 'izq'); K.rotulo('Carga muy baja', [1.5, 3.45, 0.24]); }
+        else if (t < 9.5) { K.marcar(s.bat, t > 8.6 ? mal : null); K.rotulo(t < 8.6 ? 'Intenta bajar…' : 'Se quedó sin fuerza', [0.6, cy + 1.6, -0.2]); }
+        else if (!arreglo) { K.marcar(s.cabR, mal); K.rotulo('Gente atrapada entre pisos', [0.5, cy + 1.3, -0.2]); }
+        else { K.marcar(s.bat, nuevo ? 'foco' : null); K.rotulo(nuevo ? 'Juego de baterías nuevo' : 'Se cambian todas', [1.56, 3.2, 0.26], 'izq'); }
+        K.tabla([['BATERÍAS', nuevo ? 'NUEVAS' : 'VIEJAS', nuevo ? 'ok' : 'mal'], ['CARGA', nuevo ? 'LLENA' : t > 8.6 && t < 14 ? 'AGOTADA' : 'MUY BAJA', nuevo ? 'ok' : 'mal'], ['CABINA', t < 14 && t > 8.6 ? 'ATRAPADA' : 'ENTRE PISOS', 'mal']].slice(0, t >= 14 ? 2 : 3));
+        if (K.entre(t, 9.6, 14)) K.aviso('Gente atrapada: no llegó al piso');
+        if (t > 17) K.aviso('Prueba de rescate: OK', false);
+      }
+    }
+  });
+
+  // =====================================================================================
+  // 8) Cable viajero: cinta plana que cuelga en U entre una caja del muro (fija) y la parte de abajo de la
+  //    cabina. La U está en el plano x = 0.8 (costado derecho de la cabina); la curva recorre la mitad que la cabina.
+  // =====================================================================================
+  var CV = { x: 0.8, ym: 3.4, zw: -0.88, zc: -0.2, L: 6.15 };
+  CV.r = (CV.zc - CV.zw) / 2;
+  // puntos de la U para una cabina con el piso en cy; devuelve también la altura de la curva
+  function cvPuntos(cy, dx) {
+    var ya = cy - 0.12, yb = (CV.ym + ya - CV.L + PI * CV.r) / 2, x = CV.x + (dx || 0), pts = [], zm = (CV.zw + CV.zc) / 2, i;
+    for (i = 0; i <= 8; i++) pts.push([x, CV.ym - 0.1 - (CV.ym - 0.1 - yb) * i / 8, CV.zw]);
+    for (i = 1; i <= 16; i++) { var a = PI * i / 16; pts.push([x, yb - Math.sin(a) * CV.r, zm - Math.cos(a) * CV.r]); }
+    for (i = 1; i <= 8; i++) pts.push([x, yb + (ya - yb) * i / 8, CV.zc]);
+    return { pts: pts, yb: yb - CV.r, ya: ya };
+  }
+  function cvBase(s, K) {
+    s.lupa.visible = false; s.lupaL.visible = false; s.chisV.visible = false; s.grietas.visible = false;
+    s.fl.forEach(function (f) { f.visible = false; });
+    s.hilos.forEach(function (h, i) { h.material = h.userData.m0 || h.material; });
+    s.focoC.material = s.luz;
+    K.marcar([s.cajaH, s.cv, s.hilos[2], s.hilos[3], s.hilos[5]], null);
+    K.marcar(s.cv.seg, null);
+  }
+  function cvCabina(s, K, cy) {
+    s.cabV.position.y = cy; s.cwV.position.y = 6.2 - cy;
+    var u = cvPuntos(cy); s.cv.poner(u.pts); s.yb = u.yb; s.ya = u.ya; s.u = u;
+    s.yRef = (u.yb + Math.max(u.ya, CV.ym)) / 2; s.yLoop = u.yb;
+    return u;
+  }
+  V3.escena('ele-cable-viajero', ['cable_viajero'], {
+    fov: 38, poster: 4,
+    construir: function (K) {
+      var M = K.M, T = K.T, s = mats(K); s.K = K;
+      // cámara: claves relativas a la altura de la U (cap. 1) o al fondo de la curva (cap. 2)
+      s.camW = [[0, [4.8, 1.6, 4.8], [0.3, 0.2, -0.4]], [4.5, [4.0, 1.3, 3.9], [0.5, 0.3, -0.4]], [8.5, [4.9, 1.5, 4.8], [0.3, 0.3, -0.4]], [12.8, [4.9, 1.5, 4.8], [0.3, 0.3, -0.4]],
+        [13.8, [3.1, 0.1, 2.9], [0.7, -1.2, -0.5]], [18, [3.2, 0.1, 3.0], [0.7, -1.2, -0.5]]];
+      s.camF = [[0, [2.4, 1.0, 2.6], [1.1, 0.45, 0.0]], [4.2, [2.4, 1.0, 2.6], [1.1, 0.45, 0.0]], [5.2, [4.4, 2.6, 4.6], [0.3, 1.9, -0.4]], [9.2, [4.4, 2.6, 4.6], [0.3, 1.9, -0.4]],
+        [10.2, [2.3, 0.6, 2.4], [0.8, 0.15, -0.5]], [13.6, [2.3, 0.6, 2.4], [0.8, 0.15, -0.5]], [14.6, [2.4, 1.0, 2.6], [1.1, 0.45, 0.0]], [19, [2.5, 1.0, 2.7], [1.1, 0.45, 0.0]]];
+      K.add(K.caja(2.2, 9.6, 0.06, M.muro, 0.1, 3.6, -1.05));
+      K.add(K.caja(2.2, 0.06, 2.4, M.losa, 0.1, -1.23, 0));
+      var r1 = K.riel(9.0, M.acero); r1.position.set(-0.68, -1.2, 0); r1.rotation.y = PI / 2; K.add(r1);
+      [0, 2.8, 5.6].forEach(function (y0, f) {
+        K.add(K.caja(2.2, 0.12, 0.6, M.hall, 0.1, y0 - 0.06, 1.05));
+        var c = K.cartel('PISO ' + (f + 1), 0.3, 0.08, '#e2dfd6', '#59636d'); c.position.set(0.95, y0 + 0.3, 0.76); K.add(c);
+      });
+      // cabina (cerrada), con su soporte para el cable abajo y una lámpara en el techo
+      var cajaM = K.mat(0x9aa3ab, { roughness: 0.6 });
+      s.cabV = K.add(new T.Group());
+      s.cabV.add(K.caja(1.2, 2.2, 1.4, M.inox, 0, 1.1, 0), K.caja(1.26, 0.08, 1.46, M.aceroOsc, 0, -0.04, 0), K.caja(1.26, 0.05, 1.46, M.aceroOsc, 0, 2.225, 0));
+      s.cabV.add(K.caja(0.8, 2.0, 0.02, M.aceroOsc, 0, 1.0, 0.71));
+      s.cabV.add(K.caja(0.28, 0.06, 0.08, M.hierro, 0.66, -0.08, CV.zc), K.caja(0.12, 0.08, 0.1, M.negro, CV.x, -0.1, CV.zc));
+      s.cabV.add(K.caja(0.08, 0.1, 0.08, cajaM, CV.x - 0.1, 1.6, CV.zc), K.cil(0.02, 1.7, M.negro, 0.65, 0.8, CV.zc, null, 8));
+      s.focoC = K.caja(0.18, 0.06, 0.08, s.luz, 0.3, 2.28, 0.55); s.cabV.add(s.focoC);
+      s.cwV = K.add(K.grupo([K.caja(0.7, 1.0, 0.14, M.pesa, 0, 0, 0)], -0.2, 6.2, -0.92));
+      s.cwV.position.x = -0.25;
+      // caja del hueco donde se fija el cable y canaleta que sube al tablero
+      s.cajaH = K.add(K.caja(0.22, 0.26, 0.12, cajaM, CV.x, CV.ym, -0.96));
+      K.add(K.caja(0.06, 4.9, 0.04, M.gris, CV.x, CV.ym + 2.58, -1.0));
+      var et = K.cartel('AL TABLERO', 0.3, 0.06, '#e2dfd6', '#59636d'); et.position.set(CV.x - 0.25, 7.6, -1.01); K.add(et);
+      // la cinta
+      s.cv = cinta(K, 32, 0.08, 0.016, K.mat(0x2b2f34, { roughness: 0.8 }), true);
+      // cuentas: luz (amarillo), botones (azul) y seguridades (verde)
+      s.fl = [cuentas(K, 8, 0xffc62b, 0.024), cuentas(K, 8, 0x4aa3ff, 0.024), cuentas(K, 8, 0x3ccf7f, 0.024)];
+      // lupa: un tramo del cable abierto, con sus hilos por dentro
+      s.lupa = K.add(new T.Group());
+      s.lupa.add(K.caja(0.66, 0.16, 0.05, K.mat(0x2b2f34, { transparent: true, opacity: 0.25, depthWrite: false }), 0, 0, 0));
+      [[0, 0.09], [0, -0.09]].forEach(function (q) { s.lupa.add(K.caja(0.7, 0.012, 0.012, M.amarillo, q[0], q[1], 0)); });
+      [-0.35, 0.35].forEach(function (x) { s.lupa.add(K.caja(0.012, 0.19, 0.012, M.amarillo, x, 0, 0)); });
+      s.hilos = [];
+      [0xd03a2c, 0x2e5f90, 0xf2b705, 0xf2b705, 0x2e7a5c, 0x8e979f].forEach(function (col, i) {
+        var y = 0.06 - i * 0.024, m = K.mat(col, { roughness: 0.5 });
+        if (i === 2 || i === 3) { var h = K.cil(0.008, 0.29, m, i === 2 ? -0.17 : 0.17, 0.012, 0, 'x', 10); h.userData.m0 = m; s.lupa.add(h); s.hilos.push(h); }
+        else { var h2 = K.cil(0.008, 0.62, m, 0, y, 0, 'x', 10); h2.userData.m0 = m; s.lupa.add(h2); s.hilos.push(h2); }
+      });
+      s.hilos[2].position.y = s.hilos[3].position.y = 0.06 - 2 * 0.024;
+      s.verdeH = K.mat(0x3ccf7f, { emissive: 0x1e6b3a, roughness: 0.4 });
+      s.lupaL = K.add(K.cable(0.004, K.matB(0xf2b705)));
+      s.chisV = K.add(K.chispas(12));
+      // grietas del forro en la curva
+      s.grietas = K.add(new T.Group());
+      for (var g = 0; g < 7; g++) s.grietas.add(K.caja(0.09, 0.006, 0.03, K.matB(0xff3b30), 0, 0, 0));
+      return s;
+    },
+    camara: function (s, c, t, dur, pos, mira) {
+      var k = c ? s.camF : s.camW;
+      kfv(s.K, t, k.map(function (x) { return [x[0], x[1]]; }), pos); kfv(s.K, t, k.map(function (x) { return [x[0], x[2]]; }), mira);
+      var ref = c ? s.yLoop : s.yRef; pos.y += ref; mira.y += ref;
+    },
+    funciona: {
+      dur: 18,
+      subt: [[0, 'El cable viajero es un cable plano que une la cabina con el tablero. Cuelga en forma de U.'],
+        [4.5, 'Una punta está fija en una caja del muro, a media altura. La otra va debajo de la cabina.'],
+        [8.5, 'Cuando la cabina sube o baja, la curva de la U la sigue, pero recorre solo la mitad.'],
+        [13, 'Por adentro lleva la luz de la cabina, los botones y las señales de seguridad.']],
+      anim: function (t, s, K) {
+        cvBase(s, K);
+        var cy = K.kf(t, [[0, 0], [1.2, 0], [5.6, 5.6], [8.4, 5.6], [11.2, 2.8], [12.6, 2.8], [15.4, 0]]);
+        var u = cvCabina(s, K, cy);
+        if (t > 12.6) [-0.03, 0, 0.03].forEach(function (dx, i) { var p = cvPuntos(cy, dx).pts, c = camino(i === 1 ? p.slice().reverse() : p); s.fl[i].correr(c, t + i * 0.3, 0.5, true); });
+        K.marcar(s.cv, t < 4.5 && K.parpadeo(t, 1) ? 'foco' : null);
+        K.marcar(s.cajaH, K.entre(t, 4.5, 8.5) ? 'foco' : null);
+        var fondo = [CV.x, u.yb + 0.02, (CV.zw + CV.zc) / 2];
+        if (t < 4.5) K.rotulo('Cable viajero', [CV.x, (u.yb + CV.ym) / 2, CV.zw]);
+        else if (t < 8.5) { K.rotulo('Punta fija en el muro', [CV.x, CV.ym, -0.9]); K.rotulo('Punta en la cabina', [CV.x, u.ya, CV.zc], 'izq'); }
+        else if (t < 13) { K.rotulo('Curva de la U', fondo); K.rotulo('Cabina', [0.6, cy + 1.2, 0.3], 'izq'); }
+        else { K.rotulo('Luz', s.fl[0].children[0]); K.rotulo('Botones', s.fl[1].children[3], 'izq'); K.rotulo('Seguridades', s.fl[2].children[6]); }
+        K.tabla([['CABINA', 'PISO ' + (Math.round(cy / 2.8) + 1) + (K.entre(cy % 2.8, 0.05, 2.75) ? ' →' : ''), ''], ['ALTURA DE LA CABINA', cy.toFixed(1) + ' m', 'ac'], ['ALTURA DE LA CURVA', u.yb.toFixed(1) + ' m', 'ac']]);
+      }
+    },
+    falla: {
+      dur: 19,
+      subt: [[0, 'Falla: de tanto doblarse en la curva, un hilo de adentro se parte. Por fuera casi no se nota.'],
+        [4.5, 'El hilo hace contacto a ratos: la luz de la cabina parpadea y el ascensor se para y luego sigue.'],
+        [9.5, 'Con los años el forro se pone tieso y se cuartea, sobre todo en la curva, donde más se dobla.'],
+        [14, 'Arreglo: con el ascensor detenido, el técnico mide los hilos y pasa la señal a un hilo de reserva. Si el forro está cuarteado, cambia el cable.']],
+      anim: function (t, s, K) {
+        cvBase(s, K);
+        var mal = K.parpadeo(t, 2) ? 'mal' : null;
+        var cy = K.kf(t, [[0, 0], [0.6, 0], [4.2, 2.8], [5.2, 2.8], [6.4, 1.9], [6.45, 1.9], [7.4, 1.9], [9.0, 0], [19, 0]]);
+        var u = cvCabina(s, K, cy), fondo = [CV.x, u.yb, (CV.zw + CV.zc) / 2];
+        var contacto = !(K.entre(t, 6.4, 7.4) || (t < 14 && K.ruido(Math.floor(t * 5)) > 0.7));
+        var reserva = t > 15.6;
+        // lupa al lado de la curva, unida con una línea
+        var vLupa = t < 9.5 || t >= 14;
+        s.lupa.visible = vLupa; s.lupaL.visible = vLupa;
+        s.lupa.position.set(CV.x + 0.75, u.yb + 0.7, 0.45); s.lupa.rotation.y = 0.5; s.lupa.scale.setScalar(1.5);
+        s.lupaL.pon([CV.x + 0.3, u.yb + 0.62, 0.2], [CV.x, u.yb + 0.03, (CV.zw + CV.zc) / 2]);
+        var gx = s.lupa.position;
+        s.hilos[2].position.x = -0.17 + (contacto && !reserva ? 0.012 : 0); s.hilos[3].position.x = 0.17 - (contacto && !reserva ? 0.012 : 0);
+        s.chisV.emitir(t, [gx.x, gx.y + 0.012, gx.z], vLupa && !reserva && K.entre(t % 1, 0.1, 0.4) && t < 14, 0.07);
+        if (reserva) { s.hilos[5].material = s.verdeH; s.hilos[2].material = s.apag; s.hilos[3].material = s.apag; }
+        s.focoC.material = contacto || reserva ? s.luz : s.apag;
+        // grietas en la curva
+        s.grietas.visible = t >= 9.5 && t < 14;
+        s.grietas.children.forEach(function (g, i) { var p = u.pts[10 + i * 2]; g.position.set(p[0] + 0.01, p[1], p[2]); g.rotation.x = -(PI * (i * 2 + 2) / 16) + PI / 2; });
+        if (t < 4.5) { K.marcar([s.hilos[2], s.hilos[3]], mal); K.rotulo('Hilo partido', [gx.x, gx.y + 0.1, gx.z]); K.rotulo('Curva: donde más se dobla', fondo, 'izq'); }
+        else if (t < 9.5) { K.marcar([s.hilos[2], s.hilos[3]], contacto ? null : 'mal'); K.rotulo(contacto ? 'Hace contacto' : 'Se abre: se para', [gx.x, gx.y + 0.1, gx.z]); K.rotulo('Luz', [0.3, cy + 2.32, 0.55], 'izq'); if (K.entre(t, 6.4, 7.4)) K.aviso('El ascensor se paró solo'); }
+        else if (t < 14) { K.marcar(s.cv.seg.slice(9, 26), mal); K.rotulo('Forro cuarteado', fondo); }
+        else { K.marcar(s.hilos[5], reserva ? 'foco' : null); K.marcar([s.hilos[2], s.hilos[3]], reserva ? null : mal); K.rotulo(reserva ? 'Hilo de reserva' : 'Medir los hilos', [gx.x, gx.y - 0.06, gx.z], 'izq'); }
+        K.tabla([['HILO', reserva ? 'CAMBIADO A RESERVA' : contacto ? 'PARTIDO (A RATOS)' : 'ABIERTO', reserva ? 'ok' : 'mal'], ['LUZ DE CABINA', contacto || reserva ? 'PRENDIDA' : 'APAGADA', contacto || reserva ? '' : 'mal'],
+          ['ASCENSOR', t >= 14 ? (t < 17.5 ? 'DETENIDO' : 'EN SERVICIO') : K.entre(t, 6.4, 7.4) ? 'SE PARÓ' : 'VIAJA', t >= 14 ? (t < 17.5 ? 'ac' : 'ok') : K.entre(t, 6.4, 7.4) ? 'mal' : '']]);
+        if (t > 17.5) K.aviso('Señal por el hilo de reserva', false);
+      }
+    }
+  });
+
+  // =====================================================================================
+  // 9) Sensores de posición: un sensor en U sobre la cabina y una placa de metal por piso junto a la guía.
+  //    Pisos en y = 0, 2.8 y 5.6; el centro del sensor queda 2.46 m sobre el piso de la cabina.
+  // =====================================================================================
+  var PS = { y: [0, 2.8, 5.6], h: 2.46, xv: -0.78 };
+  function psBase(s, K) {
+    s.placas.forEach(function (p, f) { p.position.y = PS.y[f] + PS.h; });
+    s.gente.visible = false; s.gente.caminar(0, 0); s.gente.rotation.x = 0;
+    K.marcar([s.sensor, s.placas[0], s.placas[1], s.placas[2], s.escalon], null);
+    s.escalon.visible = false;
+  }
+  // la cabina en cy: luz del sensor cuando tiene una placa adentro y cuenta de pisos
+  function psCabina(s, K, cy, cuenta) {
+    s.cabP.position.y = cy;
+    var ys = cy + PS.h, dentro = false;
+    s.placas.forEach(function (p) { if (Math.abs(p.position.y - ys) < 0.17) dentro = true; });
+    s.ledP.material = dentro ? s.verde : s.apag;
+    escribe(s, s.pantP, 'p', String(cuenta), '#ff5a3c');
+    s.ys = ys;
+    return dentro;
+  }
+  V3.escena('ele-posicion', ['posicionamiento'], {
+    fov: 36, poster: 2,
+    construir: function (K) {
+      var M = K.M, T = K.T, s = mats(K); s.K = K;
+      // cámara: en el cap. 1 sigue al sensor (claves relativas a su altura); en el cap. 2 es fija
+      s.camW = [[0, [0.2, 0.3, 0.85], [-0.72, -0.02, 0]], [3.8, [0.18, 0.28, 0.8], [-0.72, -0.02, 0]], [5.0, [-0.78, 0.5, 1.9], [-0.62, -0.25, 0]], [12.4, [-0.78, 0.5, 1.9], [-0.62, -0.25, 0]],
+        [13.8, [1.3, -1.7, 2.5], [0.1, -2.46, 0.75]], [18, [1.35, -1.7, 2.6], [0.1, -2.46, 0.75]]];
+      s.camF = [[0, [0.25, 5.55, 1.3], [-0.78, 5.22, 0]], [4.2, [0.25, 5.55, 1.3], [-0.78, 5.22, 0]], [5.2, [0.6, 3.6, 4.4], [-0.3, 3.0, 0]], [7.8, [0.6, 3.6, 4.4], [-0.3, 3.0, 0]], [8.8, [2.0, 3.25, 1.6], [0.2, 2.8, 0.75]],
+        [9.6, [2.0, 3.25, 1.6], [0.2, 2.8, 0.75]], [13.6, [2.05, 3.3, 1.75], [0.15, 2.85, 0.75]], [14.6, [0.25, 5.55, 1.3], [-0.78, 5.2, 0]], [16.8, [0.25, 5.55, 1.3], [-0.78, 5.2, 0]],
+        [17.6, [2.0, 3.25, 1.6], [0.2, 2.8, 0.75]], [19, [2.05, 3.25, 1.7], [0.2, 2.8, 0.75]]];
+      K.add(K.caja(2.4, 9.6, 0.06, M.muro, 0.0, 3.6, -1.0));
+      K.add(K.caja(0.07, 9.6, 0.016, M.acero, -0.95, 3.6, 0)); K.add(K.caja(0.016, 9.6, 0.09, M.acero, -0.99, 3.6, 0));
+      s.placas = PS.y.map(function (y0, f) {
+        K.add(K.caja(1.7, 0.14, 0.6, M.hall, 0.4, y0 - 0.07, 1.06));
+        K.add(K.caja(0.9, 0.025, 0.04, M.amarillo, 0.0, y0 - 0.0125, 0.77));
+        var c = K.cartel('PISO ' + (f + 1), 0.3, 0.08, '#e2dfd6', '#59636d'); c.position.set(0.85, y0 + 0.35, 0.76); K.add(c);
+        K.add(K.caja(0.1, 0.04, 0.04, M.hierro, -0.9, y0 + PS.h, 0));
+        return K.add(K.grupo([K.caja(0.16, 0.26, 0.006, M.cromo, 0, 0, 0), K.cil(0.012, 0.02, M.hierro, -0.05, 0.08, 0, 'z', 10), K.cil(0.012, 0.02, M.hierro, -0.05, -0.08, 0, 'z', 10)], PS.xv, y0 + PS.h, 0));
+      });
+      // cabina con el sensor en U sobre el techo, al costado de la guía
+      s.cabP = K.add(new T.Group());
+      s.cabP.add(K.caja(1.2, 2.2, 1.4, M.inox, 0, 1.1, 0), K.caja(1.26, 0.08, 1.46, M.aceroOsc, 0, -0.04, 0), K.caja(1.26, 0.05, 1.46, M.aceroOsc, 0, 2.225, 0));
+      s.cabP.add(K.caja(0.8, 2.0, 0.02, M.aceroOsc, 0, 1.0, 0.71), K.caja(0.9, 0.025, 0.04, M.amarillo, 0, -0.0125, 0.72));
+      s.pantP = K.cartel('1', 0.16, 0.1, '#10161b', '#ff5a3c'); s.pantP.position.set(0, 2.12, 0.72); s.cabP.add(s.pantP);
+      s.sensor = K.grupo([K.caja(0.1, 0.05, 0.14, M.hierro, 0.04, -0.17, 0), K.caja(0.03, 0.16, 0.03, M.hierro, 0.04, -0.08, 0),
+        K.caja(0.04, 0.09, 0.11, M.negro, 0, 0, 0), K.caja(0.13, 0.09, 0.016, M.negro, -0.07, 0, 0.04), K.caja(0.13, 0.09, 0.016, M.negro, -0.07, 0, -0.04)], -0.62, PS.h, 0);
+      s.cabP.add(s.sensor);
+      s.ledP = K.esfera(0.014, s.apag, -0.62, PS.h + 0.055, 0); s.cabP.add(s.ledP);
+      s.ondas = ondas(K, 3, 0x3ccf7f);
+      // escalón marcado (falla) y una persona en el pasillo
+      s.escalon = K.add(K.caja(0.9, 0.12, 0.012, K.matB(0xff3b30, { transparent: true, opacity: 0.7 }), 0, 0, 0.752));
+      s.gente = K.add(K.persona(1.6, 0x7f95a8));
+      return s;
+    },
+    camara: function (s, c, t, dur, pos, mira) {
+      var k = c ? s.camF : s.camW, ref = c ? 0 : s.ys;
+      kfv(s.K, t, k.map(function (x) { return [x[0], x[1]]; }), pos); kfv(s.K, t, k.map(function (x) { return [x[0], x[2]]; }), mira);
+      pos.y += ref; mira.y += ref;
+    },
+    funciona: {
+      dur: 18,
+      subt: [[0, 'En cada piso del hueco hay una placa de metal fija. Arriba de la cabina va un sensor en forma de U.'],
+        [4.5, 'Cuando la cabina viaja, la placa pasa por la ranura del sensor sin tocarlo, y se prende su luz.'],
+        [8.5, 'Cada placa que pasa es un piso más: así el tablero sabe dónde está la cabina.'],
+        [13, 'Al llegar, frena hasta que la placa queda al centro del sensor. La cabina para al ras del piso.']],
+      anim: function (t, s, K) {
+        psBase(s, K);
+        var cy = 5.6 * K.ph(t, 4.2, 13.8), cuenta = cy < 2.8 - 0.17 ? 1 : cy < 5.6 - 0.17 ? 2 : 3;
+        var dentro = psCabina(s, K, cy, cuenta);
+        s.ondas.poner(t, [-0.62, cy + PS.h + 0.06, 0.07], dentro && K.entre(t, 4.2, 13.8), 0.05);
+        K.marcar(s.sensor, t < 4.5 && K.parpadeo(t, 1) ? 'foco' : null);
+        K.marcar(s.placas, t < 4.5 ? null : dentro ? 'foco' : null);
+        if (t < 4.5) { K.rotulo('Sensor en U', [-0.62, cy + PS.h + 0.06, 0], 'izq'); K.rotulo('Placa del piso 1', [PS.xv, PS.h - 0.1, 0]); }
+        else if (t < 13) { K.rotulo(dentro ? 'Pasa una placa: luz' : 'Sensor', [-0.62, cy + PS.h + 0.06, 0], 'izq'); K.rotulo('Pantalla: ' + cuenta, [0, cy + 2.12, 0.73]); }
+        else { K.rotulo('Al ras del piso', [0.3, cy, 0.76]); }
+        K.tabla([['SENSOR', dentro ? 'VE UNA PLACA' : 'LIBRE', dentro ? 'ok' : ''], ['PISO CONTADO', String(cuenta), 'ac'], ['CABINA', t < 4.2 ? 'QUIETA EN PISO 1' : t < 13.8 ? 'SUBIENDO' : 'AL RAS EN PISO 3', t >= 13.8 ? 'ok' : '']]);
+      }
+    },
+    falla: {
+      dur: 19,
+      subt: [[0, 'Falla: la placa del piso 2 se aflojó y se resbaló unos centímetros hacia abajo.'],
+        [4.5, 'La cabina para donde está la placa, no donde está el piso: queda un escalón.'],
+        [9.5, 'Es peligroso: la gente se tropieza al entrar o salir. Siempre pasa en ese mismo piso.'],
+        [14, 'Arreglo: con el ascensor detenido, el técnico pone la placa en su sitio, la ajusta bien y prueba que pare al ras.']],
+      anim: function (t, s, K) {
+        psBase(s, K);
+        var mal = K.parpadeo(t, 2) ? 'mal' : null, baja = 0.12 * K.ph(t, 1.2, 2.6) * (1 - K.ph(t, 15.2, 16.4));
+        s.placas[1].position.y = PS.y[1] + PS.h - baja;
+        var cy = K.kf(t, [[0, 0], [5.0, 0], [8.6, PS.y[1] - 0.12], [17.0, PS.y[1] - 0.12], [17.8, PS.y[1]]]);
+        psCabina(s, K, cy, cy > 2.6 ? 2 : 1);
+        var paso = (PS.y[1] - cy);
+        s.escalon.visible = paso > 0.02 && t > 8.6; s.escalon.position.y = cy + paso / 2; s.escalon.scale.y = Math.max(0.01, paso / 0.12);
+        // la persona camina hacia la cabina y se tropieza con el escalón
+        if (K.entre(t, 9.5, 14)) {
+          s.gente.visible = true; s.gente.rotation.y = PI;
+          var z = K.kf(t, [[9.5, 1.3], [11.2, 0.92]]); s.gente.position.set(-0.22, PS.y[1], z);
+          if (t < 11.2) s.gente.caminar(t);
+          var tropieza = K.ph(t, 11.2, 11.6) * (1 - K.ph(t, 12.6, 13.2));
+          s.gente.rotation.x = -0.32 * tropieza; s.gente.brazoD.rotation.x = -1.2 * tropieza; s.gente.brazoI.rotation.x = -1.2 * tropieza;
+        }
+        if (t < 4.5) { K.marcar(s.placas[1], mal); K.rotulo('Placa floja: se resbaló', [PS.xv, PS.y[1] + PS.h - baja + 0.14, 0]); K.tabla([['PLACA PISO 2', baja > 0.06 ? '12 cm MÁS ABAJO' : 'SE AFLOJA', 'mal']]); }
+        else if (t < 9.5) {
+          K.marcar(s.placas[1], mal);
+          if (t > 8.6) { K.marcar(s.escalon, mal); K.rotulo('Escalón de 12 cm', [0.3, cy + paso / 2, 0.77]); K.aviso('Paró desnivelada'); }
+          K.tabla([['PLACA PISO 2', 'CORRIDA', 'mal'], ['CABINA', t > 8.6 ? '12 cm ABAJO' : 'SUBIENDO', t > 8.6 ? 'mal' : '']]);
+        } else if (t < 14) {
+          K.marcar(s.escalon, mal); K.rotulo('Escalón', [0.3, cy + paso / 2, 0.77]);
+          if (t > 11.2) K.aviso('¡Se tropieza!');
+          K.tabla([['ESCALÓN', '12 cm', 'mal'], ['PISO', 'SIEMPRE EL 2', 'mal']]);
+        } else {
+          var lista = t > 16.4;
+          K.marcar(s.placas[1], lista ? 'foco' : mal);
+          if (t < 17) K.rotulo(lista ? 'Placa en su sitio y ajustada' : 'Se sube la placa', [PS.xv, PS.y[1] + PS.h + 0.14, 0]);
+          else K.rotulo(paso < 0.01 ? 'Al ras: sin escalón' : 'Nivela…', [0.3, cy, 0.77]);
+          K.tabla([['ASCENSOR', t < 17 ? 'DETENIDO' : 'PRUEBA', 'ac'], ['PLACA PISO 2', lista ? 'EN SU SITIO' : 'CORRIDA', lista ? 'ok' : 'mal'], ['ESCALÓN', paso < 0.01 ? 'NO HAY' : (paso * 100).toFixed(0) + ' cm', paso < 0.01 ? 'ok' : 'mal']]);
+          if (t > 17.9) K.aviso('Para al ras otra vez', false);
+        }
+      }
+    }
+  });
 })();

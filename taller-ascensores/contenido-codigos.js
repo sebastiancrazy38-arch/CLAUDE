@@ -3,6 +3,176 @@
    Generado con unir-codigos.py a partir de la investigación verificada. Ante la duda, manda el manual del equipo. */
 ASC.equiposFalla = [
  {
+  "id": "mitsu_elenessa",
+  "familia": "asiaticos",
+  "marca": "Mitsubishi",
+  "fabricante": "Mitsubishi",
+  "nombre": "Mitsubishi ELENESSA (control VFGL/VFGLC, HMI con tarjeta LHH-32XA)",
+  "tipo": "control",
+  "dondeVer": "En la botonera de piso donde está el HMI (tarjeta LHH-32XA) hay 3 displays y 4 selectores giratorios. Normal: SET0=8, SET1=0, MON0=0, MON1=8. Para ver errores: MON1=1 (estado actual) o MON1=5 (estado cuando ocurrió la falla), y gira MON0 de 0 a E. El display muestra E + posición de MON0 + error (ej. ED1). Si hay varios, se alternan cada 2 s. Al terminar, vuelve los selectores a la posición normal.",
+  "historial": "MON1=5 muestra la condición guardada cuando ocurrió la falla. No encontramos cómo borrar ni cuántas fallas guarda.",
+  "conexion": {
+   "posible": false,
+   "puerto": "No hay puerto público documentado.",
+   "protocolo": "Propietario de Mitsubishi.",
+   "ajustes": "No publicados.",
+   "registroFalla": "Solo por selectores MON0/MON1 en el HMI.",
+   "software": "Herramienta de servicio propietaria de Mitsubishi (no pública).",
+   "notas": "El documento leído es una guía de diagnóstico (K42524400, © Inventio AG 2017) guardada como 'Elenessa vfgl errors'.",
+   "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF"
+  },
+  "fuentes": [
+   "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF"
+  ],
+  "verificado": true
+ },
+ {
+  "id": "mitsu_p1",
+  "familia": "asiaticos",
+  "marca": "Mitsubishi",
+  "fabricante": "Mitsubishi",
+  "nombre": "Mitsubishi tarjeta P1 (GPS-II, GPS-III, HOPE, VFEL/VFGH)",
+  "tipo": "control",
+  "dondeVer": "Display de 7 segmentos en la tarjeta P1 del tablero. En GPS-II: gira el potenciómetro MON a 0. En GPS-III: MON1=0 y MON0=0 para el código principal; para subcódigos MON1=1 y gira MON0 de 0 a F. Anota el código ANTES de cortar la energía (se puede borrar).",
+  "historial": "Según guías de terceros, después de dos paradas de emergencia el historial puede perderse. No confirmado en manual oficial.",
+  "conexion": {
+   "posible": false,
+   "puerto": "No documentado públicamente.",
+   "protocolo": "Propietario de Mitsubishi.",
+   "ajustes": "No publicados.",
+   "registroFalla": "Selectores MON en la P1.",
+   "software": "Herramienta de servicio propietaria.",
+   "notas": "Lista E0-EF de webs de repuestos (no oficial). En LED de la P1, #29 indica circuito de seguridad.",
+   "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://pdfcoffee.com/as-21-01-009-mitshubishi-gpsiii-diagnostic-guide-pdf-free.html"
+  },
+  "fuentes": [
+   "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html",
+   "https://www.potensielevator.com/mitsubishi-elevator-erro-code.html",
+   "https://pdfcoffee.com/as-21-01-009-mitshubishi-gpsiii-diagnostic-guide-pdf-free.html",
+   "https://liftengineering.wordpress.com/2010/03/01/elevator-fault-findings-mitsubishi-gps-ii-vfdl/"
+  ],
+  "verificado": true
+ },
+ {
+  "id": "hyundai_stvf5",
+  "familia": "asiaticos",
+  "marca": "Hyundai",
+  "fabricante": "Hyundai",
+  "nombre": "Hyundai STVF5 / SSVF5 (MRL) / ST5GL (gearless) - tarjeta M33, variador HIVD900",
+  "tipo": "control",
+  "dondeVer": "Los códigos F11-F75 se ven en el indicador de la tarjeta M33 / tablero y con la consola HHT (Hand Held Terminal). Con el HHT también se leen datos de memoria (direcciones como 0100, 0103, 0481) que el manual usa para revisar señales.",
+  "historial": "Se consulta con el HHT. El manual muestra direcciones de datos para revisar señales, no un historial completo.",
+  "conexion": {
+   "posible": true,
+   "puerto": "Conector para HHT en el tablero.",
+   "protocolo": "Propietario de Hyundai.",
+   "ajustes": "No publicados.",
+   "registroFalla": "Con HHT; el manual da direcciones de datos para revisar cada señal (ej. 0103 = BKOP freno abierto).",
+   "software": "HHT de Hyundai (consola de mano).",
+   "notas": "Manual de entrenamiento en indonesio de Hyundai Elevator Co.",
+   "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF"
+  },
+  "fuentes": [
+   "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF"
+  ],
+  "verificado": true
+ },
+ {
+  "id": "hyundai_wbvf",
+  "familia": "asiaticos",
+  "marca": "Hyundai",
+  "fabricante": "Hyundai",
+  "nombre": "Hyundai WBVF",
+  "tipo": "control",
+  "dondeVer": "Con la consola HHT: menú de fallas / Fault Analysis y menú INVERTER > ERROR. Códigos numéricos (001-144 según versión) con nombre ER_xxx. Rangos: 1-20 seguridad, 41-50 freno, 51-70 límites y sensores de piso; 111-130 fallas menores.",
+  "historial": "Historial en el HHT (con 'disorder codes' que ayudan a ubicar dónde se abrió la seguridad).",
+  "conexion": {
+   "posible": true,
+   "puerto": "Conector HHT.",
+   "protocolo": "Propietario de Hyundai.",
+   "ajustes": "No publicados.",
+   "registroFalla": "Menú de fallas del HHT.",
+   "software": "HHT de Hyundai.",
+   "notas": "Lista leída solo en resúmenes de búsqueda (scribd bloqueado). La numeración cambia entre versiones del manual.",
+   "fuente": "https://www.scribd.com/document/888210964/Wbvf-Trouble-Shooting-Manual"
+  },
+  "fuentes": [
+   "https://www.scribd.com/document/888210964/Wbvf-Trouble-Shooting-Manual",
+   "https://pdfcoffee.com/wbvf-series-elevator-manual-5-pdf-free.html"
+  ],
+  "verificado": true
+ },
+ {
+  "id": "sigma_lg_igbt",
+  "familia": "asiaticos",
+  "marca": "Sigma",
+  "fabricante": "Sigma",
+  "nombre": "LG / Sigma IGBT (LGP / MGP) - Trouble Code Table (TCD)",
+  "tipo": "control",
+  "dondeVer": "En el anunciador (display de 7 segmentos) de la tarjeta principal. Normal: UP/dn, piso, L/H. Con falla parpadea 'Er' y se ve 'Er' + número de 2 cifras + '-H' (ej. Er23-H). La tabla TCD agrupa por rango A1, A2, B1, B2, C1, C2, D1, E1.",
+  "historial": "La tabla tiene columnas HOLD: algunas fallas quedan guardadas. Funciones de servicio con teclas MODE/SET/RESET/INC/DEC (ej. MODE-3 marcha lenta desde cuarto de máquinas, MODE-11 medición de pisos).",
+  "conexion": {
+   "posible": false,
+   "puerto": "Teclas y display en la tarjeta (anunciador).",
+   "protocolo": "No aplica.",
+   "ajustes": "No aplica.",
+   "registroFalla": "Dirección de memoria TCD 5A04 (según tabla).",
+   "software": "No requiere; se lee en el anunciador.",
+   "notas": "Manual escaneado. Advierte 530 V DC en el variador; esperar más de 15 minutos tras cortar.",
+   "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf"
+  },
+  "fuentes": [
+   "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf"
+  ],
+  "verificado": true
+ },
+ {
+  "id": "sigma_si210",
+  "familia": "asiaticos",
+  "marca": "Sigma",
+  "fabricante": "Sigma",
+  "nombre": "Sigma / LG-Otis Di1 (Si210)",
+  "tipo": "control",
+  "dondeVer": "En el display de la tarjeta: E + código TCD de 3 cifras (1-255), ej. E031. Columnas 6-7 indican la condición de operación.",
+  "historial": "No encontramos el método público para ver historial.",
+  "conexion": {
+   "posible": false,
+   "puerto": "No documentado.",
+   "protocolo": "Propietario.",
+   "ajustes": "No publicados.",
+   "notas": "Solo resúmenes de búsqueda de un extracto en pdfcoffee (bloqueado). No verificado.",
+   "fuente": "https://pdfcoffee.com/otis-sigma-si210pdf-pdf-free.html"
+  },
+  "fuentes": [
+   "https://pdfcoffee.com/otis-sigma-si210pdf-pdf-free.html",
+   "https://www.vatortrader.com/forums/ubbthreads.php?ubb=showflat&Number=15308"
+  ],
+  "verificado": true
+ },
+ {
+  "id": "toshiba",
+  "familia": "asiaticos",
+  "marca": "Toshiba",
+  "fabricante": "Toshiba",
+  "nombre": "Toshiba (CV150 / CV180 / CV190 y otros)",
+  "tipo": "generico",
+  "dondeVer": "No encontramos lista pública de códigos. En sitio: mira el display de 7 segmentos o LEDs de la tarjeta principal del tablero y anota lo que sale. Toshiba usa herramienta de servicio propia (se venden 'CV150 test tool'). Pide la tabla al representante de Toshiba.",
+  "historial": "No documentado públicamente.",
+  "conexion": {
+   "posible": false,
+   "puerto": "Herramienta de servicio propietaria.",
+   "protocolo": "Propietario.",
+   "ajustes": "No publicados.",
+   "software": "Service tool de Toshiba (no público).",
+   "notas": "Las listas 'Toshiba error codes' en internet son de copiadoras o variadores Toshiba, no de ascensores.",
+   "fuente": "https://hselevators.en.made-in-china.com/product/JFHaRhulbOci/China-Toshiba-Elevator-Service-Tool-CV150-Test-Tool.html"
+  },
+  "fuentes": [
+   "https://elevation.fandom.com/wiki/List_of_elevator_controllers"
+  ],
+  "verificado": true
+ },
+ {
   "id": "as380",
   "familia": "chinos",
   "marca": "STEP",
@@ -435,6 +605,214 @@ ASC.equiposFalla = [
    "https://pdfcoffee.com/kone-kce-5-pdf-free.html"
   ],
   "verificado": false
+ },
+ {
+  "id": "arkel_arl300",
+  "familia": "modernizacion",
+  "marca": "Arkel",
+  "fabricante": "Arkel",
+  "nombre": "Control ARL-300 (trabaja con el variador Arkel ADrive)",
+  "tipo": "control",
+  "dondeVer": "Mira la pantalla de la tarjeta ARL-300 dentro del tablero. Las fallas salen con la letra H y un número, de H1 a H36. Si sale H18, la falla real está en el variador (ADrive u otro): mira también la pantalla del variador.",
+  "historial": "En el menú de parámetros de la ARL-300 hay una lista de fallas ('fault list'). Algunas fallas quedan fijas y bloquean el ascensor (H25, H27, H28, H35). Esas solo se quitan borrando la lista de fallas desde el menú (parámetro 'erase fault'), después de arreglar la causa.",
+  "conexion": {
+   "posible": false,
+   "protocolo": "No publicado",
+   "ajustes": "No publicados",
+   "registroFalla": "Lista de fallas ('fault list') en el menú de parámetros de la ARL-300",
+   "notas": "El documento de errores de Arkel no explica cómo conectar una laptop. Lee los códigos en la pantalla de la tarjeta. Según la página de Arkel, el control más nuevo ARL-700 se comunica con el ADrive por una línea RS485 y guarda hasta 100 fallas, pero no encontré el protocolo ni el software.",
+   "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf"
+  },
+  "fuentes": [
+   "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+   "https://www.arkel.com.tr/en/products/asansor-kumanda-kartlari/arl-700-en"
+  ],
+  "verificado": true
+ },
+ {
+  "id": "tk_tci_tcm",
+  "familia": "modernizacion",
+  "marca": "TK Elevator",
+  "fabricante": "TK Elevator",
+  "nombre": "Maniobras TCI y TCM (tarjetas CPU MC, MC1, MC2) con la Unidad de Diagnóstico I",
+  "tipo": "control",
+  "dondeVer": "Enchufa la Unidad de Diagnóstico I (herramienta de mano de Thyssen) en la tarjeta CPU. Gira la rueda hasta la función 01 00 y aprieta el botón Start/Stop: en el display de 7 segmentos sale el último error, con 4 cifras (por ejemplo 62 00). Cada vez que aprietas el botón sale el error anterior. Para salir, gira la rueda un paso y aprieta el botón más de 2 segundos. Un LED en la tarjeta MZ o MZ1 avisa que hay errores guardados.",
+  "historial": "La CPU guarda una pila de errores ('error stack'). Se lee con la función 01 00. Con la función 14 00 puedes guardar una marca (sale como 0F XX) para saber qué errores salieron después de tu visita. La pila se borra con el aprendizaje del hueco (shaft teach-in): no lo hagas sin saber, porque borras el historial.",
+  "conexion": {
+   "posible": false,
+   "puerto": "Enchufe de la Unidad de Diagnóstico I en la tarjeta CPU (también se enchufa en el control de puertas y en el pesacargas LMS1)",
+   "protocolo": "Propio de Thyssen, no publicado",
+   "ajustes": "No publicados",
+   "registroFalla": "Pila de errores, función 01 00 de la Unidad de Diagnóstico I",
+   "software": "Unidad de Diagnóstico I (herramienta propia de Thyssen, no es un programa de PC)",
+   "notas": "El manual solo explica la Unidad de Diagnóstico I. No habla de conectar una laptop. Las fallas del variador CPI se guardan también en el propio variador y se leen en su panel de parámetros.",
+   "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf"
+  },
+  "fuentes": [
+   "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf"
+  ],
+  "verificado": true
+ },
+ {
+  "id": "fermator_vvvf4",
+  "familia": "modernizacion",
+  "marca": "Fermator",
+  "fabricante": "Fermator",
+  "nombre": "Operador de puertas VVVF-4+ (con batería para apertura de emergencia)",
+  "tipo": "puertas",
+  "dondeVer": "No tiene display con números. Mira los LEDs del módulo, sobre el techo de la cabina: ON (estado y batería), fotocélula, obstrucción, puerta abierta y puerta cerrada.",
+  "historial": "El manual no describe un historial de fallas que se pueda leer con los LEDs.",
+  "conexion": {
+   "posible": false,
+   "puerto": "Puerto serie con conector WAGO, hecho para la consola de programación de Fermator",
+   "protocolo": "Propio de Fermator, no publicado",
+   "ajustes": "No publicados",
+   "software": "Consola de programación de Fermator (herramienta de mano con pantalla)",
+   "notas": "Según el manual de la herramienta de Fermator, la consola muestra los parámetros, detecta errores y muestra las señales que llegan del control del ascensor. Sirve para VF3, VF4 y VF4+. Unos apuntes de reparación mencionan una interfaz PC antigua con un programa para Windows 95/98. No encontré protocolo abierto para una laptop común.",
+   "fuente": "https://www.donati.it/sites/default/files/commerce_product/product/attachment/JX16245.pdf"
+  },
+  "fuentes": [
+   "https://pdfcoffee.com/download/fermator-door-operator-vvvf4-en-4-pdf-free.html",
+   "https://www.donati.it/sites/default/files/commerce_product/product/attachment/JX16245.pdf",
+   "https://www.scribd.com/document/465516309/VVVF-repairing-tips-fermator-door"
+  ],
+  "verificado": true
+ },
+ {
+  "id": "fermator_vf5",
+  "familia": "modernizacion",
+  "marca": "Fermator",
+  "fabricante": "Fermator",
+  "nombre": "Operador de puertas VF5 / VF5+ (VVVF5)",
+  "tipo": "puertas",
+  "dondeVer": "Mira el LED STATUS del módulo: verde parpadeando quiere decir que todo está bien; rojo quiere decir que hay una alarma. Los otros LEDs (abierto, cerrado, fotocélula, obstrucción, cortina, temperatura) te dicen qué está pasando.",
+  "historial": "No encontré cómo ver un historial de fallas sin la herramienta de Fermator.",
+  "conexion": {
+   "posible": false,
+   "puerto": "Conector RJ-11 (tipo teléfono) marcado SERIAL PORT, hecho para la herramienta de programación de Fermator",
+   "protocolo": "Propio de Fermator, no publicado",
+   "ajustes": "No publicados",
+   "software": "Herramienta de programación de Fermator",
+   "notas": "En el VF5 y VF5+ la herramienta de Fermator se conecta por el conector RJ-11 SERIAL PORT, distinto del conector WAGO del VF4+. Con ella se ven los parámetros, los errores y las señales del control. No encontré protocolo abierto para una laptop común.",
+   "fuente": "https://www.donati.it/sites/default/files/commerce_product/product/attachment/JX16245.pdf"
+  },
+  "fuentes": [
+   "https://pdfcoffee.com/manual-vf5-es-5-pdf-free.html",
+   "https://www.donati.it/sites/default/files/commerce_product/product/attachment/JX16245.pdf"
+  ],
+  "verificado": true
+ },
+ {
+  "id": "arkel_adrive",
+  "familia": "modernizacion",
+  "marca": "Arkel",
+  "fabricante": "Arkel",
+  "nombre": "Variador ADrive (VVVF, tamaños B y D)",
+  "tipo": "variador",
+  "dondeVer": "Mira la pantalla (teclado) del ADrive en el tablero. Las fallas se llaman TRIP y salen con número y nombre (por ejemplo 04 OVER CURRENT). Si el control ARL-300 muestra H18, mira aquí la falla real.",
+  "historial": "El manual tiene una lista de trips; no encontré el detalle de cómo se ve el historial.",
+  "conexion": {
+   "posible": false,
+   "protocolo": "No publicado",
+   "ajustes": "No publicados",
+   "notas": "No encontré cómo conectar una laptop al ADrive. Arkel dice que el control ARL-700 habla con el ADrive por RS485, sin publicar el protocolo.",
+   "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+  },
+  "fuentes": [
+   "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158",
+   "https://www.manualslib.com/manual/1343947/Arkel-Adrive-Size-B.html"
+  ],
+  "verificado": true
+ },
+ {
+  "id": "arkel_arcode",
+  "familia": "modernizacion",
+  "marca": "Arkel",
+  "fabricante": "Arkel",
+  "nombre": "ARCODE (control y variador en un solo equipo)",
+  "tipo": "control",
+  "dondeVer": "Mira la pantalla del ARCODE. Las fallas salen como Er y un número (Er01 a Er62). Algunas son permanentes y se borran en el menú System Tools con 'Clear permanent error', después de arreglar la causa.",
+  "historial": "Hay fallas permanentes que bloquean el ascensor hasta borrarlas en System Tools. También se ven en el programa Arem de Arkel.",
+  "conexion": {
+   "posible": false,
+   "protocolo": "No publicado",
+   "ajustes": "No publicados",
+   "software": "Arem (programa de Arkel), mencionado en la lista de errores",
+   "notas": "La lista de errores menciona la pantalla System Tools del programa Arem, pero no encontré cómo se conecta ni su protocolo. Ojo: Er24 y Er25 cambian de significado según la versión del documento (V11 vs V2.0).",
+   "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+  },
+  "fuentes": [
+   "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html",
+   "https://pdfcoffee.com/arcode-error-descriptions-v11en-pdf-free.html",
+   "https://www.manualslib.com/manual/1324357/Arkel-Arcode.html?page=62"
+  ],
+  "verificado": true
+ },
+ {
+  "id": "fermator_vf7",
+  "familia": "modernizacion",
+  "marca": "Fermator",
+  "fabricante": "Fermator",
+  "nombre": "Operador de puertas VF7 (módulo electrónico con relés)",
+  "tipo": "puertas",
+  "dondeVer": "Con la pantalla/menú del VF7 entra al menú de alarmas (Alarms Menu): muestra la alarma activa y las últimas 10. La mayoría se borra con el botón OK.",
+  "historial": "Alarms Menu: últimas 10 alarmas y la alarma activa. También hay contadores de cada alarma.",
+  "conexion": {
+   "posible": false,
+   "protocolo": "No publicado",
+   "registroFalla": "Alarms Menu (últimas 10)",
+   "notas": "No encontré conexión a laptop.",
+   "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+  },
+  "fuentes": [
+   "https://liftformat.ru/f/fermator_vf7.pdf"
+  ],
+  "verificado": true
+ },
+ {
+  "id": "tk_cmc4",
+  "familia": "modernizacion",
+  "marca": "TK Elevator",
+  "fabricante": "TK Elevator",
+  "nombre": "Maniobra CMC4 / CMC4+ (Thyssen España)",
+  "tipo": "control",
+  "dondeVer": "En la tarjeta de control: el display muestra la avería (Avería 1 a 9). En modo pila de fallas, con el pulsador S2 se ve el código de la última falla en hexadecimal (2 cifras) y con los pulsadores se recorren las anteriores.",
+  "historial": "La pila de fallas guarda hasta 50 fallas, con número de orden, piso, dirección y si estaba parado o en marcha.",
+  "conexion": {
+   "posible": false,
+   "protocolo": "No publicado",
+   "registroFalla": "Pila de 50 fallas en la tarjeta",
+   "software": "Herramientas de diagnóstico de TK (CMC4 DiagTools); no encontré detalles públicos",
+   "notas": "Hay dos numeraciones: Avería 1-9 (tipo de falla, bloqueante o no) y la lista decimal/hexadecimal de la pila (anexo del manual de puesta en marcha). No las mezcles.",
+   "fuente": "https://pdfcoffee.com/142-operation-manualcmc4plused3-pdf-free.html"
+  },
+  "fuentes": [
+   "https://pdfcoffee.com/142-operation-manualcmc4plused3-pdf-free.html",
+   "https://pdfcoffee.com/cmc4commisioningoct14-1-4-pdf-free.html",
+   "https://pdfcoffee.com/manual-de-funcionamiento-cmc4-plus-2-pdf-free.html"
+  ],
+  "verificado": true
+ },
+ {
+  "id": "movilift_br200",
+  "familia": "modernizacion",
+  "marca": "MoviLift",
+  "fabricante": "MoviLift",
+  "nombre": "Tarjetas BR200 / BR400 / BR50 y operador DOORINA",
+  "tipo": "control",
+  "dondeVer": "No encontré la lista de errores pública. La BR200 se programa y diagnostica con su teclado de programación: lee ahí el mensaje y búscalo en el manual del control (se descarga en movilift.com, sección Documentación).",
+  "historial": "No encontrado en fuentes públicas.",
+  "conexion": {
+   "posible": false,
+   "protocolo": "No publicado",
+   "notas": "La web de MoviLift dice que la BR200 trae teclado de programación y actualización por USB. No encontré protocolo para laptop.",
+   "fuente": "https://www.movilift.com/electronics/boards/motherboards/br200/"
+  },
+  "fuentes": [
+   "https://www.movilift.com/electronics/boards/motherboards/br200/",
+   "https://www.movilift.com/es/documentacion/"
+  ],
+  "verificado": true
  },
  {
   "id": "nice3000new",
@@ -961,6 +1339,3059 @@ ASC.equiposFalla = [
  }
 ];
 ASC.codigos = [
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E01",
+  "nombre": "Variador muy caliente (más de 90°)",
+  "simple": "El variador (convertidor de frecuencia) pasó los 90 grados.",
+  "causas": [
+   "Ventilador del variador parado",
+   "Cuarto o tablero sin ventilación",
+   "Disipador sucio",
+   "Mucho uso seguido o sobrecarga"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa que el ventilador del variador gire y limpia el polvo del disipador.",
+   "Mejora la ventilación del tablero.",
+   "Deja enfriar y prueba de nuevo."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E21",
+  "nombre": "Falla del contactor 5",
+  "simple": "El contactor número 5 del tablero no trabaja bien.",
+  "causas": [
+   "Bobina del contactor malograda",
+   "Contactos pegados o quemados",
+   "Cable o borne flojo"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa a la vista el contactor 5 y sus cables.",
+   "Mide la bobina con el multímetro.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E41",
+  "nombre": "Parada de emergencia de la instalación",
+  "simple": "El ascensor hizo una parada de emergencia.",
+  "causas": [
+   "Se abrió el circuito de seguridad",
+   "Alguien apretó un STOP",
+   "Corte de energía"
+  ],
+  "arreglo": [
+   "Revisa los otros códigos que salen junto con este.",
+   "Revisa los botones STOP (foso, techo, tablero).",
+   "Nunca puentees un contacto de seguridad para que el ascensor ande."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E51",
+  "nombre": "Falla en el circuito de seguridad",
+  "simple": "Se abrió algún punto de la cadena de seguridad.",
+  "causas": [
+   "Contacto de puerta o cerradura abierto",
+   "Limitador, paracaídas o final de carrera accionado",
+   "STOP de foso o techo apretado",
+   "Cable cortado en el hueco"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa uno por uno los contactos de seguridad siguiendo el plano.",
+   "Mide con el multímetro dónde se corta la cadena.",
+   "Nunca puentees un contacto de seguridad para que el ascensor ande."
+  ],
+  "peligro": "No puentees la cadena de seguridad: el ascensor podría moverse con puertas abiertas.",
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E61",
+  "nombre": "Voltaje bajo en el variador",
+  "simple": "El variador tiene menos voltaje del que necesita.",
+  "causas": [
+   "Voltaje de la red bajo",
+   "Falta una fase",
+   "Borne flojo en la entrada"
+  ],
+  "arreglo": [
+   "Mide el voltaje de entrada en las tres fases.",
+   "Revisa ajuste de bornes de la entrada (con energía cortada).",
+   "Llama a la empresa eléctrica si la red está baja."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E81",
+  "nombre": "Sobrecorriente en la bobina 1 del freno",
+  "simple": "Pasó demasiada corriente por la bobina 1 del freno de la máquina.",
+  "causas": [
+   "Bobina del freno en corto",
+   "Cable del freno pelado",
+   "Tarjeta que alimenta el freno malograda"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Mide la resistencia de la bobina del freno.",
+   "Revisa el cable del freno hasta la máquina.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E91",
+  "nombre": "Parada de emergencia por el variador",
+  "simple": "El variador ordenó una parada de emergencia.",
+  "causas": [
+   "Falla interna del variador",
+   "Problema en motor o encoder",
+   "Voltaje anormal"
+  ],
+  "arreglo": [
+   "Mira los otros códigos que aparecen con este.",
+   "Revisa cables de motor y encoder.",
+   "Si se repite, llama a soporte técnico."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EA1",
+  "nombre": "Error del encoder de la máquina",
+  "simple": "El encoder de la máquina da una señal mala.",
+  "causas": [
+   "Cable del encoder flojo o dañado",
+   "Encoder sucio o malogrado",
+   "Malla (blindaje) sin tierra"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el conector y el cable del encoder.",
+   "Revisa que la malla esté conectada a tierra.",
+   "Cambia el encoder solo si las pruebas lo confirman."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EC1",
+  "nombre": "Velocidad distinta a la esperada",
+  "simple": "La velocidad real de la cabina no coincide con la que calcula el control.",
+  "causas": [
+   "Encoder con falla",
+   "Cables de tracción patinando",
+   "Freno que no abre bien",
+   "Carga desbalanceada"
+  ],
+  "arreglo": [
+   "Revisa el encoder y su cable.",
+   "Mira si el freno abre completo.",
+   "Revisa el desgaste de cables y polea."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "ED1",
+  "nombre": "Falla de comunicación con botonera de piso 1",
+  "simple": "El control no se comunica con la botonera de piso número 1.",
+  "causas": [
+   "Cable de comunicación cortado o flojo",
+   "Botonera malograda",
+   "Dirección mal puesta en la botonera"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el cable y los conectores de esa botonera.",
+   "Compara con otra botonera que sí funcione.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "botonera_piso",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E32",
+  "nombre": "Cabina más lenta de lo esperado",
+  "simple": "La cabina va más lenta de lo que espera el control.",
+  "causas": [
+   "Sobrecarga",
+   "Freno que roza",
+   "Encoder con falla",
+   "Variador sin fuerza"
+  ],
+  "arreglo": [
+   "Revisa si hay sobrecarga.",
+   "Revisa que el freno abra completo.",
+   "Revisa el encoder."
+  ],
+  "pieza": "maquina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E52",
+  "nombre": "Error en la parte estática del circuito de seguridad (LED 29)",
+  "simple": "Hay una falla en la parte electrónica del circuito de seguridad (se ve en el LED 29).",
+  "causas": [
+   "Contacto de seguridad abierto",
+   "Tarjeta de seguridad con falla",
+   "Cable suelto"
+  ],
+  "arreglo": [
+   "Mira el LED 29 en la tarjeta.",
+   "Revisa la cadena de seguridad con el plano.",
+   "Nunca puentees un contacto de seguridad para que el ascensor ande."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E62",
+  "nombre": "Error en el control de compuertas IGBT",
+  "simple": "Falla el circuito que maneja los transistores (IGBT) del variador.",
+  "causas": [
+   "Tarjeta del variador malograda",
+   "Fuente interna con falla",
+   "Humedad o suciedad"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Espera que se descarguen los condensadores del variador (mide 0 V en el bus DC) antes de tocar.",
+   "Revisa conectores de la tarjeta del variador.",
+   "Si sigue, llama a soporte: suele ser cambio de tarjeta."
+  ],
+  "peligro": "El variador guarda voltaje alto aunque esté apagado.",
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E82",
+  "nombre": "Sobrecorriente en la bobina 2 del freno",
+  "simple": "Pasó demasiada corriente por la bobina 2 del freno.",
+  "causas": [
+   "Bobina en corto",
+   "Cable pelado",
+   "Tarjeta del freno malograda"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Mide la resistencia de la bobina 2 del freno.",
+   "Revisa el cable del freno.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E92",
+  "nombre": "Sobrecorriente en el motor de tracción",
+  "simple": "El motor jaló demasiada corriente.",
+  "causas": [
+   "Freno que no abre",
+   "Sobrecarga",
+   "Cable de motor en corto",
+   "Variador con falla"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa que el freno abra.",
+   "Mide aislamiento de los cables del motor.",
+   "Revisa la carga de la cabina."
+  ],
+  "pieza": "maquina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EA2",
+  "nombre": "Velocidad del encoder fuera del patrón",
+  "simple": "La velocidad que lee el encoder no sigue el patrón esperado.",
+  "causas": [
+   "Encoder o su cable con falla",
+   "Cables patinando en la polea",
+   "Ajustes del variador"
+  ],
+  "arreglo": [
+   "Revisa el encoder y su cable.",
+   "Revisa el desgaste de polea y cables.",
+   "Llama a soporte si sigue."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EC2",
+  "nombre": "Parada por control de límite de velocidad",
+  "simple": "El control paró el ascensor porque iba más rápido de lo permitido.",
+  "causas": [
+   "Encoder con falla",
+   "Freno débil",
+   "Cabina desbalanceada"
+  ],
+  "arreglo": [
+   "No pongas en servicio hasta saber la causa.",
+   "Revisa el freno y el encoder.",
+   "Revisa el contrapeso."
+  ],
+  "peligro": "Exceso de velocidad: revisa el freno antes de volver a usar el ascensor.",
+  "pieza": "freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E13",
+  "nombre": "Error de comunicación serial",
+  "simple": "Falla la comunicación serial entre tarjetas.",
+  "causas": [
+   "Cable de comunicación flojo",
+   "Interferencia por cables de fuerza cerca",
+   "Tarjeta con falla"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa conectores de comunicación.",
+   "Separa cables de comunicación de los de fuerza.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E33",
+  "nombre": "Velocidad de cabina anormalmente alta",
+  "simple": "La cabina fue más rápido de lo normal.",
+  "causas": [
+   "Freno débil",
+   "Encoder con falla",
+   "Desbalance de contrapeso",
+   "Cables patinando"
+  ],
+  "arreglo": [
+   "Deja el ascensor fuera de servicio.",
+   "Revisa el freno y el encoder.",
+   "Llama a soporte."
+  ],
+  "peligro": "Riesgo de que la cabina se embale. No lo pongas en servicio sin revisar.",
+  "pieza": "freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E53",
+  "nombre": "Falta una fase en la alimentación",
+  "simple": "Se perdió una de las fases de la energía de entrada.",
+  "causas": [
+   "Fusible quemado",
+   "Borne flojo",
+   "Corte de una fase en la red"
+  ],
+  "arreglo": [
+   "Mide voltaje en las tres fases.",
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa fusibles y ajuste de bornes."
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EA3",
+  "nombre": "Parada de emergencia por software del variador",
+  "simple": "El programa del variador ordenó parar.",
+  "causas": [
+   "Falla de motor o encoder",
+   "Voltaje anormal",
+   "Error interno del variador"
+  ],
+  "arreglo": [
+   "Mira los otros códigos que salen.",
+   "Revisa cables de motor y encoder.",
+   "Si se repite, llama a soporte."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E14",
+  "nombre": "Condensador del variador defectuoso",
+  "simple": "El condensador del variador está malogrado.",
+  "causas": [
+   "Condensador viejo o hinchado",
+   "Mucho calor en el tablero"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Espera que se descarguen los condensadores del variador (mide 0 V en el bus DC) antes de tocar.",
+   "Llama a soporte para cambiar el condensador o el variador."
+  ],
+  "peligro": "Los condensadores guardan voltaje alto y peligroso.",
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E34",
+  "nombre": "Tiempo máximo de viaje superado",
+  "simple": "La cabina tardó demasiado en llegar al piso.",
+  "causas": [
+   "Cables patinando",
+   "Freno que no abre",
+   "Sensor de piso con falla",
+   "Motor sin fuerza"
+  ],
+  "arreglo": [
+   "Revisa el freno.",
+   "Revisa los sensores de piso.",
+   "Revisa el desgaste de polea y cables."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E44",
+  "nombre": "Falla en la bobina del relé LB",
+  "simple": "La bobina del relé LB no trabaja bien.",
+  "causas": [
+   "Bobina malograda",
+   "Contacto quemado",
+   "Cable flojo"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el relé LB y su cableado.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E84",
+  "nombre": "Bobina 1 del freno desconectada",
+  "simple": "La bobina 1 del freno está desconectada.",
+  "causas": [
+   "Conector del freno suelto",
+   "Cable cortado",
+   "Bobina abierta"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el conector del freno.",
+   "Mide la bobina: si marca abierto, está cortada."
+  ],
+  "pieza": "freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E94",
+  "nombre": "Sobrecarga del motor al arrancar",
+  "simple": "El motor se sobrecargó al arrancar.",
+  "causas": [
+   "Cabina con sobrepeso",
+   "Freno que no abre bien",
+   "Contrapeso mal balanceado"
+  ],
+  "arreglo": [
+   "Revisa el peso en cabina.",
+   "Revisa que el freno abra.",
+   "Revisa el balance del contrapeso."
+  ],
+  "pieza": "maquina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EA4",
+  "nombre": "Falla de la resistencia de frenado",
+  "simple": "La resistencia de frenado del variador falla.",
+  "causas": [
+   "Resistencia quemada o abierta",
+   "Cable suelto",
+   "Sobrecalentamiento"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Espera que se descarguen los condensadores del variador (mide 0 V en el bus DC) antes de tocar.",
+   "Mide la resistencia de frenado.",
+   "Revisa sus cables."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E05",
+  "nombre": "Sobrecorriente en el motor de tracción",
+  "simple": "El motor de tracción jaló demasiada corriente.",
+  "causas": [
+   "Freno que no abre",
+   "Sobrecarga",
+   "Cables del motor en corto"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el freno.",
+   "Mide aislamiento de los cables de motor."
+  ],
+  "pieza": "maquina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E15",
+  "nombre": "Panel de mantenimiento de cabina activado",
+  "simple": "Está activado el mando de mantenimiento (inspección) de la cabina.",
+  "causas": [
+   "Alguien dejó el selector en inspección",
+   "Selector malogrado"
+  ],
+  "arreglo": [
+   "Revisa la caja de inspección del techo de cabina.",
+   "Pon el selector en normal si ya terminó el trabajo."
+  ],
+  "pieza": "caja_inspeccion",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E35",
+  "nombre": "Cabina se mueve en sentido contrario",
+  "simple": "La cabina se movió al revés de lo ordenado.",
+  "causas": [
+   "Fases del motor invertidas",
+   "Encoder mal conectado",
+   "Freno débil con carga"
+  ],
+  "arreglo": [
+   "Deja el ascensor fuera de servicio.",
+   "Revisa fases de motor y conexión del encoder.",
+   "Revisa el freno."
+  ],
+  "peligro": "Movimiento no ordenado de la cabina.",
+  "pieza": "maquina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E55",
+  "nombre": "Falla de la fuente de 12 V",
+  "simple": "La fuente de 12 voltios no funciona bien.",
+  "causas": [
+   "Fuente malograda",
+   "Corto en algún cable de 12 V",
+   "Fusible quemado"
+  ],
+  "arreglo": [
+   "Mide los 12 V en la fuente.",
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Busca cortos en cables de señales."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EB5",
+  "nombre": "La puerta no abre en más de 2 minutos",
+  "simple": "La puerta no abre desde hace más de 2 minutos.",
+  "causas": [
+   "Operador de puertas malogrado",
+   "Algo trabado en la pisadera",
+   "Fin de carrera de apertura con falla"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Limpia la pisadera y guiadores.",
+   "Revisa el operador de puertas y su correa."
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "ED5",
+  "nombre": "Falla de comunicación con la cabina",
+  "simple": "El control no se comunica con la cabina.",
+  "causas": [
+   "Cable viajero dañado",
+   "Conector flojo en la caja de techo",
+   "Tarjeta de cabina malograda"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa los conectores en la caja del techo.",
+   "Revisa el cable viajero.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "cable_viajero",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E06",
+  "nombre": "Sobrecarga de la resistencia de frenado",
+  "simple": "La resistencia de frenado se sobrecargó.",
+  "causas": [
+   "Contrapeso mal balanceado",
+   "Mucho uso seguido",
+   "Resistencia malograda"
+  ],
+  "arreglo": [
+   "Revisa el balance del contrapeso.",
+   "Revisa la resistencia y su ventilación."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E16",
+  "nombre": "Información incorrecta del encoder",
+  "simple": "El encoder de la máquina manda datos incorrectos.",
+  "causas": [
+   "Cable del encoder con ruido o flojo",
+   "Encoder malogrado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa cable, conector y tierra del encoder.",
+   "Cambia el encoder solo si las pruebas lo confirman."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E56",
+  "nombre": "Tablero de control abierto",
+  "simple": "La puerta del tablero de control está abierta.",
+  "causas": [
+   "Puerta del tablero mal cerrada",
+   "Contacto de la puerta malogrado"
+  ],
+  "arreglo": [
+   "Cierra bien la puerta del tablero.",
+   "Revisa el contacto de la puerta del tablero."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E66",
+  "nombre": "Variador caliente (más de 75°)",
+  "simple": "El variador pasó los 75 grados.",
+  "causas": [
+   "Ventilador parado",
+   "Disipador sucio",
+   "Cuarto muy caliente"
+  ],
+  "arreglo": [
+   "Revisa el ventilador.",
+   "Limpia el disipador.",
+   "Mejora la ventilación."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E96",
+  "nombre": "Falla en el sistema de pesaje",
+  "simple": "Falla el sistema que mide la carga de la cabina.",
+  "causas": [
+   "Sensor de peso descalibrado",
+   "Cable del sensor flojo",
+   "Sensor malogrado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el cable del pesacargas.",
+   "Recalibra según el manual."
+  ],
+  "pieza": "pesacargas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EB6",
+  "nombre": "Fusible fallado más de 2 minutos",
+  "simple": "Un fusible lleva más de 2 minutos fallado.",
+  "causas": [
+   "Fusible quemado por un corto",
+   "Sobrecarga en un circuito"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Busca la causa del corto antes de cambiar el fusible.",
+   "Cambia el fusible por uno del mismo valor."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "ED6",
+  "nombre": "Falla de comunicación con la puerta de cabina",
+  "simple": "El control no se comunica con el operador de la puerta de cabina.",
+  "causas": [
+   "Cable al operador flojo",
+   "Tarjeta del operador malograda"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa los conectores del operador de puertas.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E07",
+  "nombre": "Falla en la serie de seguridad de cerraduras y puerta de cabina (LED 41DG)",
+  "simple": "Se abrió el circuito de cerraduras de piso o el contacto de puerta de cabina.",
+  "causas": [
+   "Cerradura de piso mal cerrada",
+   "Contacto de puerta de cabina sucio o mal ajustado",
+   "Cable cortado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Mira el LED 41DG para confirmar.",
+   "Revisa cerraduras de piso y contacto de puerta de cabina.",
+   "Nunca puentees un contacto de seguridad para que el ascensor ande."
+  ],
+  "peligro": "Nunca puentees cerraduras: el ascensor podría moverse con la puerta abierta.",
+  "pieza": "cerradura",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E28",
+  "nombre": "Sensor de agua activado",
+  "simple": "El sensor de agua (inundación) del foso se activó.",
+  "causas": [
+   "Agua en el foso",
+   "Sensor sucio o malogrado"
+  ],
+  "arreglo": [
+   "No bajes al foso con agua y energía conectada.",
+   "Saca el agua y busca de dónde entra.",
+   "Revisa el sensor."
+  ],
+  "peligro": "Agua y electricidad: corta la energía antes de entrar al foso.",
+  "pieza": "stop_foso",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E38",
+  "nombre": "Sobrevoltaje en el variador",
+  "simple": "El variador tiene voltaje demasiado alto.",
+  "causas": [
+   "Resistencia de frenado abierta",
+   "Voltaje de red alto",
+   "Contrapeso desbalanceado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Espera que se descarguen los condensadores del variador (mide 0 V en el bus DC) antes de tocar.",
+   "Mide la resistencia de frenado.",
+   "Mide el voltaje de la red."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EA8",
+  "nombre": "Error de posición de cabina",
+  "simple": "El control no sabe bien en qué piso está la cabina.",
+  "causas": [
+   "Sensor de piso sucio o movido",
+   "Imán o pantalla de piso caído",
+   "Cables patinando"
+  ],
+  "arreglo": [
+   "Revisa los sensores y pantallas de piso.",
+   "Revisa el desgaste de polea y cables."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EB8",
+  "nombre": "La puerta de cabina no abre",
+  "simple": "La puerta de cabina no se puede abrir.",
+  "causas": [
+   "Operador de puertas malogrado",
+   "Puerta trabada",
+   "Correa del operador rota"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa la pisadera y guiadores.",
+   "Revisa el operador y su correa."
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E99",
+  "nombre": "Error del encoder de la máquina",
+  "simple": "El encoder de la máquina tiene falla.",
+  "causas": [
+   "Cable flojo",
+   "Encoder malogrado",
+   "Ruido eléctrico"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa cable y conector del encoder.",
+   "Revisa la tierra de la malla."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EA9",
+  "nombre": "Falla de transmisión del pesacargas",
+  "simple": "No llegan los datos del sistema de pesaje.",
+  "causas": [
+   "Cable del pesacargas flojo",
+   "Equipo de pesaje malogrado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa cable y conector del pesacargas."
+  ],
+  "pieza": "pesacargas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EB9",
+  "nombre": "Falla de la botonera de cabina (COP)",
+  "simple": "La botonera de cabina tiene falla.",
+  "causas": [
+   "Botón trabado",
+   "Cable flojo",
+   "Tarjeta de botonera malograda"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa botones y conectores de la botonera.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "botonera_cabina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EBA",
+  "nombre": "Error de contactos del operador de puertas (fin de apertura o cierre)",
+  "simple": "Los contactos de fin de apertura o cierre del operador de puertas fallan.",
+  "causas": [
+   "Contacto sucio o desajustado",
+   "Cable flojo"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Limpia y ajusta los finales del operador de puertas."
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EDA",
+  "nombre": "Falla de comunicación con botoneras/indicadores de piso",
+  "simple": "El control no se comunica con las botoneras o indicadores de piso.",
+  "causas": [
+   "Cable de comunicación cortado en el hueco",
+   "Una botonera en corto"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el cableado del hueco.",
+   "Desconecta botoneras una por una para hallar la mala."
+  ],
+  "pieza": "cableado_hueco",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E2B",
+  "nombre": "Falla del contacto de la baranda plegable del techo",
+  "simple": "El contacto de la baranda plegable del techo de cabina está abierto.",
+  "causas": [
+   "Baranda mal levantada o mal plegada",
+   "Contacto desajustado"
+  ],
+  "arreglo": [
+   "Revisa la baranda del techo y su contacto.",
+   "Nunca puentees un contacto de seguridad para que el ascensor ande."
+  ],
+  "pieza": "baranda_techo",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E5B",
+  "nombre": "Distancia de frenado anormal",
+  "simple": "El ascensor tarda demasiado en frenar.",
+  "causas": [
+   "Pastillas de freno gastadas",
+   "Aceite o grasa en el freno",
+   "Freno mal ajustado"
+  ],
+  "arreglo": [
+   "Deja fuera de servicio.",
+   "Revisa y ajusta el freno según el manual.",
+   "Limpia el tambor/disco si tiene grasa."
+  ],
+  "peligro": "Freno débil: la cabina puede no parar a tiempo.",
+  "pieza": "freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E0C",
+  "nombre": "Error en contactos UHS / DHS",
+  "simple": "Fallan los contactos UHS / DHS.",
+  "causas": [
+   "Contacto desajustado o sucio",
+   "Cable flojo"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa los contactos UHS/DHS y su cableado según el plano."
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E2C",
+  "nombre": "Error de frenos",
+  "simple": "Hay un error en los frenos.",
+  "causas": [
+   "Micro del freno desajustado",
+   "Freno que no abre",
+   "Bobina con falla"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el micro del freno.",
+   "Revisa que el freno abra y cierre bien."
+  ],
+  "pieza": "micro_freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E8F",
+  "nombre": "Detección de deslizamiento del freno",
+  "simple": "Se detectó que la máquina se movió con el freno cerrado.",
+  "causas": [
+   "Pastillas gastadas",
+   "Grasa en el freno",
+   "Freno desajustado"
+  ],
+  "arreglo": [
+   "Deja fuera de servicio.",
+   "Revisa pastillas y ajuste del freno.",
+   "Limpia la grasa."
+  ],
+  "peligro": "Freno que patina: riesgo de que la cabina se mueva sola.",
+  "pieza": "freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E0D",
+  "nombre": "Falla del circuito que revisa la zona de puerta",
+  "simple": "Falla el circuito que revisa la señal de zona de puerta.",
+  "causas": [
+   "Sensor de zona sucio o movido",
+   "Pantalla/imán de piso caído",
+   "Cable flojo"
+  ],
+  "arreglo": [
+   "Revisa el sensor de zona de puerta y las pantallas.",
+   "Revisa el cable del techo de cabina."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "E3E",
+  "nombre": "Encoder falla en operación normal",
+  "simple": "El encoder falla durante la operación normal.",
+  "causas": [
+   "Cable o conector flojo",
+   "Encoder malogrado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa cable, conector y tierra del encoder."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EBE",
+  "nombre": "Energía principal cortada",
+  "simple": "Se cortó la energía principal.",
+  "causas": [
+   "Corte de luz",
+   "Interruptor principal bajado o disparado"
+  ],
+  "arreglo": [
+   "Revisa el interruptor principal.",
+   "Revisa si hay corte en el edificio."
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_elenessa",
+  "codigo": "EBF",
+  "nombre": "Error de contactos de puerta de cabina (fin de cierre o apertura)",
+  "simple": "Los contactos de fin de cierre o apertura de la puerta de cabina fallan.",
+  "causas": [
+   "Contacto desajustado",
+   "Cable flojo"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Ajusta y limpia los contactos de puerta de cabina."
+  ],
+  "pieza": "contacto_puerta_cabina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/MITSUBISHI/Elenessa%20vfgl%20errors.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "E0",
+  "nombre": "Sin falla",
+  "simple": "No hay ninguna falla.",
+  "causas": [
+   "Funcionamiento normal"
+  ],
+  "arreglo": [
+   "No hagas nada."
+  ],
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "E1",
+  "nombre": "Baja velocidad",
+  "simple": "La cabina va más lenta de lo debido.",
+  "causas": [
+   "Sobrecarga",
+   "Freno que roza",
+   "Encoder con falla"
+  ],
+  "arreglo": [
+   "Revisa la carga.",
+   "Revisa que el freno abra completo.",
+   "Revisa el encoder."
+  ],
+  "pieza": "maquina",
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "E2",
+  "nombre": "Sobrevelocidad",
+  "simple": "La cabina va más rápido de lo debido.",
+  "causas": [
+   "Freno débil",
+   "Encoder con falla",
+   "Contrapeso desbalanceado"
+  ],
+  "arreglo": [
+   "Deja fuera de servicio.",
+   "Revisa freno y encoder.",
+   "Llama a soporte."
+  ],
+  "peligro": "Exceso de velocidad.",
+  "pieza": "freno",
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "E3",
+  "nombre": "Sentido inverso",
+  "simple": "La cabina se mueve al revés de lo ordenado.",
+  "causas": [
+   "Fases de motor invertidas",
+   "Encoder mal conectado",
+   "Freno débil"
+  ],
+  "arreglo": [
+   "Deja fuera de servicio.",
+   "Revisa conexiones de motor y encoder.",
+   "Revisa el freno."
+  ],
+  "peligro": "Movimiento no ordenado.",
+  "pieza": "maquina",
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "E4",
+  "nombre": "Falla AST (atasco)",
+  "simple": "El motor quiere girar pero la cabina no avanza (atasco).",
+  "causas": [
+   "Freno que no abre",
+   "Cabina trabada en guías o paracaídas",
+   "Cables patinando"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el freno.",
+   "Revisa paracaídas y guías.",
+   "Revisa polea y cables."
+  ],
+  "pieza": "freno",
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "E5",
+  "nombre": "Sobrecorriente",
+  "simple": "Pasó demasiada corriente por el variador o motor.",
+  "causas": [
+   "Freno que no abre",
+   "Cables de motor en corto",
+   "Sensor de corriente o módulo de potencia malogrado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Espera que se descarguen los condensadores del variador (mide 0 V en el bus DC) antes de tocar.",
+   "Revisa freno y cables del motor.",
+   "Si sale apenas se prende, sospecha del sensor de corriente DC (según la fuente)."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "E6",
+  "nombre": "Sobrevoltaje",
+  "simple": "El voltaje del bus del variador está muy alto.",
+  "causas": [
+   "Resistencia de frenado abierta",
+   "Red con voltaje alto"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Espera que se descarguen los condensadores del variador (mide 0 V en el bus DC) antes de tocar.",
+   "Mide la resistencia de frenado.",
+   "Mide el voltaje de la red."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "E7",
+  "nombre": "Bajo voltaje",
+  "simple": "El voltaje del variador está muy bajo.",
+  "causas": [
+   "Falta de fase",
+   "Red baja",
+   "Fusible térmico de la tarjeta de potencia quemado"
+  ],
+  "arreglo": [
+   "Mide las tres fases.",
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa fusibles y tarjeta de potencia."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "E8",
+  "nombre": "Falla del contactor LB",
+  "simple": "El contactor LB no trabaja bien.",
+  "causas": [
+   "Bobina malograda",
+   "Contactos pegados",
+   "Cable flojo"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el contactor LB.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "E9",
+  "nombre": "Falla de contactor",
+  "simple": "Un contactor principal no trabaja bien.",
+  "causas": [
+   "Contactos quemados",
+   "Bobina malograda"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa los contactores principales.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "EA",
+  "nombre": "Falla de compuerta del freno (BK)",
+  "simple": "Falla el circuito que maneja el freno (BK).",
+  "causas": [
+   "Relé o contactor del freno con falla",
+   "Cable del freno flojo"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el circuito del freno.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "freno",
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "EB",
+  "nombre": "Falla de transmisión serial con la cabina",
+  "simple": "Falla la comunicación serial con la cabina.",
+  "causas": [
+   "Cable viajero dañado",
+   "Conector flojo"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el cable viajero y los conectores."
+  ],
+  "pieza": "cable_viajero",
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "EC",
+  "nombre": "Falla de transmisión serial con los pisos",
+  "simple": "Falla la comunicación serial con las botoneras de piso.",
+  "causas": [
+   "Cable del hueco dañado",
+   "Una botonera en corto"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el cableado del hueco y las botoneras."
+  ],
+  "pieza": "cableado_hueco",
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "ED",
+  "nombre": "Error de ajuste de jumpers de la tarjeta",
+  "simple": "Los puentes (jumpers) de configuración de la tarjeta están mal puestos.",
+  "causas": [
+   "Tarjeta cambiada sin copiar los jumpers",
+   "Jumper movido"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Compara los jumpers con la tarjeta vieja o el manual."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "EE",
+  "nombre": "Falla de arranque del computador (variador/control)",
+  "simple": "El microprocesador del variador o del control no arranca.",
+  "causas": [
+   "Fuente de alimentación de la tarjeta con falla",
+   "Tarjeta malograda"
+  ],
+  "arreglo": [
+   "Mide los voltajes de la fuente de la tarjeta.",
+   "Llama a soporte si sigue."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "mitsu_p1",
+  "codigo": "EF",
+  "nombre": "Falla de arranque del computador (variador/control)",
+  "simple": "El microprocesador del variador o del control no arranca.",
+  "causas": [
+   "Fuente de alimentación de la tarjeta con falla",
+   "Tarjeta malograda"
+  ],
+  "arreglo": [
+   "Mide los voltajes de la fuente de la tarjeta.",
+   "Llama a soporte si sigue."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.hselevatorparts.com/news/mitsubishi-elevator-fault-code-collection-72610315.html | https://www.potensielevator.com/mitsubishi-elevator-erro-code.html"
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F11",
+  "nombre": "Error de línea de seguridad / contactor MC / 24 V",
+  "simple": "Se cortó la línea de seguridad (relé 29), no hay 24 V DC, o el contactor MC no trabajó.",
+  "causas": [
+   "Un contacto de seguridad abierto",
+   "Falta DC 24 V o DC 110 V",
+   "Contactor MC o MC2 con falla",
+   "Conector entre TCB-3 y M33 flojo"
+  ],
+  "arreglo": [
+   "Mide DC 110 V y DC 24 V.",
+   "Mira si el relé 29 de la tarjeta TCB-3 está activado.",
+   "Si no, revisa los contactos de seguridad con el plano.",
+   "Nunca puentees un contacto de seguridad para que el ascensor ande."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F21",
+  "nombre": "Anti-stall (tiempo de viaje)",
+  "simple": "El ascensor anduvo sin parar más del tiempo fijado y se paró de emergencia.",
+  "causas": [
+   "Freno que no abre/cierra bien",
+   "Cables patinando en la polea",
+   "Contrapeso mal balanceado",
+   "Tiempo anti-stall mal fijado"
+  ],
+  "arreglo": [
+   "Revisa que el freno abra y cierre bien.",
+   "Revisa desgaste de cables y polea.",
+   "Revisa el balance (50 %) del contrapeso."
+  ],
+  "pieza": "polea_traccion",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F31",
+  "nombre": "Error DPRAM (control ↔ variador)",
+  "simple": "No hay conexión entre la tarjeta M33 y el variador.",
+  "causas": [
+   "Cable entre CN12 del variador y H6 de M33 flojo",
+   "Cable dañado o sin tierra"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el cable entre CN12 (variador) y H6 (M33).",
+   "Revisa la tierra del cable."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F41",
+  "nombre": "Error de señal FWD/REV",
+  "simple": "La cabina se movió sin orden de marcha del control.",
+  "causas": [
+   "Relés FWD/REV de TCB-3 con falla",
+   "Señales del variador malas"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa relés FWD y REV de la TCB-3.",
+   "Revisa las señales con el HHT."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F12",
+  "nombre": "Térmico del motor / cadena de compensación (CCS)",
+  "simple": "El motor se calentó o actuó el switch de la cadena de compensación.",
+  "causas": [
+   "Motor muy caliente",
+   "Cuarto de máquinas sin ventilación",
+   "Cadena de compensación estirada o caída"
+  ],
+  "arreglo": [
+   "Deja enfriar el motor.",
+   "Revisa la ventilación del cuarto de máquinas.",
+   "Revisa la cadena de compensación y su switch CCS."
+  ],
+  "pieza": "cadena_compensacion",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F22",
+  "nombre": "Error de piso",
+  "simple": "El control no sabe en qué piso está (piso = 0).",
+  "causas": [
+   "Número de pisos distinto entre variador y M33",
+   "Falta una pantalla (vane) o sensor LCD con falla",
+   "Cable DPRAM cerca de cables de fuerza"
+  ],
+  "arreglo": [
+   "Compara MAX FLOOR del variador con TOP FLOOR de la M33.",
+   "Cuenta las pantallas de piso.",
+   "Separa el cable DPRAM de cables de fuerza."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F42",
+  "nombre": "Error de operación inicial (medición de pisos)",
+  "simple": "Falló la operación inicial (aprendizaje de pisos).",
+  "causas": [
+   "Sensor LCD con falla",
+   "Switch DLS/ULS mal ubicado",
+   "Dato TOP FLOOR mal puesto"
+  ],
+  "arreglo": [
+   "Revisa el sensor LCD.",
+   "Revisa ubicación de los switches DLS/ULS.",
+   "Revisa el dato TOP FLOOR del variador."
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F52",
+  "nombre": "Error de pulsos",
+  "simple": "La cuenta de pulsos del encoder no coincide; el ascensor va a piso extremo a corregir.",
+  "causas": [
+   "Malla del encoder sin tierra",
+   "Cable o encoder dañado",
+   "Cables patinando",
+   "Pantallas de piso movidas"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa la tierra de la malla del encoder.",
+   "Revisa sensores LCD y pantallas.",
+   "Revisa patinaje de cables."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F33",
+  "nombre": "Error del CPU serial",
+  "simple": "Falla el procesador de comunicación serial de la tarjeta M33.",
+  "causas": [
+   "Tarjeta M33 con falla",
+   "Versión de programa incorrecta"
+  ],
+  "arreglo": [
+   "Revisa con el HHT el dato indicado en el manual.",
+   "Si no cambia, cambia la tarjeta M33 (según el manual)."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F63",
+  "nombre": "Error de comunicación CAN",
+  "simple": "Se perdió la comunicación con la cabina; solo anda en inspección.",
+  "causas": [
+   "Conector CM10 de M33 o CT7 de TCB-3 flojo",
+   "Cable viajero (T-CABLE) dañado",
+   "Falta DC 5 V en OPB-3",
+   "Mala tierra en la cabina"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa CM10 y CT7.",
+   "Revisa el cable viajero.",
+   "Mide 5 V en la OPB-3."
+  ],
+  "pieza": "cable_viajero",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F73",
+  "nombre": "Error de checksum",
+  "simple": "Error en los datos de comunicación; parpadea la llamada del piso 2.",
+  "causas": [
+   "Malas tierras entre cabina y tablero",
+   "Hilos de reserva del cable viajero sin tierra"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa y ajusta todas las tierras (cabina, OPB, tablero).",
+   "Conecta a tierra los hilos de reserva del cable viajero."
+  ],
+  "pieza": "cable_viajero",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F14",
+  "nombre": "Error de puerta abierta",
+  "simple": "El ascensor se paró porque se abrió la señal de puerta.",
+  "causas": [
+   "Cerradura de piso desajustada",
+   "Contacto de puerta con falla",
+   "Relés 40/41 con falla"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa cerraduras de cada piso (luz entre patín y rodillos).",
+   "Revisa relés 40 y 41.",
+   "Nunca puentees un contacto de seguridad para que el ascensor ande."
+  ],
+  "pieza": "cerradura",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F24",
+  "nombre": "Error de puente (jumper) en puertas",
+  "simple": "El control detectó un puente en las cerraduras o contactos de puerta.",
+  "causas": [
+   "Alguien dejó un puente en una cerradura",
+   "Contacto pegado",
+   "Relés 40/41 con falla"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Busca y quita cualquier puente en cerraduras y contactos.",
+   "Revisa DOL/DCL y relés 40/41.",
+   "Nunca puentees un contacto de seguridad para que el ascensor ande."
+  ],
+  "peligro": "Un puente en cerraduras permite viajar con puertas abiertas.",
+  "pieza": "cerradura",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F34",
+  "nombre": "Error DCL (no cierra la puerta)",
+  "simple": "La puerta no termina de cerrar después de 3 intentos.",
+  "causas": [
+   "Algo en la pisadera",
+   "Fin de carrera de cierre (DCL) con falla"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Limpia la pisadera.",
+   "Revisa el fin de carrera DCL."
+  ],
+  "pieza": "pisadera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F44",
+  "nombre": "Error DOL (no abre la puerta)",
+  "simple": "La puerta no termina de abrir y el ascensor busca otro piso.",
+  "causas": [
+   "Algo traba la pisadera",
+   "Fin de carrera de apertura (DOL) con falla"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Limpia la pisadera.",
+   "Revisa el sensor DOL del operador."
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F54",
+  "nombre": "Falla de cierre 1",
+  "simple": "La puerta llegó a cerrado pero no cierran los contactos de seguridad.",
+  "causas": [
+   "Contacto de puerta o cerradura no cierra",
+   "Relés 40/41 con falla"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa contacto de puerta y cerraduras.",
+   "Revisa relés 40 y 41."
+  ],
+  "pieza": "contacto_puerta_cabina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F64",
+  "nombre": "Falla de cierre 2",
+  "simple": "Los contactos de seguridad cierran pero no llega la señal de puerta cerrada (DCL).",
+  "causas": [
+   "Fin de carrera DCL desajustado",
+   "Puente en contacto de puerta"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el fin de carrera DCL.",
+   "Busca puentes en contactos de puerta.",
+   "Nunca puentees un contacto de seguridad para que el ascensor ande."
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F74",
+  "nombre": "Error de freno de cable / freno de cabina",
+  "simple": "Actuó el freno de cables o de cabina (por ejemplo, por movimiento con puerta abierta).",
+  "causas": [
+   "Cabina salió de zona con puerta abierta",
+   "Freno desajustado o gastado"
+  ],
+  "arreglo": [
+   "Revisa ajuste y desgaste del freno.",
+   "Revisa por qué se movió la cabina con puertas abiertas.",
+   "No resetees sin hallar la causa."
+  ],
+  "peligro": "Indica movimiento no deseado de la cabina.",
+  "pieza": "freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F15",
+  "nombre": "Error del variador (inverter)",
+  "simple": "El variador tiene una falla y el contactor MC no entra.",
+  "causas": [
+   "Falla interna del variador",
+   "Cable entre TCB-3 y variador flojo",
+   "Problema en la red R-S-T o U-V-W"
+  ],
+  "arreglo": [
+   "Lee la falla del variador con el HHT.",
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa cables entre TCB-3 y variador y los de fuerza."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F25",
+  "nombre": "Error de salida del variador",
+  "simple": "La cabina se movió sin orden del control.",
+  "causas": [
+   "Freno desajustado o gastado",
+   "Conector H9 flojo",
+   "Variador o M33 con falla"
+  ],
+  "arreglo": [
+   "Revisa el freno.",
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el conector H9."
+  ],
+  "pieza": "freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F35",
+  "nombre": "Error de parada del variador",
+  "simple": "La M33 no recibe las señales RUN/BKS del variador para parar.",
+  "causas": [
+   "Conectores CN8 o H9 flojos"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa conectores CN8 y H9 entre variador y TCB-3."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F45",
+  "nombre": "Error INV RUN (no arranca)",
+  "simple": "La M33 no recibe del variador la señal de marcha al arrancar.",
+  "causas": [
+   "Conectores CN8 o H9 flojos",
+   "Falla del variador",
+   "Problema en la energía del edificio"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa CN8 y H9.",
+   "Lee las fallas del variador con el HHT."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F55",
+  "nombre": "Error INV RUN2 (velocidad no coincide)",
+  "simple": "El ascensor se paró de golpe al moverse por falta de acuerdo de velocidad.",
+  "causas": [
+   "Encoder con falla",
+   "Desbalance de carga",
+   "Falta una fase del motor",
+   "Cables patinando"
+  ],
+  "arreglo": [
+   "Revisa el encoder.",
+   "Revisa las 3 fases del motor.",
+   "Revisa balance y patinaje."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F65",
+  "nombre": "Error inicial del variador (más pisos)",
+  "simple": "El número de pisos del variador es mayor que el aprendido.",
+  "causas": [
+   "Dato MAX FLOOR mal puesto",
+   "Pantalla de piso extra o mal puesta"
+  ],
+  "arreglo": [
+   "Compara MAX FLOOR del variador con el dato de la M33.",
+   "Revisa las pantallas del hueco."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F75",
+  "nombre": "Error inicial del variador (menos pisos)",
+  "simple": "El número de pisos del variador es menor que el aprendido.",
+  "causas": [
+   "Dato MAX FLOOR mal puesto",
+   "Falta una pantalla de piso"
+  ],
+  "arreglo": [
+   "Compara MAX FLOOR del variador con el dato de la M33.",
+   "Revisa las pantallas del hueco."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F16",
+  "nombre": "Error de freno (1)",
+  "simple": "No llegó la señal de freno abierto (BKOP) varias veces; el ascensor se bloquea.",
+  "causas": [
+   "Micro de freno desajustado o malogrado",
+   "Cable COM/NC del micro flojo",
+   "Freno no abre"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa y ajusta el micro del freno.",
+   "Revisa su cableado (COM y NC).",
+   "Revisa que el freno abra."
+  ],
+  "pieza": "micro_freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F26",
+  "nombre": "Error de freno (2)",
+  "simple": "No llegó la señal de freno abierto (BKOP) al arrancar; reintenta.",
+  "causas": [
+   "Micro de freno desajustado",
+   "Cable flojo"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa y ajusta el micro del freno."
+  ],
+  "pieza": "micro_freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F36",
+  "nombre": "Error de freno al parar",
+  "simple": "La señal de freno abierto no se apagó al parar.",
+  "causas": [
+   "Micro de freno pegado",
+   "Contactor BK con falla",
+   "Freno no cierra bien"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el micro del freno.",
+   "Revisa el contactor BK."
+  ],
+  "peligro": "Si el freno no cierra, la cabina puede moverse.",
+  "pieza": "micro_freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F17",
+  "nombre": "Error ULS/DLS",
+  "simple": "Los dos límites ULS y DLS están apagados a la vez.",
+  "causas": [
+   "Switch ULS o DLS malogrado o desajustado",
+   "Algo (cable viajero) golpea los switches"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa contactos y ajuste de ULS y DLS.",
+   "Revisa que nada los golpee."
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F27",
+  "nombre": "Error PLU/PLD",
+  "simple": "Los límites preliminares de subida y bajada están activos a la vez.",
+  "causas": [
+   "Switch PLUL/PLDL malogrado o desajustado",
+   "Algo golpea los switches"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa los switches PLUL y PLDL."
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F37",
+  "nombre": "Error de desaceleración (LCD)",
+  "simple": "La cabina tardó más de 15 s en llegar al nivel de piso.",
+  "causas": [
+   "Sensor LCD o pantallas con falla",
+   "Encoder con falla",
+   "Cables patinando"
+  ],
+  "arreglo": [
+   "Revisa sensor LCD y pantallas.",
+   "Revisa encoder.",
+   "Repite la operación inicial."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F47",
+  "nombre": "Error de renivelación",
+  "simple": "La renivelación con puerta abierta tardó más de 5 s.",
+  "causas": [
+   "Sensores ULA/DLA con falla",
+   "Pantallas movidas",
+   "Freno con problema"
+  ],
+  "arreglo": [
+   "Revisa sensores y pantallas.",
+   "Revisa el freno."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F57",
+  "nombre": "Error de desaceleración en piso extremo",
+  "simple": "La cabina desaceleró en el piso extremo por los límites.",
+  "causas": [
+   "Límites mal ubicados",
+   "Encoder con falla",
+   "Distancias cortas"
+  ],
+  "arreglo": [
+   "Revisa ubicación de los límites según el plano.",
+   "Revisa el encoder."
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F18",
+  "nombre": "Error de comunicación dúplex/grupo",
+  "simple": "No funciona el trabajo en grupo; solo anda como ascensor solo.",
+  "causas": [
+   "Fibra óptica doblada o rota",
+   "Parámetros de grupo mal puestos"
+  ],
+  "arreglo": [
+   "Mira los LED de la tarjeta RM (verde encendido, rojo apagado).",
+   "Revisa la fibra óptica."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F28",
+  "nombre": "Error de comunicación RMS (monitoreo)",
+  "simple": "Falla la comunicación con el sistema de monitoreo.",
+  "causas": [
+   "Falta 24 V en la tarjeta CRT",
+   "Cable H1 flojo",
+   "Parámetro mal puesto"
+  ],
+  "arreglo": [
+   "Mide 24 V en la tarjeta CRT.",
+   "Revisa el cable H1."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F38",
+  "nombre": "Error RUN-BY (solo MRL)",
+  "simple": "Actuó el switch RUN-BY; anda con zumbador.",
+  "causas": [
+   "Cables de tracción con tensión desigual",
+   "Switch RUN-BY mal ubicado"
+  ],
+  "arreglo": [
+   "Revisa la tensión de los cables.",
+   "Revisa la ubicación del switch RUN-BY."
+  ],
+  "pieza": "cables_traccion",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F48",
+  "nombre": "Error de agua en foso",
+  "simple": "El sensor de nivel de agua detectó agua en el foso.",
+  "causas": [
+   "Agua en el foso",
+   "Sensor malogrado"
+  ],
+  "arreglo": [
+   "No entres al foso con energía.",
+   "Saca el agua y busca de dónde entra.",
+   "Revisa el sensor."
+  ],
+  "peligro": "Agua y electricidad en el foso.",
+  "pieza": "stop_foso",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F58",
+  "nombre": "Error de ajuste de carga (LVDP)",
+  "simple": "No está ajustado el pesaje o falla su comunicación CAN.",
+  "causas": [
+   "Pesaje LVDP no ajustado",
+   "Falla de comunicación CAN con LVDP"
+  ],
+  "arreglo": [
+   "Haz el ajuste del LVDP.",
+   "Revisa cable de comunicación del LVDP."
+  ],
+  "pieza": "pesacargas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_stvf5",
+  "codigo": "F68",
+  "nombre": "Error de dispositivo de piso",
+  "simple": "No se registran llamadas o se apagan indicadores de algunos pisos.",
+  "causas": [
+   "Indicador de piso malogrado",
+   "Dip switch de piso mal puesto"
+  ],
+  "arreglo": [
+   "Revisa con el HHT qué piso falla.",
+   "Revisa los dip switch del indicador."
+  ],
+  "pieza": "botonera_piso",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/HYUNDAI/ERROR%20M%2033.PDF",
+  "verificado": true
+ },
+ {
+  "equipo": "hyundai_wbvf",
+  "codigo": "001",
+  "nombre": "ER_P24V_OFF",
+  "simple": "No hay señal de 24 V.",
+  "causas": [
+   "Fuente PS1 malograda",
+   "Falta AC 220 V en A220/B220"
+  ],
+  "arreglo": [
+   "Mide la salida P24V de PS1.",
+   "Mide AC 220 V de entrada."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.scribd.com/document/888210964/Wbvf-Trouble-Shooting-Manual"
+ },
+ {
+  "equipo": "hyundai_wbvf",
+  "codigo": "002",
+  "nombre": "ER_SAFETY",
+  "simple": "Se abrió el circuito de seguridad.",
+  "causas": [
+   "Contacto de seguridad abierto",
+   "Cable cortado"
+  ],
+  "arreglo": [
+   "Usa el menú Fault Analysis del HHT para ver dónde se cortó.",
+   "Sigue el plano eléctrico.",
+   "Nunca puentees un contacto de seguridad para que el ascensor ande."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.scribd.com/document/888210964/Wbvf-Trouble-Shooting-Manual"
+ },
+ {
+  "equipo": "hyundai_wbvf",
+  "codigo": "003",
+  "nombre": "ER_UCM",
+  "simple": "La cabina salió de la zona de puerta en automático (movimiento no controlado).",
+  "causas": [
+   "Freno débil",
+   "Falla de control"
+  ],
+  "arreglo": [
+   "Deja fuera de servicio.",
+   "Revisa el freno.",
+   "Se resetea solo desde el HHT (UCM ERROR RESET) por personal técnico."
+  ],
+  "peligro": "Movimiento no controlado de cabina.",
+  "pieza": "freno",
+  "fuente": "https://www.scribd.com/document/888210964/Wbvf-Trouble-Shooting-Manual"
+ },
+ {
+  "equipo": "hyundai_wbvf",
+  "codigo": "005",
+  "nombre": "ER_MC2_OFF",
+  "simple": "No llega la señal de MC2 después de activarlo.",
+  "causas": [
+   "Contactor MC2 malogrado",
+   "Contacto auxiliar con falla"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el contactor MC2 y su contacto auxiliar."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.scribd.com/document/888210964/Wbvf-Trouble-Shooting-Manual"
+ },
+ {
+  "equipo": "hyundai_wbvf",
+  "codigo": "009",
+  "nombre": "ER_GOV",
+  "simple": "El switch del limitador de velocidad abrió la seguridad.",
+  "causas": [
+   "Limitador disparado",
+   "Switch del limitador malogrado"
+  ],
+  "arreglo": [
+   "Revisa por qué disparó el limitador.",
+   "Rearma según el manual.",
+   "Nunca puentees un contacto de seguridad para que el ascensor ande."
+  ],
+  "pieza": "limitador",
+  "fuente": "https://www.scribd.com/document/888210964/Wbvf-Trouble-Shooting-Manual"
+ },
+ {
+  "equipo": "hyundai_wbvf",
+  "codigo": "010",
+  "nombre": "ER_UFL",
+  "simple": "Actuó el final de carrera de arriba.",
+  "causas": [
+   "Cabina pasó del último piso",
+   "Switch malogrado"
+  ],
+  "arreglo": [
+   "Revisa por qué la cabina se pasó.",
+   "Revisa el final de carrera superior."
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://www.scribd.com/document/888210964/Wbvf-Trouble-Shooting-Manual"
+ },
+ {
+  "equipo": "hyundai_wbvf",
+  "codigo": "011",
+  "nombre": "ER_DFL",
+  "simple": "Actuó el final de carrera de abajo.",
+  "causas": [
+   "Cabina pasó del primer piso",
+   "Switch malogrado"
+  ],
+  "arreglo": [
+   "Revisa por qué la cabina se pasó.",
+   "Revisa el final de carrera inferior."
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://www.scribd.com/document/888210964/Wbvf-Trouble-Shooting-Manual"
+ },
+ {
+  "equipo": "hyundai_wbvf",
+  "codigo": "027",
+  "nombre": "ER_SPD_PTN_OFF",
+  "simple": "No hay señal de patrón de velocidad.",
+  "causas": [
+   "Falla de comunicación con el variador"
+  ],
+  "arreglo": [
+   "Revisa conexión con el variador.",
+   "Llama a soporte."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.scribd.com/document/888210964/Wbvf-Trouble-Shooting-Manual"
+ },
+ {
+  "equipo": "hyundai_wbvf",
+  "codigo": "031",
+  "nombre": "ER_INITIAL",
+  "simple": "Falló la medición de altura del hueco.",
+  "causas": [
+   "Sensores de piso o límites con falla"
+  ],
+  "arreglo": [
+   "Revisa sensores y límites.",
+   "Repite la medición."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://www.scribd.com/document/888210964/Wbvf-Trouble-Shooting-Manual"
+ },
+ {
+  "equipo": "hyundai_wbvf",
+  "codigo": "042",
+  "nombre": "ER_BKA_OFF",
+  "simple": "No llega la confirmación de freno abierto.",
+  "causas": [
+   "Micro del freno desajustado",
+   "Freno no abre"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el micro y el freno."
+  ],
+  "pieza": "micro_freno",
+  "fuente": "https://www.scribd.com/document/888210964/Wbvf-Trouble-Shooting-Manual"
+ },
+ {
+  "equipo": "hyundai_wbvf",
+  "codigo": "051",
+  "nombre": "ER_ULS&DLS_ON",
+  "simple": "Los límites de arriba y abajo están activos al mismo tiempo.",
+  "causas": [
+   "Switch malogrado",
+   "Cable en corto"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa los switches ULS y DLS."
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://www.scribd.com/document/888210964/Wbvf-Trouble-Shooting-Manual"
+ },
+ {
+  "equipo": "hyundai_wbvf",
+  "codigo": "092",
+  "nombre": "ER_DOOR CLOSE",
+  "simple": "No llega la señal de puerta cerrada.",
+  "causas": [
+   "Fin de carrera de cierre con falla",
+   "Puerta trabada"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el fin de carrera de cierre."
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://www.scribd.com/document/888210964/Wbvf-Trouble-Shooting-Manual"
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "10",
+  "nombre": "Falla ON de #50B",
+  "simple": "El relé/contactor #50B no se activó cuando debía.",
+  "causas": [
+   "Bobina malograda",
+   "Cable flojo"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa #50B y su cableado.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "11",
+  "nombre": "Falla ON/OFF de #10T",
+  "simple": "El relé/contactor #10T no cambia bien.",
+  "causas": [
+   "Bobina o contactos malogrados",
+   "Cable flojo"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa #10T.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "12",
+  "nombre": "Falla ON/OFF de #15B",
+  "simple": "El relé/contactor #15B no cambia bien.",
+  "causas": [
+   "Bobina o contactos malogrados",
+   "Cable flojo"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa #15B.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "16",
+  "nombre": "Falla de comunicación paralela",
+  "simple": "Falla la comunicación entre los dos procesadores.",
+  "causas": [
+   "Conector flojo",
+   "Tarjeta con falla"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa conectores de la tarjeta.",
+   "Llama a soporte si sigue."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "17",
+  "nombre": "Falla de comunicación SDA de cabina",
+  "simple": "Falla la comunicación con la cabina.",
+  "causas": [
+   "Cable viajero dañado",
+   "Conector flojo"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa cable viajero y conectores."
+  ],
+  "pieza": "cable_viajero",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "21",
+  "nombre": "Falla de IGBT",
+  "simple": "Falla el módulo de potencia (IGBT) del variador.",
+  "causas": [
+   "Módulo IGBT malogrado",
+   "Cortocircuito en motor"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Espera que se descarguen los condensadores del variador (mide 0 V en el bus DC) antes de tocar.",
+   "Mide aislamiento de los cables del motor.",
+   "Llama a soporte para cambiar el módulo."
+  ],
+  "peligro": "El variador tiene 530 V DC; espera la descarga (más de 15 min según el manual).",
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "22",
+  "nombre": "Sobrevoltaje",
+  "simple": "El voltaje del variador está demasiado alto.",
+  "causas": [
+   "Resistencia de frenado abierta",
+   "Red alta"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Espera que se descarguen los condensadores del variador (mide 0 V en el bus DC) antes de tocar.",
+   "Mide la resistencia de frenado."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "23",
+  "nombre": "Sobrecorriente",
+  "simple": "Pasó demasiada corriente por el variador.",
+  "causas": [
+   "Freno que no abre",
+   "Cables de motor en corto"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el freno.",
+   "Mide aislamiento de cables del motor."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "27",
+  "nombre": "Falla repetida",
+  "simple": "Hubo una falla que se repite (looping).",
+  "causas": [
+   "Una falla que vuelve a ocurrir"
+  ],
+  "arreglo": [
+   "Anota las otras fallas que salen.",
+   "Busca la causa principal antes de resetear."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "31",
+  "nombre": "Falla ON de #100R",
+  "simple": "El relé #100R no se activó.",
+  "causas": [
+   "Relé malogrado",
+   "Cable flojo"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa #100R.",
+   "Mide antes de cambiar una tarjeta: muchas veces es un cable o conector flojo."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "34",
+  "nombre": "Bajo voltaje",
+  "simple": "El voltaje está demasiado bajo.",
+  "causas": [
+   "Falta una fase",
+   "Red baja"
+  ],
+  "arreglo": [
+   "Mide las tres fases.",
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa fusibles y bornes."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "35",
+  "nombre": "Falla de 40G y 40D a la vez",
+  "simple": "Los relés 40G y 40D están activos a la vez.",
+  "causas": [
+   "Relé pegado",
+   "Cable en corto"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa relés 40G y 40D."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "37",
+  "nombre": "Viaje en sentido inverso",
+  "simple": "La cabina se movió al revés.",
+  "causas": [
+   "Fases de motor invertidas",
+   "Encoder mal conectado"
+  ],
+  "arreglo": [
+   "Deja fuera de servicio.",
+   "Revisa conexión de motor y encoder."
+  ],
+  "peligro": "Movimiento no ordenado de la cabina.",
+  "pieza": "maquina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "40",
+  "nombre": "Falla del encoder rotativo",
+  "simple": "Falla el encoder de la máquina.",
+  "causas": [
+   "Cable flojo",
+   "Encoder malogrado",
+   "Malla sin tierra"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa cable, conector y tierra del encoder."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "41",
+  "nombre": "Sobrevelocidad en baja velocidad",
+  "simple": "La cabina se pasó de velocidad en marcha lenta.",
+  "causas": [
+   "Encoder con falla",
+   "Freno débil"
+  ],
+  "arreglo": [
+   "Revisa encoder y freno."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "42",
+  "nombre": "Falla OFF de #50",
+  "simple": "El relé/contactor #50 no se apagó.",
+  "causas": [
+   "Contactos pegados"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa #50."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "43",
+  "nombre": "Falla del circuito SPD",
+  "simple": "Falla el circuito que mide la velocidad.",
+  "causas": [
+   "Tarjeta con falla",
+   "Encoder"
+  ],
+  "arreglo": [
+   "Revisa el encoder.",
+   "Llama a soporte."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "44",
+  "nombre": "Falla del optoacoplador del transistor regenerativo",
+  "simple": "Falla la parte que controla el frenado regenerativo.",
+  "causas": [
+   "Tarjeta del variador con falla"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Espera que se descarguen los condensadores del variador (mide 0 V en el bus DC) antes de tocar.",
+   "Llama a soporte."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "46",
+  "nombre": "Encoder conectado al revés",
+  "simple": "Los cables del encoder están invertidos.",
+  "causas": [
+   "Fases A y B invertidas"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Intercambia las fases A y B del encoder según el manual."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "50",
+  "nombre": "Sobrevelocidad en alta velocidad",
+  "simple": "La cabina se pasó de velocidad en marcha rápida.",
+  "causas": [
+   "Freno débil",
+   "Encoder con falla"
+  ],
+  "arreglo": [
+   "Deja fuera de servicio.",
+   "Revisa freno y encoder."
+  ],
+  "peligro": "Exceso de velocidad.",
+  "pieza": "freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "51",
+  "nombre": "Desviación de velocidad",
+  "simple": "La velocidad real se aleja de la ordenada.",
+  "causas": [
+   "Encoder con falla",
+   "Sobrecarga",
+   "Freno que roza"
+  ],
+  "arreglo": [
+   "Revisa encoder, carga y freno."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "60",
+  "nombre": "Error en tabla de altura de pisos",
+  "simple": "La tabla de altura de pisos tiene un error.",
+  "causas": [
+   "Medición de pisos fallida"
+  ],
+  "arreglo": [
+   "Repite la medición de pisos (MODE 11 según el manual)."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "61",
+  "nombre": "Error de posición al volver de un corte de luz",
+  "simple": "Tras un corte de luz, la posición no coincide.",
+  "causas": [
+   "Cabina movida durante el corte"
+  ],
+  "arreglo": [
+   "Deja que haga su viaje de corrección.",
+   "Revisa los sensores de piso."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "62",
+  "nombre": "Error de posición en operación normal",
+  "simple": "La posición de la cabina no coincide en marcha normal.",
+  "causas": [
+   "Cables patinando",
+   "Sensores de piso con falla"
+  ],
+  "arreglo": [
+   "Revisa sensores y pantallas de piso.",
+   "Revisa patinaje de cables."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "63",
+  "nombre": "Falla ON de SDS",
+  "simple": "Falla el switch de desaceleración (SDS).",
+  "causas": [
+   "Switch malogrado o desajustado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el switch SDS."
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "64",
+  "nombre": "Velocidad anormal en SD",
+  "simple": "La velocidad al pasar el switch de desaceleración es anormal.",
+  "causas": [
+   "Switch SD mal ubicado",
+   "Encoder"
+  ],
+  "arreglo": [
+   "Revisa ubicación de los switches SD.",
+   "Revisa el encoder."
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "70",
+  "nombre": "Error de suma ROM",
+  "simple": "La memoria del programa tiene error.",
+  "causas": [
+   "Tarjeta con falla"
+  ],
+  "arreglo": [
+   "Llama a soporte."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "72",
+  "nombre": "Redrive frecuente",
+  "simple": "Reintenta arrancar muy seguido.",
+  "causas": [
+   "Freno, puertas o seguridad con fallas intermitentes"
+  ],
+  "arreglo": [
+   "Busca la falla principal en el historial."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "73",
+  "nombre": "Falla OFF de POSI",
+  "simple": "El sensor de posición (POSI) no se apaga.",
+  "causas": [
+   "Sensor POSI malogrado o sucio"
+  ],
+  "arreglo": [
+   "Revisa el sensor de posición."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "74",
+  "nombre": "Safety drive frecuente",
+  "simple": "El ascensor hace viajes de seguridad muy seguido.",
+  "causas": [
+   "Fallas que se repiten"
+  ],
+  "arreglo": [
+   "Revisa el historial de fallas."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "75",
+  "nombre": "Térmico del disipador del transistor",
+  "simple": "Se calentó el disipador de los transistores.",
+  "causas": [
+   "Ventilador parado",
+   "Disipador sucio"
+  ],
+  "arreglo": [
+   "Revisa el ventilador.",
+   "Limpia el disipador."
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "76",
+  "nombre": "Error de tiempo de nivelación lenta",
+  "simple": "Tarda demasiado en nivelar en marcha lenta.",
+  "causas": [
+   "Sensores de nivel con falla",
+   "Freno"
+  ],
+  "arreglo": [
+   "Revisa sensores de nivel.",
+   "Revisa el freno."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "77",
+  "nombre": "Térmico de la máquina de puertas",
+  "simple": "Se calentó el motor del operador de puertas.",
+  "causas": [
+   "Puerta trabada",
+   "Operador forzado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa que la puerta corra libre.",
+   "Limpia pisadera y guías."
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "80",
+  "nombre": "Falla de comunicación SDA de grupo",
+  "simple": "Falla la comunicación del grupo de ascensores.",
+  "causas": [
+   "Cable de grupo dañado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el cable de grupo."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "83",
+  "nombre": "Error de compensación de carga",
+  "simple": "Falla la compensación de carga.",
+  "causas": [
+   "Pesacargas descalibrado"
+  ],
+  "arreglo": [
+   "Revisa y calibra el pesacargas."
+  ],
+  "pieza": "pesacargas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "85",
+  "nombre": "Sobre-trabajo (over duty)",
+  "simple": "El equipo trabajó más de lo permitido.",
+  "causas": [
+   "Uso excesivo seguido"
+  ],
+  "arreglo": [
+   "Deja enfriar.",
+   "Revisa ventilación."
+  ],
+  "pieza": "maquina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "86",
+  "nombre": "Open lock (no abre)",
+  "simple": "La puerta no termina de abrir.",
+  "causas": [
+   "Puerta trabada",
+   "Operador con falla"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa operador y pisadera."
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_lg_igbt",
+  "codigo": "87",
+  "nombre": "Close lock (no cierra)",
+  "simple": "La puerta no termina de cerrar.",
+  "causas": [
+   "Algo en la pisadera",
+   "Contacto de puerta/cerradura"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Limpia la pisadera.",
+   "Revisa contactos de puerta.",
+   "Nunca puentees un contacto de seguridad para que el ascensor ande."
+  ],
+  "pieza": "puerta_cabina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/SIGMA/Manual_IGBT.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "sigma_si210",
+  "codigo": "031",
+  "nombre": "ERR_DC_OV - Sobrevoltaje del bus DC",
+  "simple": "El voltaje del bus DC del variador está muy alto.",
+  "causas": [
+   "Desaceleración muy corta",
+   "Mucha energía regenerada",
+   "Voltaje de red alto"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Espera que se descarguen los condensadores del variador (mide 0 V en el bus DC) antes de tocar.",
+   "Revisa resistencia de frenado.",
+   "Mide voltaje de red."
+  ],
+  "pieza": "variador",
+  "fuente": "https://pdfcoffee.com/otis-sigma-si210pdf-pdf-free.html"
+ },
+ {
+  "equipo": "sigma_si210",
+  "codigo": "052",
+  "nombre": "Detección de giro inverso del variador",
+  "simple": "El variador detectó giro al revés.",
+  "causas": [
+   "Fases de motor o encoder invertidas"
+  ],
+  "arreglo": [
+   "Deja fuera de servicio.",
+   "Revisa conexión de motor y encoder."
+  ],
+  "pieza": "maquina",
+  "fuente": "https://pdfcoffee.com/otis-sigma-si210pdf-pdf-free.html"
+ },
+ {
+  "equipo": "sigma_si210",
+  "codigo": "116",
+  "nombre": "ERR_LDU - POSI ON (LDU)",
+  "simple": "Falla el sensor LDU; anda, pero sin compensación de cable.",
+  "causas": [
+   "Sensor LDU malogrado"
+  ],
+  "arreglo": [
+   "Revisa el sensor LDU y cámbialo si está malo."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://pdfcoffee.com/otis-sigma-si210pdf-pdf-free.html"
+ },
+ {
+  "equipo": "sigma_si210",
+  "codigo": "117",
+  "nombre": "ERR_LDD - POSI ON (LDD)",
+  "simple": "Falla el sensor LDD; anda, pero sin compensación de cable.",
+  "causas": [
+   "Sensor LDD malogrado"
+  ],
+  "arreglo": [
+   "Revisa el sensor LDD."
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://pdfcoffee.com/otis-sigma-si210pdf-pdf-free.html"
+ },
+ {
+  "equipo": "sigma_si210",
+  "codigo": "125",
+  "nombre": "ERR_BRAKE_OFF - Falla de freno abierto",
+  "simple": "Hay un problema con la apertura del freno.",
+  "causas": [
+   "Micro del freno desajustado",
+   "Freno no abre"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea (candado y tarjeta) el interruptor principal antes de tocar.",
+   "Revisa el freno y su micro."
+  ],
+  "pieza": "freno",
+  "fuente": "https://pdfcoffee.com/otis-sigma-si210pdf-pdf-free.html"
+ },
+ {
+  "equipo": "sigma_si210",
+  "codigo": "193",
+  "nombre": "Voltaje de puerta fuera de rango",
+  "simple": "El voltaje del operador de puertas está fuera de rango (bajo 77 V o sobre 154 V AC).",
+  "causas": [
+   "Transformador o fusible con falla",
+   "Red inestable"
+  ],
+  "arreglo": [
+   "Mide el voltaje de alimentación de puertas."
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://pdfcoffee.com/otis-sigma-si210pdf-pdf-free.html"
+ },
  {
   "equipo": "as380",
   "codigo": "02",
@@ -8289,6 +11720,3505 @@ ASC.codigos = [
   ],
   "pieza": "freno",
   "fuente": "http://www.gkbpq.com/View_News.asp?ID=272"
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H1",
+  "nombre": "No traba la puerta: falta la señal 140",
+  "simple": "El control mandó cerrar la puerta, pero la cadena de seguridad de puertas (señal 140) no se cerró a tiempo.",
+  "causas": [
+   "Cerradura o contacto de puerta que no cierra bien",
+   "Cable suelto en la cadena de seguridad de puertas",
+   "Tiempo de espera de traba ('door lock wait') muy corto"
+  ],
+  "arreglo": [
+   "Fíjate en qué piso pasa y revisa la cerradura y el contacto de esa puerta",
+   "Con el multímetro sigue la cadena de seguridad hasta encontrar el contacto abierto",
+   "Si todo está bien, sube un poco el parámetro 'door lock wait'",
+   "Nunca puentees un contacto de puerta"
+  ],
+  "pieza": "cerradura",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H2",
+  "nombre": "Se pasó el tiempo máximo de piso a piso",
+  "simple": "La cabina tardó demasiado en llegar al siguiente piso.",
+  "causas": [
+   "Los interruptores magnéticos ML1 y ML2 no se activan en la zona de puerta",
+   "Parámetro 'Max. Floor to floor' muy bajo",
+   "El variador quedó dentro de su menú y no arranca aunque el control lo pide"
+  ],
+  "arreglo": [
+   "En inspección, mira si ML1 y ML2 se prenden en cada zona de puerta",
+   "Revisa que el variador no esté dentro de su menú",
+   "Si todo está bien, sube el parámetro 'Max. Floor to floor'"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H3",
+  "nombre": "La puerta no cierra por mucho tiempo",
+  "simple": "La puerta no cerró (no llegó la señal 140) dentro del tiempo y el ascensor quedó fuera de servicio.",
+  "causas": [
+   "Algo traba la puerta o el operador no la cierra",
+   "Contacto de puerta o de cerradura abierto (señal 140)",
+   "Parámetro 'door open error' muy bajo"
+  ],
+  "arreglo": [
+   "Mira si la puerta cierra completa y nada la traba",
+   "Si la puerta está cerrada y sigue el error, mide los contactos de puerta y la señal 140",
+   "Si sale muy seguido sin falla real, sube el parámetro 'door open error'"
+  ],
+  "pieza": "puerta_piso",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H4",
+  "nombre": "Se pasó el tiempo máximo en velocidad lenta",
+  "simple": "La cabina anduvo en velocidad lenta demasiado tiempo sin llegar al nivel del piso.",
+  "causas": [
+   "ML1 y ML2 no se activan en la zona de puerta al llegar",
+   "Imán de zona de puerta movido o caído",
+   "Parámetro 'Max. Low speed time' muy bajo"
+  ],
+  "arreglo": [
+   "En inspección, revisa que ML1 y ML2 se activen en la zona de puerta",
+   "Revisa que los imanes de zona estén en su sitio",
+   "Si todo está bien, sube el parámetro poco a poco hasta un valor que funcione"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H5",
+  "nombre": "Los dos límites (arriba y abajo) están abiertos",
+  "simple": "El control ve abiertos al mismo tiempo los límites de subida y de bajada, y eso no puede pasar.",
+  "causas": [
+   "Interruptor magnético de límite dañado",
+   "Imán de límite movido o caído",
+   "Cable cortado o suelto"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa los interruptores de límite y sus imanes en el hueco",
+   "Mide el cableado hasta el tablero"
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H6",
+  "nombre": "El límite de arriba (818) se cortó bajando",
+  "simple": "El interruptor magnético del piso más alto (818) se cortó mientras la cabina bajaba; solo debe cortarse al llegar arriba.",
+  "causas": [
+   "Imán redondo puesto al revés (lado rojo y lado negro)",
+   "Imán de más o mal ubicado en el hueco",
+   "Interruptor magnético 818 dañado"
+  ],
+  "arreglo": [
+   "Revisa los lados rojo y negro de los imanes redondos",
+   "Revisa que el 818 solo pase por su imán en el último piso",
+   "Mide el interruptor y su cable"
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H7",
+  "nombre": "El límite de abajo (817) se cortó subiendo",
+  "simple": "El interruptor magnético del piso más bajo (817) se cortó mientras la cabina subía; solo debe cortarse al llegar abajo.",
+  "causas": [
+   "Imán redondo puesto al revés (lado rojo y lado negro)",
+   "Imán de más o mal ubicado en el hueco",
+   "Interruptor magnético 817 dañado"
+  ],
+  "arreglo": [
+   "Revisa los lados rojo y negro de los imanes redondos",
+   "Revisa que el 817 solo pase por su imán en el primer piso",
+   "Mide el interruptor y su cable"
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H8",
+  "nombre": "Circuito PTC del motor abierto: motor caliente",
+  "simple": "El sensor de temperatura (PTC) del motor cortó: el motor está muy caliente o el circuito PTC está abierto.",
+  "causas": [
+   "Motor recalentado",
+   "Cable del PTC suelto o cortado",
+   "Sensor PTC dañado"
+  ],
+  "arreglo": [
+   "Deja enfriar el motor",
+   "Mide en el borne PTC de la ARL-300: debe haber 24 Vdc",
+   "Si no hay 24 Vdc, sigue el circuito PTC para ver qué contacto está abierto"
+  ],
+  "pieza": "maquina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H9",
+  "nombre": "Error de sistema",
+  "simple": "Error interno de la tarjeta ARL-300.",
+  "causas": [
+   "Falla interna de la tarjeta (el manual no da más detalle)"
+  ],
+  "arreglo": [
+   "Anota el código y en qué momento salió",
+   "Llama al soporte técnico de Arkel o a tu proveedor"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H10",
+  "nombre": "Falla en la vigilancia de contactores (KRC)",
+  "simple": "La señal que vigila los contactores (entrada KRC) no está bien: en parada debe estar prendida y en viaje apagada.",
+  "causas": [
+   "Contacto auxiliar cerrado (NC) del contactor gastado o pegado",
+   "Cable suelto hacia la entrada KRC",
+   "Parámetro 'Contactor Check' mal elegido (ARL300 o ADrive)"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa los contactos NC de los contactores",
+   "Mide la entrada KRC: con la cabina parada debe tener señal y en viaje no",
+   "Revisa el parámetro 'Contactor Check'"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H11",
+  "nombre": "Señales ML1 y ML2 en corto entre sí",
+  "simple": "Los dos interruptores magnéticos de zona de puerta (ML1 y ML2) se prenden o apagan juntos, y deben hacerlo uno después del otro.",
+  "causas": [
+   "La distancia entre ML1 y ML2 no es 5 cm",
+   "La distancia del interruptor al imán no es 1 a 2 cm",
+   "ML1 y ML2 en orden invertido",
+   "Ruido eléctrico en los cables"
+  ],
+  "arreglo": [
+   "Mide: 5 cm entre ML1 y ML2, y 1 a 2 cm hasta el imán de zona",
+   "En inspección, bajando, ML1 debe prenderse antes que ML2 al llegar al piso",
+   "Si usas la tarjeta REVBA en el techo, el común de los interruptores va a ML0",
+   "Si todo está bien y sigue, el manual indica poner una resistencia de 1 kΩ / 2 W entre 1000 y ML1, y otra entre 1000 y ML2"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H12",
+  "nombre": "Los relés de puenteo de puertas SR2 y SR3 no se activan",
+  "simple": "Los relés que permiten nivelar con la puerta abierta (SR2 y SR3) no se activaron.",
+  "causas": [
+   "Falla en las señales ML1 y ML2",
+   "Interruptor magnético o imán de zona mal puesto"
+  ],
+  "arreglo": [
+   "Revisa ML1 y ML2 y sus imanes",
+   "En inspección, mira que ML1 y ML2 se activen en cada zona de puerta"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H13",
+  "nombre": "El relé SR2 o SR3 no se suelta",
+  "simple": "Uno de los relés de puenteo de puertas (SR2 o SR3) se quedó activado.",
+  "causas": [
+   "Falla en las señales ML1 y ML2",
+   "Relé pegado"
+  ],
+  "arreglo": [
+   "Revisa ML1 y ML2 y sus imanes",
+   "Deja el ascensor fuera de servicio hasta encontrar la causa"
+  ],
+  "peligro": "Si un relé de puenteo queda pegado, la cabina podría moverse con la puerta abierta.",
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H14",
+  "nombre": "Falla en la vigilancia del relé de puenteo SR1",
+  "simple": "Al terminar el puenteo de puertas, la señal 140 no se cortó como debía.",
+  "causas": [
+   "Hay un puente (cable) en la cadena de seguridad",
+   "Conexiones distintas a los diagramas de Arkel"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Busca y quita cualquier puente en la cadena de seguridad",
+   "Compara el cableado con el diagrama de seguridad de Arkel"
+  ],
+  "peligro": "Un puente en la cadena de seguridad puede hacer que el ascensor viaje con puertas abiertas. Nunca dejes puentes.",
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H15",
+  "nombre": "Falla de la alimentación trifásica (RST)",
+  "simple": "La tarjeta no detecta las 3 fases en los bornes L1-L2-L3.",
+  "causas": [
+   "Falta una fase o hay un fusible quemado",
+   "Cable suelto en L1-L2-L3",
+   "Falla en el detector de fases de la tarjeta"
+  ],
+  "arreglo": [
+   "Mide en AC las 3 fases en L1, L2 y L3",
+   "Si falta una fase, búscala hacia atrás (fusibles, interruptor principal)",
+   "Si llegan las 3 fases y sigue el error, la tarjeta puede tener dañado su detector de fases"
+  ],
+  "peligro": "Tensión trifásica peligrosa: mide con multímetro adecuado y equipo de protección.",
+  "pieza": "interruptor_principal",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H16",
+  "nombre": "La alimentación de 24 V (100) está baja",
+  "simple": "La tensión entre los bornes 100 y 1000 está baja; lo normal es de 22 a 24 Vdc.",
+  "causas": [
+   "Falla en el transformador de aislamiento",
+   "Puente rectificador dañado",
+   "Condensador de la tarjeta ARL-300 dañado"
+  ],
+  "arreglo": [
+   "Mide la tensión entre 100 y 1000",
+   "Mide la salida del transformador y del puente rectificador",
+   "Si todo eso está bien, el problema puede ser el condensador de la tarjeta"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H17",
+  "nombre": "Señal PTC abierta: motor recalentado",
+  "simple": "El sensor de temperatura (PTC) del motor está abierto: el motor se calentó o el circuito PTC está cortado.",
+  "causas": [
+   "Motor recalentado",
+   "Cable del PTC suelto o cortado",
+   "Sensor PTC dañado"
+  ],
+  "arreglo": [
+   "Deja enfriar el motor",
+   "Mide en el borne PTC: debe haber 24 Vdc",
+   "Sigue el circuito PTC para ver qué contacto está abierto"
+  ],
+  "pieza": "maquina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H18",
+  "nombre": "Falla que viene del variador VVVF",
+  "simple": "El variador avisó una falla al control.",
+  "causas": [
+   "Falla en el variador (mira el código en su pantalla)",
+   "Si el variador no muestra falla: falta la señal de 24 Vdc en el borne PI de la tarjeta KBK4"
+  ],
+  "arreglo": [
+   "Lee y anota el código que muestra el variador",
+   "Busca ese código del variador y arréglalo primero",
+   "Si el variador no tiene falla, mide el borne PI de la KBK4: debe tener 24 Vdc"
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H19",
+  "nombre": "Dos controles del grupo tienen el mismo ID",
+  "simple": "En un grupo de ascensores, dos controles tienen el mismo nombre (ID).",
+  "causas": [
+   "Parámetro de ID de grupo repetido"
+  ],
+  "arreglo": [
+   "En el menú de parámetros, pon un ID distinto en cada control (uno A, otro B, etc.)"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H20",
+  "nombre": "Falta la señal 120 (STOP): ascensor bloqueado",
+  "simple": "Se cortó la cadena de seguridad en la señal 120 y el ascensor se bloqueó.",
+  "causas": [
+   "Un contacto de la serie de seguridad está abierto",
+   "Falta tensión (220 Vac) a la salida del transformador de aislamiento"
+  ],
+  "arreglo": [
+   "Mide 220 Vac a la salida del transformador de aislamiento",
+   "Con el multímetro, sigue la serie de seguridad para encontrar el contacto abierto",
+   "Arregla ese contacto. Nunca lo puentees"
+  ],
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H21",
+  "nombre": "Falla en la vigilancia del relé de seguridad externo (hidráulico)",
+  "simple": "En ascensores hidráulicos con contactores externos, la vigilancia por la entrada PI (tarjeta KBK4) no es correcta.",
+  "causas": [
+   "Contactor externo pegado",
+   "Contacto NC del contactor dañado",
+   "Cable suelto hacia la entrada PI"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa los contactores externos y sus contactos NC",
+   "Con la cabina parada debe haber señal en PI; en viaje no"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H22",
+  "nombre": "Se cumplió el tiempo de servicio",
+  "simple": "Se cumplió el tiempo de servicio programado en el control.",
+  "causas": [
+   "Parámetro 'service time' vencido"
+  ],
+  "arreglo": [
+   "Cambia el parámetro 'service time'",
+   "Revisa si 'End of service time' está en seguir funcionando o en parar"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H23",
+  "nombre": "Falla en la prueba de la válvula A3 (HDU)",
+  "simple": "En hidráulicos con doble válvula (protección contra movimiento no controlado), la autoprueba de las válvulas falló.",
+  "causas": [
+   "Una de las dos válvulas no responde",
+   "Parámetro 'UCM Safety Valve' en 'Double Valve chk' sin tener dos válvulas en serie"
+  ],
+  "arreglo": [
+   "Revisa que el bloque tenga dos válvulas eléctricas en serie",
+   "Revisa la bobina y el cableado de cada válvula",
+   "Si no hay doble válvula, revisa el parámetro 'UCM Safety Valve'"
+  ],
+  "peligro": "Si la válvula de seguridad falla, la cabina podría moverse sola con la puerta abierta.",
+  "pieza": "bloque_valvulas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H24",
+  "nombre": "Se detectó movimiento no controlado (UCM)",
+  "simple": "El control detectó que la cabina se movió fuera de la zona de puerta sin orden.",
+  "causas": [
+   "La distancia entre ML1 y ML2 no es 5 cm",
+   "Preapertura de puertas o renivelación activadas en el menú"
+  ],
+  "arreglo": [
+   "Mide la distancia entre ML1 y ML2: debe ser 5 cm",
+   "Desactiva la preapertura de puertas y la renivelación en el menú de la ARL-300",
+   "Antes de volver a servicio, revisa que el freno (o las válvulas) sostengan la cabina"
+  ],
+  "peligro": "Movimiento de cabina sin control: no dejes el ascensor en servicio sin encontrar la causa.",
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H25",
+  "nombre": "Falla de contactores (bloqueo permanente)",
+  "simple": "La falla H10 se repitió 3 veces y el ascensor quedó bloqueado.",
+  "causas": [
+   "Contacto NC de un contactor gastado o pegado",
+   "Contactor que no suelta bien"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa los contactores y sus contactos NC",
+   "Con la cabina parada debe haber señal; en viaje no",
+   "Recién después borra la lista de fallas ('fault list') en los parámetros"
+  ],
+  "peligro": "Un contactor pegado puede dejar el motor con energía. Revísalo antes de borrar la falla.",
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H26",
+  "nombre": "Vigilancia del freno",
+  "simple": "Los micro-switches del freno no dan bien la señal en la entrada 805: en parada debe haber 24 Vdc y en viaje no.",
+  "causas": [
+   "Micro-switch del freno desajustado o dañado",
+   "Cable suelto hacia la entrada 805",
+   "Vigilancia del freno activada en el menú sin usar micros en el control"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa el ajuste y el cableado de los micros del freno",
+   "Si la vigilancia la hace el variador, desactívala en el menú del control"
+  ],
+  "pieza": "micro_freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H27",
+  "nombre": "Vigilancia del freno (bloqueo permanente)",
+  "simple": "La falla del freno H26 salió 2 veces seguidas y el ascensor quedó bloqueado.",
+  "causas": [
+   "Micro-switch del freno dañado o desajustado",
+   "Freno que no abre o no cierra bien",
+   "Vigilancia hecha por el variador pero activada también en el control"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa los micros del freno y sus cables",
+   "Si la vigilancia la hace el variador, desactívala en la ARL-300",
+   "Después borra la lista de fallas ('fault list')"
+  ],
+  "peligro": "El freno puede no estar trabajando bien. No devuelvas el ascensor al servicio sin revisarlo.",
+  "pieza": "freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H28",
+  "nombre": "Puerta puenteada",
+  "simple": "Al abrir la puerta en un piso, la cadena de seguridad (130-140) no se cortó: parece que hay un puente.",
+  "causas": [
+   "Puente (cable) en la cadena de seguridad de puertas",
+   "Contacto de puerta pegado o cableado mal"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Busca y quita cualquier puente en la cadena de seguridad",
+   "Comprueba que al abrir las puertas se corta la cadena",
+   "Después borra la lista de fallas ('fault list')"
+  ],
+  "peligro": "Con la puerta puenteada el ascensor puede viajar con la puerta abierta. Riesgo de caída y atrapamiento.",
+  "pieza": "cerradura",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H30",
+  "nombre": "Secuencia de ML1-ML2 errada o no se puede leer",
+  "simple": "Los interruptores de zona de puerta ML1 y ML2 cambiaron en un orden que no es el esperado.",
+  "causas": [
+   "ML1 o ML2 desconectado o dañado",
+   "Cable de fuerza pasando junto a ML1 o ML2",
+   "ML1 y ML2 conectados al revés",
+   "Imanes mal ubicados"
+  ],
+  "arreglo": [
+   "En inspección, subiendo: al llegar a la zona primero se activa ML2 y luego ML1",
+   "Al salir de la zona, primero se apaga ML2 y luego ML1; bajando es al revés",
+   "Aleja los cables de ML1 y ML2 de los cables de fuerza"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H31",
+  "nombre": "El número de imanes aprendidos no es correcto",
+  "simple": "La cantidad de imanes de zona de puerta no coincide con el parámetro de número de pisos.",
+  "causas": [
+   "Parámetro 'Number of floors' mal puesto",
+   "Falta un imán de zona o hay uno de más"
+  ],
+  "arreglo": [
+   "Cuenta los imanes de zona de puerta en el hueco",
+   "Pon el mismo número en el parámetro 'Number of floors'"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H32",
+  "nombre": "Límites forzados 817/818 cortados en la dirección equivocada",
+  "simple": "Se cortó el límite de abajo (817) subiendo, o el de arriba (818) bajando, lejos del piso extremo.",
+  "causas": [
+   "Interruptores SKSR1 o SKSR2 dañados",
+   "Falla mecánica o eléctrica en los límites",
+   "Cable suelto en las entradas 817 o 818"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa SKSR1 y SKSR2 mecánica y eléctricamente",
+   "Mide las entradas 817 y 818"
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H33",
+  "nombre": "Dirección del encoder al revés",
+  "simple": "La distancia recorrida cuenta al revés: aumenta bajando o baja subiendo.",
+  "causas": [
+   "Canales A y B del encoder cruzados"
+  ],
+  "arreglo": [
+   "Revisa la conexión del encoder",
+   "Intercambia los canales A y B"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H34",
+  "nombre": "No hay señal de encoder",
+  "simple": "La ARL-300 no recibe los pulsos del encoder que le pasa el variador ADrive.",
+  "causas": [
+   "Cable suelto entre el ADrive y la ARL-300",
+   "Conexión mal hecha entre las dos tarjetas"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "OA del ADrive va a A- de la ARL-300; OB del ADrive va a B- de la ARL-300",
+   "A y B de la ARL-300 van al borne +15 del ADrive"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H35",
+  "nombre": "Vigilancia del contacto UCM del limitador",
+  "simple": "La entrada PI2, que vigila el contacto UCM del limitador de velocidad, detectó un problema.",
+  "causas": [
+   "Contacto UCM del limitador no conectado a PI2",
+   "Cable suelto",
+   "Limitador sin contacto UCM y relé PR2 mal programado"
+  ],
+  "arreglo": [
+   "Revisa que el contacto UCM del limitador llegue a PI2",
+   "Si el limitador no tiene ese contacto, programa el relé PR2 como 'second motor control'",
+   "Esta falla no se quita apagando: entra al menú y usa 'erase fault' después de arreglar"
+  ],
+  "pieza": "limitador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "arkel_arl300",
+  "codigo": "H36",
+  "nombre": "Falla del límite superior (hidráulico)",
+  "simple": "En un hidráulico, la cabina llegó al final de carrera de arriba y queda fuera de servicio hasta bajar al primer piso.",
+  "causas": [
+   "Final de carrera superior mal ubicado",
+   "Desaceleración o distancia de parada mal ajustadas",
+   "Retardo de parada del motor muy alto"
+  ],
+  "arreglo": [
+   "Revisa la posición del final de carrera superior",
+   "Revisa la desaceleración y la distancia de parada",
+   "Baja el ajuste de retardo de parada del motor ('motor stop delay')"
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/ARKEL/ARL-300%20Error%20Codes%20and%20Possible%20Solutions.V202.en.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "01 XX",
+  "nombre": "Contacto de cerrojo RK o RKD trabado en el piso XX",
+  "simple": "El contacto de cerrojo de la puerta del piso XX está trabado.",
+  "causas": [
+   "Contacto de cerrojo trabado",
+   "Piezas mecánicas de la puerta del piso XX con problema",
+   "Tipo de puerta mal programado en el programa del ascensor"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa el contacto de cerrojo y la mecánica de la puerta del piso XX",
+   "Limpia y ajusta; no puentees el contacto"
+  ],
+  "pieza": "cerradura",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "06 XX",
+  "nombre": "Parada tras 3 intentos fallidos de trabar la puerta en el piso XX",
+  "simple": "La puerta del piso XX no pudo trabar en 3 intentos y el ascensor paró.",
+  "causas": [
+   "Objeto extraño en la puerta o en la pisadera",
+   "Contacto de cerrojo dañado",
+   "Mecánica de la puerta del piso XX desajustada"
+  ],
+  "arreglo": [
+   "Revisa y limpia la puerta y la pisadera del piso XX",
+   "Revisa el contacto de cerrojo y su mecánica",
+   "En TCI el ascensor queda fuera de servicio 15 minutos y luego vuelve a intentar"
+  ],
+  "pieza": "cerradura",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "07 01",
+  "nombre": "Falla TSO, puerta principal: no llegó a 'abierta'",
+  "simple": "El interruptor TSO (puerta de cabina totalmente abierta) no actuó dentro de 30 segundos después de la orden de abrir.",
+  "causas": [
+   "Interruptor TSO dañado o mal ajustado",
+   "El operador de puertas no ejecutó la orden de abrir",
+   "Falta el aviso de puerta destrabada en cabinas con traba"
+  ],
+  "arreglo": [
+   "Mira si la puerta abre completa",
+   "Revisa y ajusta el interruptor TSO",
+   "Revisa el operador de puertas y su orden de abrir"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "07 02",
+  "nombre": "Falla TSO, puerta principal: dice abierta estando cerrada",
+  "simple": "El interruptor TSO dice que la puerta de cabina está abierta, pero el contacto de puerta TK está cerrado.",
+  "causas": [
+   "Interruptor TSO dañado o mal ajustado",
+   "Cable del TSO en corto"
+  ],
+  "arreglo": [
+   "Revisa y ajusta el interruptor TSO",
+   "Mide su cable hasta el control"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "08 01",
+  "nombre": "Falla TSOD, puerta trasera",
+  "simple": "El interruptor TSOD (puerta trasera de cabina abierta) falló, igual que el error 07 01.",
+  "causas": [
+   "Interruptor TSOD dañado o mal ajustado",
+   "El operador de la puerta trasera no ejecutó la orden"
+  ],
+  "arreglo": [
+   "Mira si la puerta trasera abre completa",
+   "Revisa y ajusta el interruptor TSOD"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "09 NN",
+  "nombre": "Cabina bloqueada en el piso más de 4 minutos",
+  "simple": "La cabina está en un piso y no arranca hace más de 4 minutos aunque hay llamadas.",
+  "causas": [
+   "Dispositivo de reapertura de puerta activado (fotocélula, cortina o botón de abrir)",
+   "En hidráulicos con anti-deslizamiento: disparó el contacto del limitador porque la cabina bajó o la polea del limitador está dura"
+  ],
+  "arreglo": [
+   "Revisa la cortina o fotocélula y el botón de abrir puerta",
+   "Con la Unidad de Diagnóstico I mira la función 05 00, columna 0d, para ver qué señal está activa",
+   "En hidráulicos revisa el limitador y su polea"
+  ],
+  "pieza": "cortina_luminosa",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0A 2F",
+  "nombre": "Cable flojo",
+  "simple": "Se activó el contacto de cable flojo.",
+  "causas": [
+   "Cable de suspensión flojo o destensado",
+   "Contacto de cable flojo desajustado"
+  ],
+  "arreglo": [
+   "No muevas la cabina en normal",
+   "Revisa los cables de suspensión y sus amarres",
+   "Revisa y ajusta el contacto de cable flojo"
+  ],
+  "peligro": "Un cable flojo puede indicar que la cabina o el contrapeso se trabó. Revisa antes de mover.",
+  "pieza": "cable_flojo",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0A 31",
+  "nombre": "Puerta de cabina no cerrada",
+  "simple": "La puerta de cabina no está cerrada.",
+  "causas": [
+   "Algo traba la puerta de cabina",
+   "Contacto de puerta de cabina desajustado o dañado"
+  ],
+  "arreglo": [
+   "Mira si la puerta de cabina cierra completa",
+   "Revisa y ajusta el contacto de puerta de cabina",
+   "No puentees el contacto"
+  ],
+  "pieza": "contacto_puerta_cabina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0A 32",
+  "nombre": "Puerta de piso no trabada",
+  "simple": "Una puerta de piso no está trabada.",
+  "causas": [
+   "Cerradura de piso desajustada",
+   "Contacto de cerradura dañado",
+   "Puerta de piso que no cierra completa"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa cerraduras y contactos de las puertas de piso",
+   "No puentees la cerradura"
+  ],
+  "pieza": "cerradura",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0A 33",
+  "nombre": "Aceite a más de 70 °C",
+  "simple": "El aceite del ascensor hidráulico pasó de 70 °C.",
+  "causas": [
+   "Muchos viajes seguidos",
+   "Sala de máquinas muy caliente o sin ventilación"
+  ],
+  "arreglo": [
+   "Deja enfriar el aceite",
+   "Revisa la ventilación de la sala de máquinas",
+   "Revisa el sensor de temperatura del aceite"
+  ],
+  "pieza": "central_hidraulica",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0A 34",
+  "nombre": "Vigilancia de nivel de aceite",
+  "simple": "La vigilancia del nivel de aceite del hidráulico se activó.",
+  "causas": [
+   "Nivel de aceite bajo",
+   "Fuga de aceite",
+   "Sensor de nivel con falla"
+  ],
+  "arreglo": [
+   "Revisa el nivel de aceite del tanque",
+   "Busca fugas en mangueras, pistón y bloque",
+   "Revisa el sensor de nivel"
+  ],
+  "pieza": "central_hidraulica",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0b 01",
+  "nombre": "Barrera de luz de la puerta principal interrumpida",
+  "simple": "La barrera de luz (fotocélula) de la puerta principal estuvo cortada más tiempo del permitido.",
+  "causas": [
+   "Algo tapa la barrera de luz",
+   "Barrera sucia o desalineada",
+   "Barrera de luz dañada"
+  ],
+  "arreglo": [
+   "Quita lo que tape la barrera",
+   "Limpia y alinea la barrera de luz",
+   "Mide la barrera y su cable"
+  ],
+  "pieza": "cortina_luminosa",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0b 04",
+  "nombre": "Falla TSO: puerta principal dice abierta tras 3 reinicios",
+  "simple": "El interruptor TSO sigue diciendo que la puerta de cabina está abierta, después de tres reinicios, aunque la puerta está cerrada.",
+  "causas": [
+   "Interruptor TSO dañado o mal ajustado",
+   "Cable del TSO en corto"
+  ],
+  "arreglo": [
+   "Revisa y ajusta el interruptor TSO",
+   "Mide su cable hasta el control"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0C d4",
+  "nombre": "Operador de puertas (lado principal): bus interrumpido",
+  "simple": "Se cortó la comunicación (bus) con el operador de la puerta principal.",
+  "causas": [
+   "Cable de bus o conector suelto",
+   "Operador de puertas sin energía"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa conectores y cable de bus hasta el operador",
+   "Mide la alimentación del operador"
+  ],
+  "pieza": "cable_viajero",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0C dA",
+  "nombre": "Operador de puertas (lado principal): sobrecorriente",
+  "simple": "El operador de la puerta principal tomó demasiada corriente.",
+  "causas": [
+   "Puerta dura o trabada (roldanas, guiadores, pisadera)",
+   "Motor de puerta dañado"
+  ],
+  "arreglo": [
+   "Corta la energía y mueve la puerta a mano: debe correr suave",
+   "Limpia la pisadera y revisa roldanas y guiadores",
+   "Revisa el motor y sus cables"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0C dC",
+  "nombre": "Operador de puertas (lado principal): disipador caliente",
+  "simple": "El disipador del operador de la puerta principal se calentó demasiado.",
+  "causas": [
+   "Puerta dura que hace trabajar de más al operador",
+   "Poca ventilación en el operador"
+  ],
+  "arreglo": [
+   "Deja enfriar",
+   "Revisa que la puerta corra suave",
+   "Limpia el polvo del operador"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0C dd",
+  "nombre": "Operador de puertas (lado principal): motor de puerta caliente",
+  "simple": "El motor de la puerta principal se calentó demasiado.",
+  "causas": [
+   "Puerta dura o trabada",
+   "Motor de puerta dañado"
+  ],
+  "arreglo": [
+   "Deja enfriar",
+   "Revisa que la puerta corra suave a mano",
+   "Revisa el motor de puerta"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0d 1B",
+  "nombre": "Faltan pulsos (en inspección o rescate eléctrico)",
+  "simple": "La CPU no recibe pulsos del generador de pulsos (encoder) mientras la cabina se mueve en inspección.",
+  "causas": [
+   "Generador de pulsos dañado",
+   "Cable de pulsos suelto o cortado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa el generador de pulsos y su cable",
+   "Mide los pulsos antes de cambiar la tarjeta"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0d 2B",
+  "nombre": "Canales A y B de pulsos invertidos",
+  "simple": "Los canales A y B del generador de pulsos están cruzados.",
+  "causas": [
+   "Canales A y B conectados al revés"
+  ],
+  "arreglo": [
+   "Revisa la secuencia correcta en la tarjeta ESA (Isostop 60) o NIM (Isostop 25M)",
+   "Corrige la conexión de A y B"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0d 4B",
+  "nombre": "Velocidad real menor que la pedida",
+  "simple": "La cabina va más lenta de lo que pide la tarjeta MW1.",
+  "causas": [
+   "Se abrió un contacto de cerrojo en viaje",
+   "Faltan pulsos del generador de pulsos",
+   "Aceleración muy fuerte para el motor",
+   "Regulación del variador muy lenta"
+  ],
+  "arreglo": [
+   "Revisa los contactos de cerrojo",
+   "Revisa el generador de pulsos y su cable",
+   "Revisa los ajustes de aceleración del variador"
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0d 8B",
+  "nombre": "Velocidad mayor a 0,25 m/s con la cabina parada",
+  "simple": "La tarjeta MW1 ve velocidad aunque la cabina está parada.",
+  "causas": [
+   "El generador de pulsos manda pulsos estando parado",
+   "Ruido en el cable de pulsos (malla mal puesta)"
+  ],
+  "arreglo": [
+   "Revisa el generador de pulsos",
+   "Revisa que la malla del cable de pulsos esté bien conectada",
+   "Separa el cable de pulsos de los cables de fuerza"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "14 XX",
+  "nombre": "Contacto de cerrojo RK abierto en viaje (piso XX)",
+  "simple": "El contacto de cerrojo RK se abrió mientras la cabina viajaba.",
+  "causas": [
+   "Alguien abrió la puerta con la llave de emergencia",
+   "El magneto del cerrojo no empuja completo",
+   "Leva mal ajustada o que roza al pasar por el piso"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa el cerrojo y el contacto RK del piso XX",
+   "Ajusta la leva para que no roce",
+   "No puentees el contacto"
+  ],
+  "pieza": "cerradura",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "19 NN",
+  "nombre": "Zona de puerta no reconocida",
+  "simple": "La CPU no reconoce la paleta del piso (zona de puerta) aunque la cabina ya está parando.",
+  "causas": [
+   "Sensor de zona o paleta de piso desajustados",
+   "Paleta sucia o movida"
+  ],
+  "arreglo": [
+   "En inspección, revisa la paleta de ese piso y el sensor",
+   "Con la Unidad de Diagnóstico I mira la función 05 00, columna 05"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "1A YY",
+  "nombre": "Error de lectura del selector (debía ver OSCURO y ve CLARO)",
+  "simple": "El sensor LK leyó mal las paletas de piso: esperaba oscuro y vio claro.",
+  "causas": [
+   "Sensor LK o paletas de piso con problema",
+   "Cables de tracción patinan o hay vibraciones",
+   "Generador de pulsos dañado"
+  ],
+  "arreglo": [
+   "Revisa el sensor LK y las paletas de piso",
+   "Revisa la tracción (patinaje de cables)",
+   "Revisa el generador de pulsos"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "1b YY",
+  "nombre": "Error de lectura del selector (debía ver CLARO y ve OSCURO)",
+  "simple": "El sensor LK leyó mal las paletas de piso: esperaba claro y vio oscuro.",
+  "causas": [
+   "Sensor LK o paletas de piso con problema",
+   "Cables de tracción patinan o hay vibraciones",
+   "Generador de pulsos dañado"
+  ],
+  "arreglo": [
+   "Revisa el sensor LK y las paletas de piso",
+   "Revisa la tracción (patinaje de cables)",
+   "Revisa el generador de pulsos"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "1d YY",
+  "nombre": "Parada de emergencia por dirección de viaje incorrecta",
+  "simple": "Con el contactor de marcha activado y el freno abierto, no había dirección de viaje o había las dos a la vez.",
+  "causas": [
+   "Falla en las señales de dirección (subir/bajar)",
+   "Contactor de dirección con problema"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa los contactores de dirección",
+   "Con la Unidad de Diagnóstico I mira la función 05 00, columna 05"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "1E NN",
+  "nombre": "No desaceleró al llegar a los pisos extremos",
+  "simple": "Al pasar las paletas marcadas de los pisos extremos o los límites de inspección IFO/IFU, la desaceleración no había empezado.",
+  "causas": [
+   "Paletas de los pisos extremos movidas",
+   "Límites IFO/IFU desajustados"
+  ],
+  "arreglo": [
+   "Revisa las paletas de los pisos extremos",
+   "Revisa los límites IFO e IFU",
+   "NN muestra en hexadecimal la posición y qué límite actuó"
+  ],
+  "peligro": "Si no desacelera en los extremos, la cabina puede pasarse del piso.",
+  "pieza": "finales_carrera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "25 02",
+  "nombre": "Botón de llamada de piso dañado (BAJAR, lado principal)",
+  "simple": "Un botón de llamada de bajada del lado principal quedó trabado.",
+  "causas": [
+   "Botón trabado o hundido",
+   "Cable en corto en la botonera de piso"
+  ],
+  "arreglo": [
+   "Revisa los botones de bajada de las botoneras de piso",
+   "Mide el cable de la botonera"
+  ],
+  "pieza": "botonera_piso",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "25 04",
+  "nombre": "Botón de llamada de piso dañado (SUBIR, lado principal)",
+  "simple": "Un botón de llamada de subida del lado principal quedó trabado.",
+  "causas": [
+   "Botón trabado o hundido",
+   "Cable en corto en la botonera de piso"
+  ],
+  "arreglo": [
+   "Revisa los botones de subida de las botoneras de piso",
+   "Mide el cable de la botonera"
+  ],
+  "pieza": "botonera_piso",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "2C 00",
+  "nombre": "Error de lógica de los sensores LK/LN al renivelar",
+  "simple": "Al renivelar, los sensores LK y LN dieron una combinación que no debe pasar.",
+  "causas": [
+   "Velocidad de renivelación muy alta",
+   "Distancia entre LK y LN muy pequeña"
+  ],
+  "arreglo": [
+   "Revisa la velocidad de renivelación",
+   "Revisa la distancia entre LK y LN",
+   "Si la cambias, hay que hacer un nuevo aprendizaje (teach-in)"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "2E 00",
+  "nombre": "La renivelación tarda demasiado",
+  "simple": "La renivelación tardó más de 7 segundos (20 s en programas nuevos).",
+  "causas": [
+   "Velocidad de renivelación muy baja",
+   "En hidráulicos: volumen básico mal ajustado y la cabina tarda en moverse"
+  ],
+  "arreglo": [
+   "Revisa la velocidad de renivelación",
+   "En hidráulicos revisa el ajuste del bloque de válvulas"
+  ],
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "3C 00",
+  "nombre": "Error de lectura del sensor LK",
+  "simple": "El código de la paleta de piso no coincide con lo que se aprendió en el teach-in.",
+  "causas": [
+   "Sensor LK que rebota",
+   "Cables de tracción que patinan sobre la polea",
+   "Ruido eléctrico en la línea del LK",
+   "Paleta de piso sucia"
+  ],
+  "arreglo": [
+   "Limpia las paletas de piso",
+   "Revisa el sensor LK y su cable",
+   "Revisa el patinaje de los cables de tracción"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "3E 00",
+  "nombre": "Falla del dispositivo anti-deslizamiento (liberar limitador)",
+  "simple": "El magneto MAS se activa pero el contacto del limitador no abre.",
+  "causas": [
+   "Contacto del limitador dañado",
+   "Trinquete del limitador trabado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa el contacto y el trinquete del limitador",
+   "El manual indica poner dos arandelas de 6 mm entre el magneto y su placa si el recorrido del magneto es corto"
+  ],
+  "pieza": "limitador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "41 00",
+  "nombre": "Vigilancia de marcha: faltan pulsos",
+  "simple": "La CPU no recibió pulsos por más de 4 s (tracción) u 8 s (hidráulico) durante el viaje.",
+  "causas": [
+   "Generador de pulsos dañado",
+   "Cable de pulsos suelto",
+   "En hidráulicos: volumen básico mal ajustado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa el generador de pulsos y su cable",
+   "Mide los pulsos antes de cambiar tarjetas"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "42 00",
+  "nombre": "Vigilancia de tiempo de marcha",
+  "simple": "La cabina anduvo lento demasiado tiempo: el sensor LK no cambió de claro a oscuro por más de 20 s (o 45 s en marcha de ajuste).",
+  "causas": [
+   "Velocidad lenta muy baja",
+   "Sensor LK o paletas con problema",
+   "Cabina que no avanza"
+  ],
+  "arreglo": [
+   "Revisa el sensor LK y las paletas",
+   "Revisa la velocidad lenta del variador"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "43 00",
+  "nombre": "Falla del módulo SR (puenteo de cerraduras)",
+  "simple": "El aviso del módulo SR a la CPU está mal; ese módulo puentea las cerraduras para nivelar con puerta abierta.",
+  "causas": [
+   "Módulo SR dañado",
+   "Interruptor de zona ZS dañado",
+   "ZS o sensor LK no entran bien en la paleta"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa el interruptor ZS y su ajuste con la paleta",
+   "Revisa el sensor LK",
+   "Mide antes de cambiar el módulo SR"
+  ],
+  "peligro": "El módulo SR puentea las puertas. Si falla, la cabina podría moverse con la puerta abierta.",
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "4F 00",
+  "nombre": "Falla de aviso de contactores a la CPU",
+  "simple": "El estado real de los contactores no coincide con lo que pide la CPU (sale después de 3 errores 65 00 a 74 00).",
+  "causas": [
+   "Contactor pegado o que no entra",
+   "Contacto auxiliar del contactor dañado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa los contactores de marcha y de dirección",
+   "Revisa sus contactos auxiliares"
+  ],
+  "peligro": "Un contactor pegado puede dejar el motor con energía.",
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "65 00 a 74 00",
+  "nombre": "Estado de contactores distinto al pedido",
+  "simple": "Los contactores de marcha o de dirección no llegaron al estado que pidió la CPU dentro de 500 ms y hubo parada de emergencia.",
+  "causas": [
+   "Contactor pegado o lento",
+   "Contacto auxiliar dañado",
+   "Bobina del contactor sin tensión"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa los contactores de marcha y de dirección",
+   "Si sale más de 3 veces, aparece el error 4F 00"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "55 00",
+  "nombre": "RESET (el control se reinició)",
+  "simple": "El programa del control se reinició, por apagar el interruptor principal o por un corte o bajón de tensión.",
+  "causas": [
+   "Se apagó y prendió el interruptor principal",
+   "Tensión de alimentación inestable",
+   "Tensión de 5 V mal ajustada"
+  ],
+  "arreglo": [
+   "Si nadie apagó el tablero, mide la alimentación",
+   "Revisa la fuente de 5 V de la CPU"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "5F 00",
+  "nombre": "Error EK (contacto de final de carrera)",
+  "simple": "Falló el contacto de final de carrera EK; la cabina va a parar en el piso más bajo.",
+  "causas": [
+   "Final de carrera EK abierto o dañado",
+   "Cable suelto en EK"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa el final de carrera y su leva",
+   "No lo puentees"
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "60 00",
+  "nombre": "Cadena de seguridad: borne EK abierto",
+  "simple": "Se abrió el borne EK de la cadena de seguridad durante el viaje.",
+  "causas": [
+   "Final de carrera EK abierto",
+   "En algunos variadores (Isostop 60), disparo del monitor del variador"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa los contactos de la cadena hasta EK",
+   "Revisa si el variador tiene falla"
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "61 00",
+  "nombre": "Cadena de seguridad: borne HK abierto",
+  "simple": "Se abrió el borne HK: el contacto de traba HK o el contacto del paracaídas FK está abierto.",
+  "causas": [
+   "Contacto del paracaídas FK abierto (paracaídas actuó)",
+   "Contacto de traba HK abierto"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa si el paracaídas actuó y su contacto",
+   "Revisa el contacto HK",
+   "No puentees ningún contacto"
+  ],
+  "peligro": "Si actuó el paracaídas, no muevas la cabina sin revisar cuñas, guías y limitador.",
+  "pieza": "contacto_paracaidas",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "62 00",
+  "nombre": "Cadena de seguridad: borne TK abierto",
+  "simple": "El contacto de puerta de cabina (KTK o KTKD) se abrió durante el viaje.",
+  "causas": [
+   "Contacto de puerta de cabina desajustado",
+   "La puerta de cabina se movió en viaje",
+   "Cable suelto en el contacto"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa y ajusta el contacto de puerta de cabina",
+   "No lo puentees"
+  ],
+  "pieza": "contacto_puerta_cabina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "63 00",
+  "nombre": "Cadena de seguridad: borne KT abierto",
+  "simple": "El contacto de cerrojo de puerta de piso (RK o RKD) se abrió durante el viaje.",
+  "causas": [
+   "Cerrojo de piso desajustado",
+   "Leva que roza al pasar",
+   "Puerta de piso abierta con llave"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa cerrojos y contactos de las puertas de piso",
+   "No los puentees"
+  ],
+  "pieza": "cerradura",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "64 00",
+  "nombre": "Temperatura del motor (PTC) disparada",
+  "simple": "El sensor de temperatura (PTC o contacto térmico) del motor cortó.",
+  "causas": [
+   "Motor recalentado",
+   "Conector del PTC suelto",
+   "Sensor PTC dañado"
+  ],
+  "arreglo": [
+   "Deja enfriar el motor",
+   "Revisa el conector y el cable del PTC",
+   "Mide el PTC antes de cambiar nada"
+  ],
+  "pieza": "maquina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "7b 00",
+  "nombre": "Falla de la alimentación de 24 Vdc",
+  "simple": "Falta la tensión de 24 Vdc del control.",
+  "causas": [
+   "Fuente de 24 V dañada",
+   "Fusible quemado",
+   "Corto en el cableado de 24 V"
+  ],
+  "arreglo": [
+   "Mide los 24 Vdc en la fuente y en la tarjeta MQ",
+   "Busca el corto antes de cambiar el fusible"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "7d 06",
+  "nombre": "Variador CPI: disipador caliente",
+  "simple": "El variador CPI avisó que su disipador está muy caliente.",
+  "causas": [
+   "Ventilador del variador parado",
+   "Tablero sin ventilación",
+   "Mucho trabajo seguido"
+  ],
+  "arreglo": [
+   "Deja enfriar",
+   "Revisa el ventilador del variador",
+   "Limpia el polvo del disipador"
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "7d 07",
+  "nombre": "Variador CPI: motor caliente",
+  "simple": "El variador CPI avisó que el motor de tracción está muy caliente.",
+  "causas": [
+   "Motor recalentado",
+   "Freno que roza",
+   "Sensor de temperatura del motor con falla"
+  ],
+  "arreglo": [
+   "Deja enfriar el motor",
+   "Revisa que el freno abra bien",
+   "Revisa el sensor de temperatura del motor"
+  ],
+  "pieza": "maquina",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "7d 08",
+  "nombre": "Variador CPI: falla a tierra",
+  "simple": "El variador CPI detectó una fuga a tierra.",
+  "causas": [
+   "Cable del motor dañado",
+   "Bobinado del motor a tierra",
+   "Humedad en conexiones"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y espera que se descargue el variador",
+   "Mide el aislamiento de los cables del motor y del motor",
+   "No cambies el variador sin medir antes"
+  ],
+  "peligro": "Riesgo de choque eléctrico.",
+  "pieza": "cables_motor",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "7d 0A",
+  "nombre": "Variador CPI: baja tensión del bus DC",
+  "simple": "La tensión del bus DC (ZK) del variador CPI está baja.",
+  "causas": [
+   "Tensión de red baja o falta una fase",
+   "Corte de energía corto"
+  ],
+  "arreglo": [
+   "Mide las 3 fases de entrada",
+   "Revisa fusibles e interruptor principal"
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "7d 0C",
+  "nombre": "Variador CPI: alta tensión del bus DC",
+  "simple": "La tensión del bus DC (ZK) del variador CPI está demasiado alta.",
+  "causas": [
+   "Resistencia de frenado cortada o mal conectada",
+   "Desaceleración muy fuerte"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y espera que se descargue",
+   "Mide la resistencia de frenado y su cable"
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "7d 0E",
+  "nombre": "Variador CPI: sobrecorriente",
+  "simple": "El variador CPI tomó demasiada corriente.",
+  "causas": [
+   "Freno que no abre",
+   "Cabina trabada o muy cargada",
+   "Cables del motor en corto"
+  ],
+  "arreglo": [
+   "Revisa que el freno abra bien",
+   "Revisa la carga de la cabina",
+   "Mide los cables del motor"
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "7d 19",
+  "nombre": "Variador CPI: problemas con el contactor de marcha",
+  "simple": "El variador CPI detectó un problema con el contactor de marcha.",
+  "causas": [
+   "Contactor de marcha que no entra o se pega",
+   "Contacto auxiliar dañado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa el contactor de marcha y sus contactos"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "7d 1C",
+  "nombre": "Variador CPI: falla del generador de pulsos",
+  "simple": "El variador CPI no recibe bien la señal del generador de pulsos (encoder).",
+  "causas": [
+   "Encoder dañado",
+   "Cable del encoder suelto o dañado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa el encoder y su cable",
+   "Mide antes de cambiar el encoder"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "7d 1E",
+  "nombre": "Variador CPI: error de freno",
+  "simple": "El variador CPI detectó un error en el freno.",
+  "causas": [
+   "Freno que no abre o no cierra bien",
+   "Micro-switch del freno desajustado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa el freno y sus micro-switches"
+  ],
+  "peligro": "Un freno que no cierra bien puede dejar mover la cabina.",
+  "pieza": "freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "82 00",
+  "nombre": "Posición de cabina indefinida",
+  "simple": "El control no sabe en qué piso está la cabina.",
+  "causas": [
+   "Datos de aprendizaje perdidos",
+   "Tensión de 5 V de la CPU mal",
+   "EEPROM de la CPU dañada"
+  ],
+  "arreglo": [
+   "Hace falta un nuevo aprendizaje (teach-in)",
+   "Si no funciona, mide los 5 V de la CPU",
+   "Puede estar dañada la EEPROM de la CPU"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "86 00",
+  "nombre": "Disparó el circuito de chequeo del freno",
+  "simple": "El circuito que vigila el freno detectó un problema.",
+  "causas": [
+   "Sensores (micros) del freno mal ajustados",
+   "Freno que no abre o no cierra bien"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa el ajuste de los sensores del freno",
+   "Revisa el freno"
+  ],
+  "peligro": "No anules la vigilancia del freno para hacer andar el ascensor.",
+  "pieza": "micro_freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "88 00",
+  "nombre": "El disco de freno no gira derecho",
+  "simple": "El vigilante detectó que el disco de freno gira descentrado (bailando).",
+  "causas": [
+   "Disco de freno torcido o flojo",
+   "Sensor de vigilancia desajustado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa el disco de freno y su fijación",
+   "Revisa el sensor de vigilancia"
+  ],
+  "pieza": "freno",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "90 00",
+  "nombre": "Velocidad mayor a 0,5 m/s con cadena puenteada",
+  "simple": "Con la cadena de seguridad puenteada por el módulo SR (nivelando con puerta abierta), la CPU vio más de 0,5 m/s.",
+  "causas": [
+   "El generador de pulsos manda pulsos estando parado",
+   "La cabina se movió de verdad con la puerta abierta"
+  ],
+  "arreglo": [
+   "Revisa el generador de pulsos y su cable",
+   "Revisa el freno y el módulo SR"
+  ],
+  "peligro": "Posible movimiento de cabina con puerta abierta. No la dejes en servicio sin revisar.",
+  "pieza": "encoder",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "91 00",
+  "nombre": "Cabina fuera de zona con cadena puenteada",
+  "simple": "Con la cadena de seguridad puenteada por el módulo SR, la cabina salió de la zona de la paleta del piso.",
+  "causas": [
+   "En hidráulicos, la cabina sube y baja (balanceo)",
+   "La cabina paró antes de la zona por patinaje de cables",
+   "La cabina se pasó del piso"
+  ],
+  "arreglo": [
+   "Revisa la parada y la nivelación",
+   "Revisa el patinaje de cables",
+   "En hidráulicos revisa las válvulas"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "94 00",
+  "nombre": "Disparó el vigilante de velocidad",
+  "simple": "La cabina pasó la velocidad nominal más 10 %.",
+  "causas": [
+   "Variador mal ajustado",
+   "Generador de pulsos con falla",
+   "Falla de freno o de tracción"
+  ],
+  "arreglo": [
+   "Revisa los ajustes de velocidad del variador",
+   "Revisa el generador de pulsos",
+   "Revisa el freno y la tracción"
+  ],
+  "peligro": "Exceso de velocidad: no devuelvas el ascensor al servicio sin encontrar la causa.",
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "95 00",
+  "nombre": "Disparó el monitor del variador",
+  "simple": "El variador (Isostop 16M, 25M, 60 API/CPI o hidráulico con válvula Beringer) avisó una falla.",
+  "causas": [
+   "Temperatura alta en el variador",
+   "Falta de fase o secuencia de fases mal",
+   "Diferencia entre velocidad pedida y real"
+  ],
+  "arreglo": [
+   "Lee la falla en el panel de parámetros del variador (API/CPI)",
+   "Mide las 3 fases de entrada",
+   "Revisa la temperatura del variador"
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "9b 00",
+  "nombre": "Velocidad alta en inspección o rescate eléctrico",
+  "simple": "En inspección o rescate eléctrico la cabina pasó de 0,63 m/s.",
+  "causas": [
+   "Velocidad de inspección mal ajustada en el variador",
+   "Generador de pulsos con falla"
+  ],
+  "arreglo": [
+   "Revisa la velocidad de inspección en el variador",
+   "Revisa el generador de pulsos"
+  ],
+  "pieza": "variador",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "E0 00",
+  "nombre": "Error al leer la EEPROM (al prender)",
+  "simple": "Al prender el control, la EEPROM de la CPU dio error.",
+  "causas": [
+   "EEPROM de la CPU dañada",
+   "Tensión de 5 V mal"
+  ],
+  "arreglo": [
+   "Mide los 5 V de la CPU",
+   "Si los 5 V están bien, hay que cambiar la EEPROM (con el técnico que tenga el programa del ascensor)"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "F0 00",
+  "nombre": "Error de comunicación entre MZ1 y CPU",
+  "simple": "La tarjeta MZ1 y la CPU no se comunican bien.",
+  "causas": [
+   "Conector o cable de bus suelto",
+   "Tarjeta MZ1 o CPU con falla"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa conectores entre CPU y MZ1",
+   "Mira en la pila los errores 0C 01, 0C 02, 0C 03, 0C 10, 0C 11 o 0C 12"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "FE 00",
+  "nombre": "MC1: datos de aprendizaje perdidos",
+  "simple": "Se perdieron los datos de aprendizaje (teach-in) de la tarjeta MC1.",
+  "causas": [
+   "Error en la memoria flash de la MC1"
+  ],
+  "arreglo": [
+   "Hay que hacer un aprendizaje (teach-in) completo de nuevo",
+   "Si se repite, revisa la tarjeta MC1"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "tk_tci_tcm",
+  "codigo": "0F 0A",
+  "nombre": "Marca: interruptor de prueba prendido",
+  "simple": "Aviso: el interruptor de prueba de la tarjeta MZ o MZ1 está prendido; no es una falla.",
+  "causas": [
+   "Alguien dejó prendido el interruptor de prueba"
+  ],
+  "arreglo": [
+   "Apaga el interruptor de prueba de la tarjeta MZ o MZ1 al terminar el trabajo"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/TYSEEN/Thysseen%20Service%20manual%20MC21540371480772.pdf",
+  "verificado": true
+ },
+ {
+  "equipo": "fermator_vvvf4",
+  "codigo": "ON fijo",
+  "nombre": "LED ON prendido fijo: batería no cargada",
+  "simple": "La batería de emergencia del operador no está cargada.",
+  "causas": [
+   "La batería se está cargando (puede tardar unas 48 horas)",
+   "Batería agotada o dañada"
+  ],
+  "arreglo": [
+   "Espera hasta 48 horas de carga",
+   "Si después sigue fijo, la batería está agotada: cámbiala por una igual"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://pdfcoffee.com/download/fermator-door-operator-vvvf4-en-4-pdf-free.html"
+ },
+ {
+  "equipo": "fermator_vvvf4",
+  "codigo": "ON parpadea",
+  "nombre": "LED ON parpadeando: estado normal",
+  "simple": "Todo está bien y la batería está cargada; no es una falla.",
+  "causas": [
+   "Funcionamiento normal"
+  ],
+  "arreglo": [
+   "Nada que hacer en el operador; si la puerta falla, busca en otra parte (contactos, mecánica, órdenes del control)"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://pdfcoffee.com/download/fermator-door-operator-vvvf4-en-4-pdf-free.html"
+ },
+ {
+  "equipo": "fermator_vvvf4",
+  "codigo": "ON parpadea cada 15 s",
+  "nombre": "LED ON parpadea cada 15 segundos: falta la red de 230 V",
+  "simple": "No llegan los 230 V AC al operador y está esperando la señal de piso para hacer la apertura de emergencia.",
+  "causas": [
+   "Corte de energía",
+   "Fusible o interruptor de alimentación del operador abierto",
+   "Cable de alimentación suelto"
+  ],
+  "arreglo": [
+   "Revisa si hay corte de energía en el edificio",
+   "Mide los 230 V AC en la entrada del operador",
+   "Revisa fusibles e interruptor del circuito de puertas"
+  ],
+  "peligro": "Tensión de 230 V: mide con cuidado.",
+  "pieza": "operador_puertas",
+  "fuente": "https://pdfcoffee.com/download/fermator-door-operator-vvvf4-en-4-pdf-free.html"
+ },
+ {
+  "equipo": "fermator_vvvf4",
+  "codigo": "LED fotocélula",
+  "nombre": "LED de fotocélula prendido",
+  "simple": "La fotocélula (o la entrada de reapertura) está activada.",
+  "causas": [
+   "Algo corta el haz de la fotocélula o cortina",
+   "Fotocélula sucia o desalineada",
+   "Entrada de reapertura activada todo el tiempo"
+  ],
+  "arreglo": [
+   "Quita lo que tape el haz",
+   "Limpia y alinea la fotocélula o cortina",
+   "Revisa la señal de reapertura que llega del control"
+  ],
+  "pieza": "cortina_luminosa",
+  "fuente": "https://pdfcoffee.com/download/fermator-door-operator-vvvf4-en-4-pdf-free.html"
+ },
+ {
+  "equipo": "fermator_vvvf4",
+  "codigo": "LED obstrucción",
+  "nombre": "LED de obstrucción prendido",
+  "simple": "El operador detectó un obstáculo que no deja cerrar la puerta; se apaga cuando la puerta llega a abierta o a cerrada.",
+  "causas": [
+   "Objeto o suciedad en la pisadera",
+   "Puerta dura (roldanas, guiadores, cable de sincronismo)",
+   "Puerta de piso que no engancha bien"
+  ],
+  "arreglo": [
+   "Corta la energía y mueve la puerta a mano: debe correr suave",
+   "Limpia la pisadera",
+   "Revisa roldanas, guiadores y cable de sincronismo"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://pdfcoffee.com/download/fermator-door-operator-vvvf4-en-4-pdf-free.html"
+ },
+ {
+  "equipo": "fermator_vf5",
+  "codigo": "STATUS verde parpadea",
+  "nombre": "LED STATUS verde parpadeando: normal",
+  "simple": "El operador funciona bien; no es una falla.",
+  "causas": [
+   "Funcionamiento normal"
+  ],
+  "arreglo": [
+   "Si la puerta igual falla, mira los otros LEDs y las órdenes que llegan del control"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://pdfcoffee.com/manual-vf5-es-5-pdf-free.html"
+ },
+ {
+  "equipo": "fermator_vf5",
+  "codigo": "STATUS rojo",
+  "nombre": "LED STATUS rojo: alarma",
+  "simple": "El operador tiene una alarma activa.",
+  "causas": [
+   "Temperatura alta",
+   "Falla en la cortina de luz",
+   "Obstáculo en la puerta"
+  ],
+  "arreglo": [
+   "Mira cuál de los otros LEDs está prendido (temperatura, cortina, obstrucción)",
+   "Para ver la alarma exacta hace falta la herramienta de Fermator"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://pdfcoffee.com/manual-vf5-es-5-pdf-free.html"
+ },
+ {
+  "equipo": "fermator_vf5",
+  "codigo": "STATUS apagado",
+  "nombre": "LED STATUS apagado con energía",
+  "simple": "Le llega energía al operador, pero no funciona y el LED STATUS está apagado.",
+  "causas": [
+   "Fusibles externos quemados"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea antes de tocar",
+   "Revisa los fusibles externos",
+   "Cámbialos por fusibles Fermator de 250 V, 4 A, cerámicos rápidos",
+   "Si se vuelven a quemar, busca el corto antes de poner otro"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://pdfcoffee.com/manual-vf5-es-5-pdf-free.html"
+ },
+ {
+  "equipo": "fermator_vf5",
+  "codigo": "LED temperatura",
+  "nombre": "LED de temperatura prendido",
+  "simple": "La temperatura del operador (VF) o del motor de puerta pasó el límite seguro.",
+  "causas": [
+   "Puerta dura que hace trabajar de más al motor",
+   "Muchas aperturas seguidas",
+   "Poca ventilación"
+  ],
+  "arreglo": [
+   "El control debe llevar la cabina al piso siguiente, abrir la puerta y dejar de alimentar el motor",
+   "Deja enfriar",
+   "Revisa que la puerta corra suave a mano"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://pdfcoffee.com/manual-vf5-es-5-pdf-free.html"
+ },
+ {
+  "equipo": "fermator_vf5",
+  "codigo": "LED cortina",
+  "nombre": "LED de cortina de luz prendido",
+  "simple": "Hay una falla en la cortina de luz.",
+  "causas": [
+   "Cortina de luz dañada",
+   "Cable de la cortina suelto o cortado",
+   "Cortina sucia o desalineada"
+  ],
+  "arreglo": [
+   "Limpia y alinea la cortina",
+   "Revisa el cable de la cortina hasta el operador",
+   "Mide la cortina antes de cambiarla"
+  ],
+  "pieza": "cortina_luminosa",
+  "fuente": "https://pdfcoffee.com/manual-vf5-es-5-pdf-free.html"
+ },
+ {
+  "equipo": "fermator_vf5",
+  "codigo": "LED fotocélula",
+  "nombre": "LED de fotocélula prendido (la puerta abre pero no cierra)",
+  "simple": "La fotocélula o la entrada de reapertura están activadas, por eso la puerta no cierra.",
+  "causas": [
+   "Algo tapa la fotocélula",
+   "La entrada ABRIR (borne 8) llega activa todo el tiempo"
+  ],
+  "arreglo": [
+   "Revisa que la fotocélula no esté tapada",
+   "Mide si la entrada ABRIR (borne 8) está activa todo el tiempo",
+   "Si es así, revisa la orden de abrir que manda el control"
+  ],
+  "pieza": "cortina_luminosa",
+  "fuente": "https://pdfcoffee.com/manual-vf5-es-5-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "01",
+  "nombre": "IPM ERROR",
+  "simple": "El bloque de transistores de potencia (IPM) del variador avisó una falla.",
+  "causas": [
+   "Corto o fuga a tierra en la salida U, V, W al motor",
+   "Cable de motor dañado",
+   "Motor con bobina dañada"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Espera que se descarguen los condensadores del variador",
+   "Suelta los cables U, V, W y mide aislamiento del motor y del cable",
+   "Si el motor y el cable están bien, recién revisa el variador"
+  ],
+  "peligro": "Alta tensión dentro del variador aun apagado: espera la descarga antes de tocar.",
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "02",
+  "nombre": "LOW DC BUS",
+  "simple": "La tensión del bus DC está por debajo del mínimo.",
+  "causas": [
+   "Tensión de red baja",
+   "Falta una fase",
+   "Bornes de entrada flojos"
+  ],
+  "arreglo": [
+   "Mide la tensión de red en L1, L2, L3",
+   "Ajusta bornes flojos con la energía cortada",
+   "Si la red está bien y sigue, avisa al técnico de variadores"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "03",
+  "nombre": "HIGH DC BUS",
+  "simple": "La tensión del bus DC pasó el límite de sobretensión.",
+  "causas": [
+   "Resistencia de frenado desconectada o cortada",
+   "Tensión de red muy alta",
+   "Bajada con mucha carga sin frenado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa la conexión de la resistencia de frenado y mide su valor",
+   "Mide la tensión de red"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "04",
+  "nombre": "OVER CURRENT",
+  "simple": "La corriente de salida del variador pasó el límite.",
+  "causas": [
+   "Freno que no abre",
+   "Cabina trabada o paracaídas actuado",
+   "Parámetros del motor mal puestos",
+   "Corto en el cable del motor"
+  ],
+  "arreglo": [
+   "Revisa que el freno abra bien",
+   "Revisa que la cabina no esté trabada",
+   "Revisa los datos de placa del motor en los parámetros"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "05",
+  "nombre": "PAR.DATA CORRUPT",
+  "simple": "Los parámetros del variador se borraron o se dañaron.",
+  "causas": [
+   "Corte de energía mientras se guardaba",
+   "Falla de memoria del variador"
+  ],
+  "arreglo": [
+   "Vuelve a cargar los parámetros (ten anotada la configuración)",
+   "Si se repite, el variador necesita servicio"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "06",
+  "nombre": "MOTOR OVER LOAD",
+  "simple": "Disparó la protección de sobrecarga del motor (cálculo térmico interno).",
+  "causas": [
+   "Cabina con sobrecarga",
+   "Freno rozando",
+   "Corriente nominal del motor mal puesta en parámetros"
+  ],
+  "arreglo": [
+   "Revisa la carga y que el freno abra del todo",
+   "Revisa la corriente nominal del motor y el parámetro de modelo térmico"
+  ],
+  "pieza": "maquina",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "07",
+  "nombre": "POWER FAILURE",
+  "simple": "La tensión de la red (L1, L2, L3) oscila de forma rara.",
+  "causas": [
+   "Red eléctrica inestable",
+   "Borne flojo en la entrada",
+   "Falta de una fase"
+  ],
+  "arreglo": [
+   "Mide las tres fases de entrada",
+   "Ajusta bornes con la energía cortada"
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "08",
+  "nombre": "AUTO TUNE FAILS",
+  "simple": "Falló el autoajuste en lazo abierto; no se pudo terminar.",
+  "causas": [
+   "Motor mal conectado",
+   "Datos de placa mal puestos",
+   "Contactores que no cierran durante el autoajuste"
+  ],
+  "arreglo": [
+   "Revisa los datos de placa del motor",
+   "Revisa las conexiones del motor",
+   "Repite el autoajuste"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "09",
+  "nombre": "OVER SPEED",
+  "simple": "La velocidad que lee el encoder es demasiado alta.",
+  "causas": [
+   "Número de pulsos del encoder mal puesto",
+   "Encoder mal conectado",
+   "Datos del motor errados"
+  ],
+  "arreglo": [
+   "Compara los pulsos del encoder con el parámetro de resolución del encoder",
+   "Revisa el cable del encoder"
+  ],
+  "peligro": "Exceso de velocidad: no hagas viajes de prueba con pasajeros.",
+  "pieza": "encoder",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "10",
+  "nombre": "BAD ENCODER SGNL",
+  "simple": "La señal del encoder llega mala.",
+  "causas": [
+   "Cable del encoder flojo o dañado",
+   "Cable sin malla o malla sin tierra",
+   "Encoder dañado"
+  ],
+  "arreglo": [
+   "Revisa las conexiones del encoder",
+   "Usa cable con malla y conecta la malla a tierra",
+   "Si todo está bien, cambia el encoder"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "12",
+  "nombre": "CONTACTOR DROPPED",
+  "simple": "Los contactores principales se soltaron mientras el variador movía el motor.",
+  "causas": [
+   "Se abrió la cadena de seguridad en viaje",
+   "Bobina o cable de contactor flojo"
+  ],
+  "arreglo": [
+   "Revisa la cadena de seguridad (contactos de puertas y seguridades)",
+   "Revisa las bobinas y cables de los contactores",
+   "Nunca puentees un contacto de seguridad"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "13",
+  "nombre": "NO CONTACTOR SGN",
+  "simple": "No llegó la señal de contactores cerrados 5 segundos después de la orden de marcha.",
+  "causas": [
+   "Contacto auxiliar del contactor malo",
+   "Cable de la señal de contactor suelto",
+   "Contactores que no cierran"
+  ],
+  "arreglo": [
+   "Revisa que los contactores cierren",
+   "Revisa el contacto auxiliar y su cable hasta el variador"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "14",
+  "nombre": "LOW MOTOR CURRENT",
+  "simple": "No puede pasar corriente a las bobinas del motor.",
+  "causas": [
+   "Contactor de motor que no cierra",
+   "Cable de motor cortado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa contactores y cables U, V, W hasta el motor"
+  ],
+  "pieza": "cables_motor",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "15",
+  "nombre": "WRONG DIRECTION",
+  "simple": "La cabina no va en la dirección que manda el variador.",
+  "causas": [
+   "Fases del motor cambiadas",
+   "Fases del encoder cambiadas",
+   "Autoajuste hecho con el sentido de encoder errado (motor síncrono)"
+  ],
+  "arreglo": [
+   "Revisa el orden de fases del motor",
+   "Cambia el sentido del encoder (parámetro 2.18) y repite el autoajuste"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "16",
+  "nombre": "UNBALANCED CURRENT",
+  "simple": "La corriente en U, V, W no es pareja.",
+  "causas": [
+   "Una fase del motor floja o cortada",
+   "Bobina del motor dañada"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa y ajusta los bornes U, V, W",
+   "Mide las bobinas del motor"
+  ],
+  "pieza": "cables_motor",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "17",
+  "nombre": "UP/DOWN TOGETHER",
+  "simple": "Llegan juntas las señales de subir y bajar.",
+  "causas": [
+   "Cable de dirección en corto",
+   "Falla en la salida del control"
+  ],
+  "arreglo": [
+   "Revisa las señales de subir y bajar desde el control hasta el variador"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "18",
+  "nombre": "PAR_2.2 IS WRONG",
+  "simple": "El parámetro 2.2 (rpm del motor a velocidad nominal) está muy bajo o muy alto.",
+  "causas": [
+   "Dato de placa mal puesto"
+  ],
+  "arreglo": [
+   "Pon las rpm correctas de la placa del motor en el parámetro 2.2"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "19",
+  "nombre": "LOW SPEED",
+  "simple": "El motor no llega a la velocidad pedida.",
+  "causas": [
+   "Freno que no abre bien",
+   "Autoajuste con sentido de encoder errado",
+   "Sobrecarga"
+  ],
+  "arreglo": [
+   "Revisa el freno",
+   "Repite el autoajuste con el sentido correcto del encoder"
+  ],
+  "pieza": "freno",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "20",
+  "nombre": "INTERNAL ERROR 2",
+  "simple": "La velocidad pedida es mayor que la velocidad V3.",
+  "causas": [
+   "Parámetros de velocidad mal puestos"
+  ],
+  "arreglo": [
+   "Revisa los parámetros de velocidades"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "21",
+  "nombre": "INTERNAL ERROR 3",
+  "simple": "Pasó algo inesperado en la salida al motor.",
+  "causas": [
+   "Cable de motor flojo",
+   "Falla interna del variador"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa los cables del motor",
+   "Si se repite, avisa al servicio de Arkel"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "22",
+  "nombre": "Fout > Flim",
+  "simple": "La frecuencia de salida pasó el límite del parámetro 11.5.",
+  "causas": [
+   "Parámetros de velocidad o límite mal puestos"
+  ],
+  "arreglo": [
+   "Revisa el parámetro 11.5 y las velocidades"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "23",
+  "nombre": "ENCABIT TIME OUT",
+  "simple": "El ADrive no se comunica con el módulo ENCABIT-Plus (lector del encoder).",
+  "causas": [
+   "Módulo ENCABIT mal enchufado",
+   "Cable plano dañado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa que el módulo ENCABIT esté bien enchufado",
+   "Revisa el cable del encoder"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "24",
+  "nombre": "ENCODER ERROR",
+  "simple": "La conexión o los datos del encoder son incorrectos.",
+  "causas": [
+   "Cable del encoder flojo",
+   "Tipo de encoder mal elegido en parámetros",
+   "Encoder dañado"
+  ],
+  "arreglo": [
+   "Revisa la conexión del encoder",
+   "Revisa el tipo de encoder en parámetros"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "25",
+  "nombre": "AUTO TUNE ERROR",
+  "simple": "El autoajuste en lazo cerrado no se pudo terminar.",
+  "causas": [
+   "Encoder mal conectado",
+   "Datos del motor errados",
+   "Freno que no abre"
+  ],
+  "arreglo": [
+   "Revisa encoder y datos del motor",
+   "Repite el autoajuste"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "26",
+  "nombre": "BRAKE MON.ERROR",
+  "simple": "Falla en la vigilancia del freno mecánico.",
+  "causas": [
+   "Micro del freno desajustado o malo",
+   "Cable de la entrada PI1 suelto"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa la entrada PI1 y el cableado del micro del freno",
+   "Ajusta o cambia el micro del freno"
+  ],
+  "peligro": "Si el freno no trabaja bien la cabina se puede mover sola: no la dejes en servicio.",
+  "pieza": "micro_freno",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "27",
+  "nombre": "MOTOR PTC ERROR",
+  "simple": "Disparó la vigilancia de temperatura del motor (PTC).",
+  "causas": [
+   "Motor recalentado",
+   "Cable del PTC (entrada PI2) suelto"
+  ],
+  "arreglo": [
+   "Deja enfriar el motor",
+   "Revisa la entrada PI2 y el circuito PTC"
+  ],
+  "pieza": "maquina",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "28",
+  "nombre": "Imax TRIP LIMIT",
+  "simple": "La corriente del motor pasó el valor del parámetro 11.10 por más tiempo del parámetro 11.11.",
+  "causas": [
+   "Freno rozando",
+   "Cabina sobrecargada o desbalanceada"
+  ],
+  "arreglo": [
+   "Revisa el freno y el balance cabina-contrapeso"
+  ],
+  "pieza": "maquina",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "29",
+  "nombre": "LOW BATTERY",
+  "simple": "La batería de rescate no da la energía necesaria para mover el motor.",
+  "causas": [
+   "Baterías descargadas o viejas"
+  ],
+  "arreglo": [
+   "Carga o cambia las baterías de rescate"
+  ],
+  "pieza": "rescate",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "30",
+  "nombre": "RESISTOR OVER RUN",
+  "simple": "La resistencia de frenado se usó demasiado y está muy caliente.",
+  "causas": [
+   "Mucho tráfico",
+   "Resistencia de valor errado"
+  ],
+  "arreglo": [
+   "Deja enfriar",
+   "Revisa que la resistencia sea la indicada"
+  ],
+  "peligro": "La resistencia de frenado quema: no la toques.",
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_adrive",
+  "codigo": "31",
+  "nombre": "LOW CPU SUPPLY",
+  "simple": "La alimentación del procesador está baja (solo ADrive tamaño D).",
+  "causas": [
+   "Fuente interna con falla"
+  ],
+  "arreglo": [
+   "Mide la alimentación de control",
+   "Avisa al servicio de Arkel"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2021419/Arkel-Adrive-Vvvf.html?page=158"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er01",
+  "nombre": "Parámetros no se pueden leer",
+  "simple": "La memoria de parámetros no se puede leer (error de suma de control).",
+  "causas": [
+   "Falla de la tarjeta"
+  ],
+  "arreglo": [
+   "Apaga y prende",
+   "Si sigue, avisa al servicio de Arkel"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er02",
+  "nombre": "Parámetros no se pueden grabar",
+  "simple": "Los parámetros no se pudieron grabar.",
+  "causas": [
+   "Falla de la tarjeta"
+  ],
+  "arreglo": [
+   "Apaga y prende",
+   "Si sigue, avisa al servicio de Arkel"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er03",
+  "nombre": "Parámetros de una versión más nueva",
+  "simple": "Los parámetros fueron grabados con un programa más nuevo que el actual.",
+  "causas": [
+   "Se bajó la versión del programa"
+  ],
+  "arreglo": [
+   "Revisa los parámetros uno por uno",
+   "Usa la versión de programa correcta"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er04",
+  "nombre": "Sin comunicación con tarjeta ENCA",
+  "simple": "El ARCODE no habla con la tarjeta del encoder (ENCA) por más de 1 segundo.",
+  "causas": [
+   "Cable plano o cable del encoder dañado",
+   "Tipo de encoder o de motor mal puesto"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa el cable plano y el cable del encoder",
+   "Revisa los parámetros de tipo de encoder y de motor"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er05",
+  "nombre": "DIP-switch errado",
+  "simple": "La configuración de los DIP-switch está mal o no se puede leer.",
+  "causas": [
+   "Falla de la tarjeta"
+  ],
+  "arreglo": [
+   "Avisa al servicio de Arkel"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er06",
+  "nombre": "No llegan datos de la ENCA",
+  "simple": "No llegan datos de la tarjeta del encoder por 1 segundo.",
+  "causas": [
+   "Cable plano flojo",
+   "Tarjeta ENCA dañada"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa el cable plano entre la ENCA y el ARCODE"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er07",
+  "nombre": "Sobrecorriente",
+  "simple": "La corriente del motor pasó el límite del módulo de potencia.",
+  "causas": [
+   "Freno que no abre",
+   "Datos del motor errados",
+   "Cabina trabada"
+  ],
+  "arreglo": [
+   "Revisa el freno",
+   "Revisa los datos del motor"
+  ],
+  "pieza": "variador",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er08",
+  "nombre": "Sobrecorriente por mucho tiempo",
+  "simple": "La corriente del motor estuvo alta por más tiempo del permitido (6 s de fábrica).",
+  "causas": [
+   "Freno rozando",
+   "Sobrecarga",
+   "Desbalance cabina-contrapeso"
+  ],
+  "arreglo": [
+   "Revisa freno, carga y balance"
+  ],
+  "pieza": "maquina",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er09",
+  "nombre": "Entrada T1-T2 abierta (PTC)",
+  "simple": "Se abrió la entrada de temperatura T1-T2 (PTC de motor, tablero o resistencia).",
+  "causas": [
+   "Motor o resistencia recalentada",
+   "Cable del PTC suelto"
+  ],
+  "arreglo": [
+   "Deja enfriar",
+   "Revisa el circuito T1-T2"
+  ],
+  "pieza": "maquina",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er10",
+  "nombre": "KRC no se activa",
+  "simple": "Contactores y freno están sueltos pero la señal KRC no se activa en 3 segundos.",
+  "causas": [
+   "Contacto auxiliar de contactor malo",
+   "Tarjeta de puenteo de puertas activada en menú pero sigue el puente 140-140P"
+  ],
+  "arreglo": [
+   "Revisa los contactos auxiliares y el cable KRC",
+   "Si tienes tarjeta de puenteo, saca el puente 140-140P"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er11",
+  "nombre": "Contactor no se nota al cerrar",
+  "simple": "Se mandó cerrar el contactor principal pero la entrada KRC sigue activa.",
+  "causas": [
+   "Contactor pegado o que no cierra",
+   "Contacto auxiliar malo"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa el contactor y su contacto auxiliar",
+   "Si se repite varias veces queda como falla permanente"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er12",
+  "nombre": "No se nota el freno cerrado",
+  "simple": "La señal de control del freno no muestra el freno cerrado (falla permanente).",
+  "causas": [
+   "Micro del freno desajustado",
+   "Freno que no cierra"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa el micro y el freno",
+   "Después borra la falla permanente en System Tools"
+  ],
+  "peligro": "Freno que no cierra: la cabina se puede mover sola.",
+  "pieza": "micro_freno",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er13",
+  "nombre": "No se nota el freno abierto",
+  "simple": "La señal del freno sigue mostrando freno cerrado cuando debía abrir.",
+  "causas": [
+   "Micro del freno desajustado",
+   "Bobina del freno sin tensión"
+  ],
+  "arreglo": [
+   "Revisa la tensión de la bobina y el micro del freno"
+  ],
+  "pieza": "micro_freno",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er14",
+  "nombre": "Bus DC muy alto",
+  "simple": "La tensión del bus DC pasó el límite (715 V en 380 VAC, 420 V en 220 VAC).",
+  "causas": [
+   "Resistencia de frenado desconectada",
+   "Tensión de red alta"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa la resistencia de frenado",
+   "Mide la red"
+  ],
+  "pieza": "variador",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er15",
+  "nombre": "Bus DC muy bajo",
+  "simple": "La tensión de la red está por debajo de lo necesario.",
+  "causas": [
+   "Red baja",
+   "Falta de fase"
+  ],
+  "arreglo": [
+   "Mide la tensión de red"
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er16",
+  "nombre": "Alarma del módulo IPM",
+  "simple": "El módulo de potencia avisó sobrecorriente, sobretensión o calor.",
+  "causas": [
+   "Soltar el botón de dirección en inspección (se corta la cadena y caen contactores)",
+   "Corto en el motor"
+  ],
+  "arreglo": [
+   "Revisa si pasó en inspección",
+   "Revisa cables del motor"
+  ],
+  "pieza": "variador",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er17",
+  "nombre": "Lectura de encoder rara",
+  "simple": "El dato del encoder cambió de forma rara.",
+  "causas": [
+   "Encoder que patina en su montaje",
+   "Cable sin tierra",
+   "Datos del motor errados"
+  ],
+  "arreglo": [
+   "Revisa el montaje del encoder",
+   "Revisa cable y tierra del encoder"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er18",
+  "nombre": "Exceso de velocidad",
+  "simple": "La velocidad del encoder es mayor que la calculada.",
+  "causas": [
+   "Encoder mal configurado",
+   "Datos del motor errados"
+  ],
+  "arreglo": [
+   "Revisa parámetros de encoder y motor"
+  ],
+  "peligro": "Exceso de velocidad: no dejes en servicio hasta encontrar la causa.",
+  "pieza": "encoder",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er19",
+  "nombre": "No llega a la velocidad",
+  "simple": "La velocidad quedó debajo del 30 % de la pedida por 5 segundos.",
+  "causas": [
+   "Freno que no abre",
+   "Sobrecarga"
+  ],
+  "arreglo": [
+   "Revisa el freno y la carga"
+  ],
+  "pieza": "freno",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er20",
+  "nombre": "Falla de conexión del encoder absoluto",
+  "simple": "No hay comunicación entre el encoder absoluto y la tarjeta ENCA (motor síncrono).",
+  "causas": [
+   "Cable del encoder dañado",
+   "Encoder dañado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa el cable del encoder"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er21",
+  "nombre": "Falta una fase",
+  "simple": "Una o más fases L1, L2, L3 no tienen tensión o está muy baja.",
+  "causas": [
+   "Fusible quemado",
+   "Borne flojo",
+   "En evacuación: el UPS no alimenta las fases"
+  ],
+  "arreglo": [
+   "Mide las tres fases",
+   "Revisa fusibles"
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er22",
+  "nombre": "Secuencia de fases errada",
+  "simple": "Las fases L1, L2, L3 están en orden errado.",
+  "causas": [
+   "Cambio en la acometida"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Cambia dos fases de entrada entre sí"
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er23",
+  "nombre": "24 V bajo",
+  "simple": "La alimentación de 24 VDC cayó a unos 18-19 V.",
+  "causas": [
+   "Fuente o transformador débil",
+   "Consumo muy alto"
+  ],
+  "arreglo": [
+   "Mide la salida de la fuente",
+   "Revisa cortos en las salidas de 24 V"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er24",
+  "nombre": "Cabina sobre el último piso",
+  "simple": "La cabina pasó el nivel del piso más alto (según V2.0; en V11 es al revés).",
+  "causas": [
+   "Imán de zona movido",
+   "Sensor ML1/ML2 malo",
+   "Aprendizaje del hueco mal hecho"
+  ],
+  "arreglo": [
+   "Revisa imanes y sensores ML1/ML2",
+   "Repite el aprendizaje del hueco"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "arkel_arcode",
+  "codigo": "Er25",
+  "nombre": "Cabina bajo el primer piso",
+  "simple": "La cabina pasó el nivel del piso más bajo (según V2.0; en V11 es al revés).",
+  "causas": [
+   "Imán de zona movido",
+   "Sensor ML1/ML2 malo",
+   "Aprendizaje del hueco mal hecho"
+  ],
+  "arreglo": [
+   "Revisa imanes y sensores ML1/ML2",
+   "Repite el aprendizaje del hueco"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://pdfcoffee.com/arcode-error-descriptions-v20en-pdf-free.html"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "Motor disconnected",
+  "nombre": "Motor desconectado",
+  "simple": "El módulo no detecta el motor conectado.",
+  "causas": [
+   "Conector del motor suelto",
+   "Cable del motor cortado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa el conector del motor",
+   "Aprieta OK"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "Open Obstruction",
+  "nombre": "Obstrucción al abrir",
+  "simple": "La puerta encontró un obstáculo al abrir.",
+  "causas": [
+   "Pieza mecánica mal instalada o trabada",
+   "Contacto bypass dañado"
+  ],
+  "arreglo": [
+   "Revisa la mecánica de la puerta y el contacto bypass",
+   "Aprieta OK (se borra sola a los 10 s)"
+  ],
+  "pieza": "puerta_cabina",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "Encoder",
+  "nombre": "Falla del encoder",
+  "simple": "No llega la señal del encoder del motor de puerta.",
+  "causas": [
+   "Cable del encoder dañado",
+   "Encoder dañado"
+  ],
+  "arreglo": [
+   "Revisa el cable del encoder",
+   "Revisa el motor",
+   "Aprieta OK"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "Motor overtemperature",
+  "nombre": "Motor de puerta caliente",
+  "simple": "La bobina del motor llegó a unos 125 °C.",
+  "causas": [
+   "Puerta pesada o trabada",
+   "Mucho uso seguido"
+  ],
+  "arreglo": [
+   "Deja enfriar (se quita a unos 105 °C)",
+   "Revisa que la puerta corra suave"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "Motor critical overtemperature",
+  "nombre": "Motor de puerta muy caliente",
+  "simple": "El motor llegó a unos 140 °C y el módulo deja de funcionar normal.",
+  "causas": [
+   "Puerta trabada",
+   "Rozamiento fuerte"
+  ],
+  "arreglo": [
+   "Deja enfriar",
+   "Revisa guías, patines y roldanas"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "VF7 overtemperature",
+  "nombre": "Módulo VF7 caliente",
+  "simple": "El módulo llegó a unos 90 °C.",
+  "causas": [
+   "Mucho calor en el techo de cabina",
+   "Puerta pesada"
+  ],
+  "arreglo": [
+   "Deja enfriar",
+   "Revisa la ventilación del módulo"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "Controller failures",
+  "nombre": "Falla del control",
+  "simple": "El control del ascensor no volvió a abrir la puerta (modo esclavo).",
+  "causas": [
+   "Señales del control mal cableadas"
+  ],
+  "arreglo": [
+   "Revisa las órdenes de abrir y cerrar que llegan del tablero"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "Motor",
+  "nombre": "Señal del motor mala",
+  "simple": "No llega bien la señal del motor; el cable puede estar dañado.",
+  "causas": [
+   "Cable del motor dañado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa el cable del motor"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "Wrong calibration",
+  "nombre": "Calibración errada",
+  "simple": "Problema del encoder al prender.",
+  "causas": [
+   "Motor o circuito con falla"
+  ],
+  "arreglo": [
+   "Haz la calibración"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "Belt",
+  "nombre": "Faja rota",
+  "simple": "La faja dentada del operador está rota.",
+  "causas": [
+   "Faja gastada"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Cambia la faja y ajusta su tensión"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "Learning",
+  "nombre": "Falló el aprendizaje",
+  "simple": "El aprendizaje de la puerta no se completó.",
+  "causas": [
+   "Obstáculo en el recorrido",
+   "Mecánica dura"
+  ],
+  "arreglo": [
+   "Despeja el recorrido y repite el aprendizaje"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "Bypass",
+  "nombre": "Contacto bypass",
+  "simple": "El contacto bypass está pegado o desconectado.",
+  "causas": [
+   "Contacto dañado",
+   "Cable suelto"
+  ],
+  "arreglo": [
+   "Revisa el contacto y su cable",
+   "Nunca puentees un contacto de seguridad"
+  ],
+  "pieza": "contacto_puerta_cabina",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "Shortcircuit",
+  "nombre": "Cortocircuito",
+  "simple": "El módulo de potencia tuvo un cortocircuito (queda permanente si pasa 3 veces en un minuto).",
+  "causas": [
+   "Corto en el cable del motor",
+   "Motor dañado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa el cable y el motor"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "UnderVoltage",
+  "nombre": "Baja tensión",
+  "simple": "La tensión interna bajó de 13 V.",
+  "causas": [
+   "Alimentación baja",
+   "Falla de la fuente"
+  ],
+  "arreglo": [
+   "Mide la alimentación del módulo"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "Memory",
+  "nombre": "Falla de memoria",
+  "simple": "La memoria del módulo falla.",
+  "causas": [
+   "Falla interna"
+  ],
+  "arreglo": [
+   "Restaura los valores de fábrica y vuelve a ajustar"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vf7",
+  "codigo": "Softstart Relay",
+  "nombre": "Relé de arranque suave",
+  "simple": "El relé de arranque suave no conmutó.",
+  "causas": [
+   "Falla interna del módulo"
+  ],
+  "arreglo": [
+   "Contacta a postventa de Fermator"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://liftformat.ru/f/fermator_vf7.pdf"
+ },
+ {
+  "equipo": "fermator_vvvf4",
+  "codigo": "Temperature",
+  "nombre": "Módulo caliente (herramienta)",
+  "simple": "La temperatura del módulo pasó 70 °C.",
+  "causas": [
+   "Puerta dura",
+   "Poca ventilación"
+  ],
+  "arreglo": [
+   "Deja enfriar",
+   "Revisa que la puerta corra suave"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://hissmekano.blob.core.windows.net/cmsupload/service/usermanual/new_doc-fe_ie_in_014156_en-0_2_2020-9-24.pdf"
+ },
+ {
+  "equipo": "fermator_vvvf4",
+  "codigo": "Autoadjust",
+  "nombre": "Falla del autoajuste (herramienta)",
+  "simple": "Hubo problemas al detectar el motor.",
+  "causas": [
+   "Motor mal conectado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa la conexión del motor",
+   "Repite el autoajuste"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://hissmekano.blob.core.windows.net/cmsupload/service/usermanual/new_doc-fe_ie_in_014156_en-0_2_2020-9-24.pdf"
+ },
+ {
+  "equipo": "fermator_vvvf4",
+  "codigo": "Encoder",
+  "nombre": "Falla del encoder (herramienta)",
+  "simple": "Encoder dañado o su cable mal conectado o dañado.",
+  "causas": [
+   "Cable del encoder",
+   "Encoder dañado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa el cable del encoder",
+   "Si sigue, cambia el encoder"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://hissmekano.blob.core.windows.net/cmsupload/service/usermanual/new_doc-fe_ie_in_014156_en-0_2_2020-9-24.pdf"
+ },
+ {
+  "equipo": "fermator_vvvf4",
+  "codigo": "Driver",
+  "nombre": "Falla interna (herramienta)",
+  "simple": "Problema interno del circuito, con componentes dañados.",
+  "causas": [
+   "Módulo dañado"
+  ],
+  "arreglo": [
+   "Antes de cambiar el módulo, revisa alimentación y cables",
+   "Cambia el módulo"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://hissmekano.blob.core.windows.net/cmsupload/service/usermanual/new_doc-fe_ie_in_014156_en-0_2_2020-9-24.pdf"
+ },
+ {
+  "equipo": "fermator_vvvf4",
+  "codigo": "Open block",
+  "nombre": "Bloqueo al abrir (herramienta)",
+  "simple": "La puerta se trabó mientras abría.",
+  "causas": [
+   "Obstáculo",
+   "Mecánica trabada"
+  ],
+  "arreglo": [
+   "Revisa guías, roldanas y patines"
+  ],
+  "pieza": "puerta_cabina",
+  "fuente": "https://hissmekano.blob.core.windows.net/cmsupload/service/usermanual/new_doc-fe_ie_in_014156_en-0_2_2020-9-24.pdf"
+ },
+ {
+  "equipo": "fermator_vvvf4",
+  "codigo": "Friction",
+  "nombre": "Fricción (herramienta)",
+  "simple": "En el autoajuste la velocidad bajó más del 50 % por roce mecánico.",
+  "causas": [
+   "Roce en guías o roldanas",
+   "Faja muy tensa"
+  ],
+  "arreglo": [
+   "Revisa la mecánica de la puerta y repite el autoajuste"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://hissmekano.blob.core.windows.net/cmsupload/service/usermanual/new_doc-fe_ie_in_014156_en-0_2_2020-9-24.pdf"
+ },
+ {
+  "equipo": "tk_cmc4",
+  "codigo": "1",
+  "nombre": "Avería 1: falla de contactores",
+  "simple": "Un contactor estaba cerrado al arrancar; el ascensor queda bloqueado.",
+  "causas": [
+   "Variador no listo",
+   "Contactor pegado",
+   "Parámetro de tracción errado"
+  ],
+  "arreglo": [
+   "Corta la energía y bloquea el interruptor principal antes de tocar cables",
+   "Revisa contactores y el variador",
+   "Después de arreglar, haz RESET"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://pdfcoffee.com/142-operation-manualcmc4plused3-pdf-free.html"
+ },
+ {
+  "equipo": "tk_cmc4",
+  "codigo": "2",
+  "nombre": "Avería 2: secuencia de fases o dos finales de reducción",
+  "simple": "Fases en orden errado o los dos finales de reducción activos a la vez; el ascensor queda bloqueado.",
+  "causas": [
+   "Fases cambiadas",
+   "Final de reducción malo"
+  ],
+  "arreglo": [
+   "Mira el LED de la tarjeta de control",
+   "Revisa los finales de reducción"
+  ],
+  "pieza": "finales_carrera",
+  "fuente": "https://pdfcoffee.com/142-operation-manualcmc4plused3-pdf-free.html"
+ },
+ {
+  "equipo": "tk_cmc4",
+  "codigo": "3",
+  "nombre": "Avería 3: inspección, rescate o módulo SR",
+  "simple": "Falla del módulo SR o el ascensor está en inspección o rescate.",
+  "causas": [
+   "Llave de inspección activada",
+   "Cableado de botonera de inspección",
+   "Módulo SR"
+  ],
+  "arreglo": [
+   "Revisa la caja de inspección",
+   "Revisa el módulo SR"
+  ],
+  "pieza": "caja_inspeccion",
+  "fuente": "https://pdfcoffee.com/142-operation-manualcmc4plused3-pdf-free.html"
+ },
+ {
+  "equipo": "tk_cmc4",
+  "codigo": "4",
+  "nombre": "Avería 4: se abrió la serie de puertas en viaje",
+  "simple": "Se abrió la serie de presencia o de cerrojos mientras viajaba.",
+  "causas": [
+   "Contacto de puerta flojo",
+   "Patín que golpea una cerradura"
+  ],
+  "arreglo": [
+   "Mira los LEDs de las series",
+   "Revisa contactos de puertas de piso y cabina",
+   "Nunca puentees un contacto de seguridad"
+  ],
+  "pieza": "cerradura",
+  "fuente": "https://pdfcoffee.com/142-operation-manualcmc4plused3-pdf-free.html"
+ },
+ {
+  "equipo": "tk_cmc4",
+  "codigo": "5",
+  "nombre": "Avería 5: la puerta no abre a tiempo",
+  "simple": "Los contactos de puerta no se abren en el tiempo fijado tras la orden de abrir.",
+  "causas": [
+   "Operador de puertas",
+   "Relés de abrir y cerrar en cabina",
+   "Comunicación con la tarjeta del operador"
+  ],
+  "arreglo": [
+   "Revisa el operador de puertas",
+   "Revisa los relés de abrir y cerrar"
+  ],
+  "pieza": "operador_puertas",
+  "fuente": "https://pdfcoffee.com/142-operation-manualcmc4plused3-pdf-free.html"
+ },
+ {
+  "equipo": "tk_cmc4",
+  "codigo": "6",
+  "nombre": "Avería 6: error de conteo de pantallas",
+  "simple": "La cabina paró pasada la pantalla de parada por mal conteo o patinaje; se corrige sola a los 5 s.",
+  "causas": [
+   "Pantallas o imanes mal leídos",
+   "Sensor óptico sucio",
+   "Inductor dañado o desalineado"
+  ],
+  "arreglo": [
+   "Limpia los sensores",
+   "Revisa la alineación de pantallas y sensores"
+  ],
+  "pieza": "posicionamiento",
+  "fuente": "https://pdfcoffee.com/142-operation-manualcmc4plused3-pdf-free.html"
+ },
+ {
+  "equipo": "tk_cmc4",
+  "codigo": "17 (11h)",
+  "nombre": "NO_ABRE_41",
+  "simple": "La serie de cerrojos no se abre cuando se manda abrir.",
+  "causas": [
+   "Cerrojo trabado",
+   "Cable de serie en corto"
+  ],
+  "arreglo": [
+   "Revisa cerrojos y su cableado",
+   "Nunca puentees un contacto de seguridad"
+  ],
+  "pieza": "cerradura",
+  "fuente": "https://pdfcoffee.com/cmc4commisioningoct14-1-4-pdf-free.html"
+ },
+ {
+  "equipo": "tk_cmc4",
+  "codigo": "18 (12h)",
+  "nombre": "NO_ABRE_40",
+  "simple": "La serie de presencia no se abre cuando se manda abrir.",
+  "causas": [
+   "Contacto de puerta pegado",
+   "Operador que no abre"
+  ],
+  "arreglo": [
+   "Revisa contactos de puerta y el operador"
+  ],
+  "pieza": "contacto_puerta_cabina",
+  "fuente": "https://pdfcoffee.com/cmc4commisioningoct14-1-4-pdf-free.html"
+ },
+ {
+  "equipo": "tk_cmc4",
+  "codigo": "20 (14h)",
+  "nombre": "NO_HAY_40",
+  "simple": "No llega la señal de la serie de presencia.",
+  "causas": [
+   "Puerta abierta",
+   "Contacto de puerta malo"
+  ],
+  "arreglo": [
+   "Busca el contacto de puerta abierto con el multímetro",
+   "Nunca puentees un contacto de seguridad"
+  ],
+  "pieza": "contacto_puerta_cabina",
+  "fuente": "https://pdfcoffee.com/cmc4commisioningoct14-1-4-pdf-free.html"
+ },
+ {
+  "equipo": "tk_cmc4",
+  "codigo": "21 (15h)",
+  "nombre": "NO_HAY_41",
+  "simple": "No llega la señal de la serie de cerrojos.",
+  "causas": [
+   "Cerrojo de piso abierto",
+   "Cable suelto"
+  ],
+  "arreglo": [
+   "Busca piso por piso el cerrojo abierto",
+   "Nunca puentees un contacto de seguridad"
+  ],
+  "pieza": "cerradura",
+  "fuente": "https://pdfcoffee.com/cmc4commisioningoct14-1-4-pdf-free.html"
+ },
+ {
+  "equipo": "tk_cmc4",
+  "codigo": "22 (16h)",
+  "nombre": "FALLO_SR",
+  "simple": "Falla del módulo SR (puenteo de puertas para nivelar).",
+  "causas": [
+   "Módulo SR dañado",
+   "Sensores de zona"
+  ],
+  "arreglo": [
+   "Revisa el módulo SR y los sensores de zona"
+  ],
+  "peligro": "El módulo SR puentea puertas: si falla, no dejes el ascensor en servicio.",
+  "pieza": "tablero_control",
+  "fuente": "https://pdfcoffee.com/cmc4commisioningoct14-1-4-pdf-free.html"
+ },
+ {
+  "equipo": "tk_cmc4",
+  "codigo": "28 (1Ch)",
+  "nombre": "APER_SSEG_500",
+  "simple": "Las series de seguridad se abren en menos de 500 ms.",
+  "causas": [
+   "Contacto que vibra o hace falso contacto"
+  ],
+  "arreglo": [
+   "Revisa contactos flojos en la cadena de seguridad"
+  ],
+  "pieza": "cableado_hueco",
+  "fuente": "https://pdfcoffee.com/cmc4commisioningoct14-1-4-pdf-free.html"
  },
  {
   "equipo": "nice3000new",
