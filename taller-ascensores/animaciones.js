@@ -1465,10 +1465,12 @@
 
   V.montar = function (caja, id, op) {
     op = op || {};
-    var info = V.para(id); if (!info) return null;
+    // video en 3D cuando hay WebGL; si no, la animación 2D
+    var m3 = op.dim !== 2 && ASC.v3d && ASC.v3d.motor ? ASC.v3d.motor(id, op) : null;
+    var info = m3 ? { titulo: ASC.v3d.nombre(id), caps: m3.caps } : V.para(id); if (!info) return null;
     var caps = info.caps, off = [0, caps[0].dur], total = caps[0].dur + caps[1].dur;
     caja.innerHTML = '<div class="video" tabindex="-1">' +
-      '<div class="video-pantalla"><canvas role="img" aria-label="Animación: cómo funciona y cómo falla ' + escH(info.titulo) + '"></canvas>' +
+      '<div class="video-pantalla' + (m3 ? ' v3' : '') + '" role="img" aria-label="Video: cómo funciona y cómo falla ' + escH(info.titulo) + '">' + (m3 ? '' : '<canvas></canvas>') +
       '<button type="button" class="video-grande" aria-label="Reproducir el video">▶</button></div>' +
       '<p class="video-subt" aria-live="polite"></p>' +
       '<div class="video-ctl"><button type="button" class="video-btn" data-v="play" aria-label="Reproducir">▶</button>' +
@@ -1476,22 +1478,28 @@
       '<span class="video-t">0:00 / ' + mmss(total) + '</span>' +
       (window.speechSynthesis ? '<button type="button" class="video-btn voz" data-v="voz" aria-pressed="false" title="Narrar con la voz del navegador">Voz</button>' : '') + '</div>' +
       '<div class="video-caps" role="group" aria-label="Capítulos"><button type="button" data-cap="0" aria-pressed="true">1 · Cómo funciona</button><button type="button" data-cap="1" aria-pressed="false">2 · Cómo falla</button></div></div>';
-    var raiz = caja.firstChild, cv = raiz.querySelector('canvas'), ctx = cv.getContext('2d'), sub = raiz.querySelector('.video-subt');
+    var raiz = caja.firstChild, pantalla = raiz.querySelector('.video-pantalla'), cv = raiz.querySelector('canvas'), ctx = cv ? cv.getContext('2d') : null, sub = raiz.querySelector('.video-subt');
+    var es3D = !!m3;
+    if (m3) m3.montar(pantalla);
     var bPlay = raiz.querySelector('[data-v="play"]'), bVoz = raiz.querySelector('[data-v="voz"]'), rango = raiz.querySelector('input'), tiempo = raiz.querySelector('.video-t'), grande = raiz.querySelector('.video-grande');
     var S = { t: op.cap === 1 ? off[1] : 0, play: false, voz: false, ult: -1, raf: 0, prev: 0, hablando: false, vivo: true };
     var k = { foco: id };
 
     function capEn(t) { return t < off[1] ? 0 : 1; }
     function subIdx(c, lt) { var s = caps[c].subt, i = 0; for (var j = 0; j < s.length; j++) if (lt >= s[j][0]) i = j; return i; }
-    function dibujar() {
-      if (!cv.isConnected) { parar(true); return; }
-      var w = cv.clientWidth || 480, dpr = Math.min(2, window.devicePixelRatio || 1), cw = Math.round(w * dpr), ch = Math.round(w * 9 / 16 * dpr);
-      if (cv.width !== cw || cv.height !== ch) { cv.width = cw; cv.height = ch; }
-      g = ctx; paleta(raiz);
-      g.setTransform(cw / W, 0, 0, ch / H, 0, 0);
+    // pasivo: redibujo por tamaño o tema; en 3D no le quita el lienzo a otro video
+    function dibujar(pasivo) {
+      if (!raiz.isConnected) { parar(true); return; }
       var c = capEn(S.t), lt = S.t - off[c];
-      fondo();
-      try { caps[c].dib(lt, k); } catch (e) { /* un cuadro que no se pudo dibujar no detiene el video */ if (window.console) console.warn(e); }
+      if (es3D) { if (m3 && (!pasivo || m3.esDueno())) m3.dibujar(c, lt); }
+      else {
+        var w = cv.clientWidth || 480, dpr = Math.min(2, window.devicePixelRatio || 1), cw = Math.round(w * dpr), ch = Math.round(w * 9 / 16 * dpr);
+        if (cv.width !== cw || cv.height !== ch) { cv.width = cw; cv.height = ch; }
+        g = ctx; paleta(raiz);
+        g.setTransform(cw / W, 0, 0, ch / H, 0, 0);
+        fondo();
+        try { caps[c].dib(lt, k); } catch (e) { /* un cuadro que no se pudo dibujar no detiene el video */ if (window.console) console.warn(e); }
+      }
       var i = subIdx(c, lt), clave = c * 100 + i;
       if (clave !== S.ult) { S.ult = clave; sub.textContent = caps[c].subt[i][1]; if (S.voz && S.play) hablar(caps[c].subt[i][1]); }
       rango.value = String(Math.round(S.t / total * 1000));
@@ -1536,8 +1544,10 @@
       if (window.speechSynthesis && vivo === ctl) speechSynthesis.cancel();
       S.hablando = false;
     }
-    function parar(sinDibujo) { pausa(); S.vivo = false; if (vivo === ctl) vivo = null; }
-    var ctl = { pausa: pausa, parar: parar, play: play };
+    function parar(sinDibujo) { pausa(); S.vivo = false; if (vivo === ctl) vivo = null; var x = m3; m3 = null; if (x) x.destruir(); }
+    // ir: salta a un segundo del video y lo dibuja (también lo usan las pruebas)
+    var ctl = { pausa: pausa, parar: parar, play: play, ir: function (t) { S.t = Math.max(0, Math.min(total, t)); S.ult = -1; dibujar(); }, total: total, off: off, tipo: m3 ? '3d' : '2d' };
+    if (m3) m3.alSoltar = function () { if (!raiz.isConnected) { parar(true); return; } if (S.play) pausa(); grande.hidden = false; };
 
     grande.addEventListener('click', play);
     bPlay.addEventListener('click', function () { if (S.play) pausa(); else play(); });
@@ -1552,8 +1562,8 @@
       dibujar(); if (!S.play) play();
     });
     raiz.addEventListener('keydown', function (e) { if (e.key === ' ' && e.target === raiz) { e.preventDefault(); if (S.play) pausa(); else play(); } });
-    if (window.matchMedia) { var mq = window.matchMedia('(prefers-color-scheme: dark)'); if (mq.addEventListener) mq.addEventListener('change', function () { if (!S.play && cv.isConnected) dibujar(); }); }
-    if (window.ResizeObserver) new ResizeObserver(function () { if (!S.play && cv.isConnected) dibujar(); }).observe(cv);
+    if (window.matchMedia) { var mq = window.matchMedia('(prefers-color-scheme: dark)'); if (mq.addEventListener) mq.addEventListener('change', function () { if (!S.play && raiz.isConnected) dibujar(true); }); }
+    if (window.ResizeObserver) new ResizeObserver(function () { if (!S.play && raiz.isConnected) dibujar(true); }).observe(pantalla);
     // primer cuadro: el que explica mejor la pieza
     S.t = op.cap === 1 ? off[1] + 0.5 : 0.5; dibujar(); S.t = op.cap === 1 ? off[1] : 0; S.ult = -1;
     if (op.auto && !reducido) play();

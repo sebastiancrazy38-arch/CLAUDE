@@ -243,6 +243,28 @@ a { color: var(--azul); }
 .video-caps button[aria-pressed="true"] { color: #eef2f5; border-bottom-color: var(--acento); }
 .video-caps button[data-cap="1"][aria-pressed="true"] { border-bottom-color: #f0685c; }
 
+/* video 3D: el lienzo es compartido y pasa de un video a otro; encima van rótulos, tabla y aviso en HTML */
+.video-pantalla.v3 { aspect-ratio: 16 / 9; max-width: 100%; overflow: hidden; background: linear-gradient(180deg, var(--escena-a), var(--escena-b)); touch-action: pan-y; cursor: grab; }
+.video-pantalla.v3:active { cursor: grabbing; }
+.v3-ranura { position: absolute; inset: 0; }
+.v3-ranura canvas { display: block; width: 100%; height: 100%; aspect-ratio: auto; }
+.v3-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.v3-capa { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.v3-rot { position: absolute; transform: translate(14px, -50%); background: var(--placa); color: var(--placa-tinta); font-family: var(--f-titulo); font-weight: 600; font-size: 15px; letter-spacing: 0.02em; padding: 1px 7px; border-radius: 2px; white-space: nowrap; }
+.v3-rot::before { content: ""; position: absolute; left: -14px; top: 50%; width: 14px; border-top: 2px solid var(--acento); }
+.v3-rot::after { content: ""; position: absolute; left: -18px; top: 50%; width: 7px; height: 7px; margin-top: -3px; border-radius: 50%; background: var(--acento); }
+.v3-rot.izq { transform: translate(calc(-100% - 14px), -50%); }
+.v3-rot.izq::before { left: auto; right: -14px; }
+.v3-rot.izq::after { left: auto; right: -18px; }
+.v3-tabla { position: absolute; left: 8px; top: 8px; display: grid; gap: 1px; min-width: 150px; padding: 6px 9px; background: #121b22; border-radius: 3px; font-family: var(--f-dato); font-size: 11px; color: #9fb0bf; box-shadow: 0 2px 8px rgb(0 0 0 / 0.25); }
+.v3-tabla div { display: flex; justify-content: space-between; gap: 14px; }
+.v3-tabla b { font-weight: 500; color: #eef2f5; }
+.v3-tabla b.ok { color: #4cd68f; } .v3-tabla b.mal { color: #ff6b5e; } .v3-tabla b.ac { color: #ffc62b; }
+.v3-aviso { position: absolute; left: 50%; top: 8px; transform: translateX(-50%); max-width: calc(100% - 16px); margin: 0; padding: 3px 11px; background: #121b22; color: #eef2f5; border-left: 4px solid #3ccf7f; border-radius: 2px; font-family: var(--f-titulo); font-weight: 700; font-size: 16px; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.v3-aviso.mal { border-left-color: #ff4a3b; }
+.v3-girar { position: absolute; right: 8px; bottom: 6px; padding: 1px 7px; border-radius: var(--r); font-size: 11px; color: var(--tinta2); background: color-mix(in srgb, var(--sup2) 75%, transparent); pointer-events: none; }
+.video-pantalla.v3 .video-grande { z-index: 2; }
+
 /* simulación de falla sobre el modelo */
 .sim { position: absolute; right: 10px; top: 10px; width: min(340px, 46%); max-height: calc(100% - 20px); overflow-y: auto; z-index: 3; display: flex; flex-direction: column; gap: 7px;
   background: var(--placa); color: var(--placa-tinta); border-left: 4px solid #f0685c; border-radius: 2px; padding: 10px 12px 12px; box-shadow: 0 4px 16px rgb(0 0 0 / 0.28); }
@@ -265,7 +287,7 @@ a { color: var(--azul); }
 .rep-cab { display: flex; gap: 11px; align-items: flex-start; }
 .rep-cab > div { min-width: 0; }
 .rep-min { position: relative; flex: 0 0 96px; width: 96px; aspect-ratio: 16 / 9; padding: 0; border: 1px solid var(--linea); border-radius: 2px; overflow: hidden; background: linear-gradient(180deg, var(--escena-a), var(--escena-b)); }
-.rep-min canvas { display: block; width: 100%; height: 100%; }
+.rep-min canvas, .rep-min img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .rep-min span { position: absolute; inset: 0; margin: auto; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--acento); color: var(--acento-tinta); font-size: 12px; box-shadow: 0 1px 6px rgb(0 0 0 / 0.3); }
 .rep-min:hover span { transform: scale(1.12); }
 .rep h3 { font-size: 21px; font-weight: 700; line-height: 1.05; overflow-wrap: anywhere; }
@@ -278,6 +300,61 @@ a { color: var(--azul); }
 .rep .acciones { margin-top: auto; padding-top: 4px; align-items: center; font-size: 13px; }
 #rep-mas { align-self: flex-start; }
 .nota-rep { font-size: 13px; color: var(--tinta2); max-width: 80ch; border-left: 3px solid var(--acento); padding-left: 10px; }
+
+/* detección de fallas */
+.tapa nav a.nav-det { color: var(--tinta); border-bottom-color: var(--acento); }
+.det-cuerpo { display: flex; flex-direction: column; gap: 12px; }
+.det-fila { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: end; }
+.det-campo { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 0 1 auto; }
+.det-campo.grande { flex: 1 1 240px; }
+.det-campo > span { font-family: var(--f-dato); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tinta2); }
+.det-campo input, .det-campo select, #det-texto { padding: 8px 10px; border: 1px solid var(--linea); border-radius: var(--r); background: var(--sup2); color: var(--tinta); font: inherit; min-width: 0; max-width: 100%; }
+#det-q { font-family: var(--f-dato); font-size: 18px; }
+#det-texto { width: 100%; font-family: var(--f-dato); font-size: 14px; resize: vertical; }
+.cods { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 12px; }
+.cod { background: var(--sup); border: 1px solid var(--linea); border-radius: var(--r); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.cod header { display: flex; gap: 12px; align-items: center; min-width: 0; }
+.cod header > div { min-width: 0; }
+.cod-num { font-family: var(--f-dato); font-weight: 500; font-size: 20px; background: #05090c; color: #ff5a3c; padding: 4px 10px; border-radius: 2px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.cod.diag .cod-num { color: #4cd68f; }
+.cod-eq { font-family: var(--f-dato); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta2); }
+.cod h3 { font-size: 22px; font-weight: 700; overflow-wrap: anywhere; }
+.cod-simple { font-size: 16px; }
+.cod-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 8px 16px; }
+.cod h4 { font-family: var(--f-dato); font-weight: 500; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tinta2); margin-bottom: 3px; }
+.cod ul, .cod ol { padding-left: 20px; display: flex; flex-direction: column; gap: 3px; font-size: 14px; }
+.cod-peligro { border-left: 3px solid var(--mal); padding-left: 9px; font-size: 14px; }
+.cod .acciones { align-items: center; font-size: 13px; }
+.eq-info { background: var(--sup2); border: 1px solid var(--linea); border-left: 4px solid var(--azul); border-radius: 2px; padding: 10px 12px; display: flex; flex-direction: column; gap: 5px; font-size: 14px; max-width: 90ch; }
+.eq-info h3 { font-size: 20px; }
+.det-pregunta { font-family: var(--f-titulo); font-size: 28px; font-weight: 600; line-height: 1.12; text-wrap: balance; }
+.det-ops { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 8px; }
+.det-ops button { text-align: left; border: 1px solid var(--linea); background: var(--sup2); border-radius: var(--r); padding: 12px 14px; font-size: 16px; color: var(--tinta); }
+.det-ops button:hover { border-color: var(--tinta); }
+.det-laptop { display: flex; flex-direction: column; gap: 12px; }
+.det-pasos { background: var(--sup); border: 1px solid var(--linea); border-radius: var(--r); padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; max-width: 90ch; }
+.det-pasos h3 { font-size: 20px; text-transform: uppercase; }
+.det-pasos ol { padding-left: 20px; display: flex; flex-direction: column; gap: 3px; }
+.det-pantalla { display: flex; flex-direction: column; gap: 10px; }
+.det-estado { font-family: var(--f-dato); font-size: 13px; color: var(--tinta2); }
+.det-estado.conectado { color: var(--ok); }
+.det-estado.error { color: var(--mal); }
+.det-lectura { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px; background: #05090c; padding: 10px 14px; border-radius: 3px; font-family: var(--f-dato); }
+.det-lectura span { color: #9fb0bf; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+.det-lectura b { color: #ff5a3c; font-size: 34px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.det-log { max-height: 180px; overflow: auto; background: #0d1419; color: #c9d3db; font-family: var(--f-dato); font-size: 12px; padding: 8px 10px; border-radius: 3px; margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* ficha: lo sencillo primero */
+.ficha section.simple { max-width: none; }
+.simple dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 8px; }
+.simple dl > div { background: var(--sup2); border: 1px solid var(--linea); border-left: 4px solid var(--azul); border-radius: 2px; padding: 8px 11px; display: flex; flex-direction: column; gap: 2px; }
+.simple dl > div.mal { border-left-color: var(--mal); }
+.simple dl > div.ok { border-left-color: var(--ok); }
+.simple dt { font-family: var(--f-dato); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tinta2); }
+.simple dd { font-size: 16px; line-height: 1.38; }
+.tecnico { border-top: 1px dashed var(--linea); padding-top: 8px; }
+.tecnico summary { cursor: pointer; font-family: var(--f-titulo); font-weight: 600; font-size: 17px; color: var(--azul); }
+.tecnico-cuerpo { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
 
 /* electrónica */
 .manual h3.sub { font-size: 26px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.01em; margin-top: 8px; }
@@ -303,6 +380,9 @@ a { color: var(--azul); }
   .sim li:not(.ahora) { display: none; }   /* en el teléfono solo el paso actual, para que se vea el ascensor */
   .video-caps button { font-size: 14px; padding: 7px 4px 5px; }
   .video-subt { font-size: 14px; }
+  .v3-rot { font-size: 13px; padding: 0 5px; }
+  .v3-tabla { font-size: 10px; min-width: 0; padding: 4px 7px; }
+  .v3-aviso { font-size: 13px; }
   .banco { grid-template-columns: minmax(0, 1fr); }
   .escena { height: 64vh; min-height: 380px; }
   .panel { max-height: none; min-height: 0; }
@@ -317,6 +397,7 @@ a { color: var(--azul); }
   .zonas button { padding: 3px 9px; font-size: 15px; }
   .pista-uso { display: none; }
 }
+@media (max-width: 480px) { .v3-tabla { display: none; } .v3-rot { font-size: 12px; } .v3-girar { display: none; } }
 @media (prefers-reduced-motion: reduce) { .punto.guia, .punto.mal { animation: none; } .avance .via i { transition: none; } }
 </style>
 
@@ -324,7 +405,7 @@ a { color: var(--azul); }
   <header class="tapa">
     <div class="marca"><h1>Taller de Ascensores</h1><span>Otis · Schindler · MoviLift · y más</span></div>
     <nav aria-label="Secciones">
-      <a href="#taller">Taller</a><a href="#repuestos">Repuestos</a><a href="#electronica">Electrónica</a><a href="#tipos">Tipos</a><a href="#marcas">Marcas</a><a href="#guia">Guía de campo</a><a href="#fallas">Fallas</a><a href="#seguridades">Seguridades</a>
+      <a href="#taller">Taller</a><a href="#deteccion" class="nav-det">Detectar falla</a><a href="#repuestos">Repuestos</a><a href="#electronica">Electrónica</a><a href="#tipos">Tipos</a><a href="#marcas">Marcas</a><a href="#guia">Guía de campo</a><a href="#fallas">Fallas</a><a href="#seguridades">Seguridades</a>
     </nav>
   </header>
   <div class="franja" aria-hidden="true"></div>
@@ -358,6 +439,14 @@ a { color: var(--azul); }
       </div>
       <div class="panel" id="panel" aria-live="polite"></div>
     </div>
+  </section>
+
+  <section class="manual" id="deteccion" hidden>
+    <h2>Detección de fallas</h2>
+    <p class="entrada">Encuentra qué le pasa al ascensor y cómo arreglarlo. Escribe el código que muestra el equipo, responde unas preguntas, pega el historial de fallas o conecta la laptop al variador o al control.</p>
+    <div class="seg" id="det-modo" role="group" aria-label="Cómo buscar la falla"></div>
+    <div id="det-cuerpo" class="det-cuerpo"></div>
+    <p class="nota-rep">Todo arreglo se hace con el ascensor fuera de servicio, sin pasajeros y con el interruptor principal bloqueado. Nunca se puentea una seguridad. Los significados de los códigos salen de manuales y documentos públicos de cada fabricante (enlace «Fuente» en cada código); ante la duda, manda el manual del equipo.</p>
   </section>
 
   <section class="manual" id="repuestos" hidden>
@@ -460,6 +549,21 @@ a { color: var(--azul); }
 <script src="contenido-guia.js"></script>
 <script src="contenido-repuestos.js"></script>
 <script src="contenido-electronica.js"></script>
+<script src="contenido-deteccion.js"></script>
+<script src="contenido-codigos.js"></script>
 <script src="modelo.js"></script>
 <script src="animaciones.js"></script>
+<script src="videos3d.js"></script>
+<script src="v3d-maquina.js"></script>
+<script src="v3d-cabina.js"></script>
+<script src="v3d-puertas.js"></script>
+<script src="v3d-g-puertas-piso.js"></script>
+<script src="v3d-g-puertas-cabina.js"></script>
+<script src="v3d-g-maquina.js"></script>
+<script src="v3d-g-seguridad.js"></script>
+<script src="v3d-g-cabina.js"></script>
+<script src="v3d-g-guias.js"></script>
+<script src="v3d-g-electronica.js"></script>
+<script src="v3d-g-hidraulico.js"></script>
 <script src="app.js"></script>
+<script src="deteccion.js"></script>

@@ -1,0 +1,80 @@
+/* Taller de Ascensores: detección de fallas por preguntas (sirve para cualquier marca).
+   Cada pregunta lleva a otra o a un resultado. Los resultados dicen qué revisar, en orden, en palabras simples.
+   Todo se revisa con el ascensor fuera de servicio y sin pasajeros; el rescate de personas lo hace solo personal capacitado. */
+
+ASC.diagnostico = {
+  inicio: 'q1',
+  nodos: {
+    q1: { p: '¿Qué está pasando con el ascensor?', o: [
+      ['Está apagado: sin luces ni pantalla', 'q_apagado'],
+      ['Tiene luz, pero no se mueve', 'q_quieto'],
+      ['Hay un problema con la puerta', 'q_puerta'],
+      ['Se mueve, pero hace algo raro', 'q_raro'],
+      ['Se quedó entre pisos con gente adentro', 'r_atrapados'],
+      ['Para y queda un escalón con el piso', 'r_desnivel'],
+      ['Un botón o la pantalla no funciona', 'q_botones'],
+      ['Es hidráulico y baja solo', 'r_hidraulico'],
+      ['La pantalla o el tablero muestra un código', '#codigo']
+    ] },
+    q_apagado: { p: '¿El edificio tiene luz?', o: [['No, se fue la luz en todo el edificio', 'r_sinluz'], ['Sí, el edificio tiene luz', 'q_interruptor']] },
+    q_interruptor: { p: '¿El interruptor principal del ascensor (en el cuarto de máquinas o junto al tablero) está encendido?', o: [['Está apagado o bajado', 'r_interruptor'], ['Está encendido', 'r_fusibles']] },
+    q_quieto: { p: '¿Las puertas cierran completas?', o: [['No: no cierran o se vuelven a abrir', 'q_puerta'], ['Sí cierran, pero no arranca', 'q_serie']] },
+    q_serie: { p: '¿El tablero marca «serie abierta», «seguridades» o tiene apagada alguna luz de seguridad?', o: [['Sí', 'r_serie'], ['No o no sé', 'q_ruido_arranque']] },
+    q_ruido_arranque: { p: 'Cuando intenta arrancar, ¿se escucha un «clac» en el tablero o en el freno y luego nada?', o: [['Sí, suena y no arranca', 'r_freno_contactor'], ['No se escucha nada', 'r_tarjeta']] },
+    q_puerta: { p: '¿Qué hace la puerta?', o: [
+      ['Se abre y se cierra sin parar', 'r_cortina'],
+      ['No termina de cerrar o se queda a medias', 'r_puerta_piso'],
+      ['Hace ruido, «tac-tac» o se traba', 'r_roldanas'],
+      ['No abre en un piso', 'r_patin'],
+      ['Cierra muy fuerte o golpea', 'r_operador'],
+      ['Suena el zumbador y no cierra con gente', 'r_pesacargas']
+    ] },
+    q_raro: { p: '¿Qué notas?', o: [
+      ['Golpea o vibra mientras viaja', 'r_guias'],
+      ['Ruido fuerte en la máquina', 'r_maquina'],
+      ['Se pasa del piso o no frena bien', 'r_freno'],
+      ['Arranca con tirones o vibra el motor', 'r_encoder'],
+      ['Se frenó de golpe y quedó trabado', 'r_paracaidas']
+    ] },
+    q_botones: { p: '¿Qué falla?', o: [
+      ['El botón de un solo piso no responde', 'r_boton_piso'],
+      ['Los botones de adentro de la cabina no responden', 'r_cabina'],
+      ['La cabina vuelve sola siempre al mismo piso', 'r_pulsador_pegado'],
+      ['No funciona ningún botón', 'r_tarjeta']
+    ] },
+
+    r_sinluz: { r: { titulo: 'Corte de luz en el edificio', explica: 'Sin energía el freno cierra y la cabina se queda donde está. Si hay rescate automático, debería llevarla al piso más cercano y abrir la puerta.', pasos: ['Si hay gente adentro: tranquilízala por la alarma o el intercomunicador y no fuerces las puertas.', 'Avisa a la empresa de mantenimiento.', 'Cuando vuelva la luz, revisa que el ascensor arranque solo y que el rescate automático haya cargado sus baterías.'], piezas: ['rescate', 'emergencia'] } },
+    r_interruptor: { r: { titulo: 'Interruptor principal apagado', explica: 'Alguien lo bajó (por un trabajo) o saltó por una sobrecarga o un cortocircuito.', pasos: ['Pregunta si alguien está trabajando en el ascensor: si tiene candado o tarjeta, NO lo subas.', 'Si saltó solo, no lo subas varias veces: hay que buscar por qué saltó (cable dañado, motor, humedad).', 'Un técnico mide el aislamiento antes de volver a dar energía.'], piezas: ['interruptor_principal', 'tablero_control'], peligro: 'Un interruptor con candado o tarjeta indica que hay alguien trabajando.' } },
+    r_fusibles: { r: { titulo: 'Llega luz pero el tablero no prende', explica: 'Lo más común es un fusible quemado, el relé que vigila las fases abierto, o la fuente de las tarjetas dañada.', pasos: ['Con candado puesto, revisa los fusibles del tablero.', 'Mira el relé de fases: si su luz marca falta o inversión de fase, el problema es de la red del edificio.', 'Mide la fuente de 24 V. Si no da su voltaje, la fuente está mal.'], piezas: ['interruptor_principal', 'tablero_control'] } },
+    r_serie: { r: { titulo: 'Se abrió la serie de seguridades', explica: 'Uno de los interruptores de seguridad está abierto (una puerta, un stop, el limitador, el paracaídas…). Mientras uno esté abierto, el ascensor no se mueve.', pasos: ['Mira en el tablero qué tramo de la serie está abierto (muchos tableros lo indican).', 'Revisa primero lo más común: puertas de piso mal cerradas y el stop del foso o del techo de cabina.', 'Con el plano, mide el voltaje punto por punto: donde desaparece, ahí está el interruptor abierto.', 'Arregla la causa. Nunca hagas un puente para que ande.'], piezas: ['cerradura', 'stop_foso', 'caja_inspeccion', 'limitador', 'contacto_paracaidas', 'finales_carrera'], peligro: 'Puentear una seguridad puede matar a alguien.' } },
+    r_freno_contactor: { r: { titulo: 'Intenta arrancar pero no puede', explica: 'Suele ser el freno que no abre, un micro del freno desajustado o un contactor que no cierra bien.', pasos: ['Mira si el tablero muestra un error de freno o de contactor.', 'Revisa que el freno abra al dar marcha y que sus micros cambien.', 'Revisa los contactores: que cierren y que no estén pegados o quemados.'], piezas: ['freno', 'micro_freno', 'tablero_control'] } },
+    r_tarjeta: { r: { titulo: 'El tablero no da la orden', explica: 'Puede ser la tarjeta principal, su fuente de 24 V o un conector suelto. Muchas veces la tarjeta no está malograda.', pasos: ['Mira si la tarjeta tiene sus luces normales o alguna luz de error.', 'Mide la fuente de 24 V con el ascensor intentando arrancar.', 'Revisa conectores, humedad y fusibles antes de pensar en cambiar la tarjeta.', 'Si hay que cambiarla, copia antes la configuración.'], piezas: ['tablero_control', 'variador'] } },
+    r_cortina: { r: { titulo: 'La cortina de luz cree que hay alguien', explica: 'Una de sus reglas está sucia, golpeada o desalineada, o su cable está pelado.', pasos: ['Limpia las dos reglas con un paño seco.', 'Mira las lucecitas de las reglas: si una marca error, revisa su cable y conector.', 'Revisa que no haya nada en la ranura del piso (pisadera).'], piezas: ['cortina_luminosa', 'pisadera', 'operador_puertas'] } },
+    r_puerta_piso: { r: { titulo: 'La puerta no cierra completa', explica: 'Casi siempre hay basura en la ranura del piso, o una rueda o el cable que une las hojas está mal.', pasos: ['Limpia la ranura de la pisadera de ese piso.', 'Revisa que las dos hojas lleguen juntas al centro (cable de sincronismo).', 'Revisa las ruedas del cabezal y la pesa que cierra la puerta.'], piezas: ['pisadera', 'cable_sincronismo', 'roldanas_puerta', 'pesa_cierre', 'cerradura'] } },
+    r_roldanas: { r: { titulo: 'Ruido o golpe en la puerta', explica: 'Ruedas gastadas (con planos) en el cabezal, riel sucio o guiadores rotos abajo.', pasos: ['Escucha si el ruido es en un solo piso o en todos.', 'Revisa las ruedas y el riel del cabezal de ese piso.', 'Revisa los guiadores de abajo de las hojas.'], piezas: ['roldanas_puerta', 'cabezal_piso', 'guiadores_puerta'] } },
+    r_patin: { r: { titulo: 'La puerta no abre en un piso', explica: 'El patín de la puerta de cabina no engancha las ruedas de la cerradura de ese piso.', pasos: ['Revisa la alineación del patín con las ruedas de la cerradura de ese piso.', 'Revisa que las ruedas de goma giren y no estén rotas.', 'Revisa que la cabina pare a nivel en ese piso.'], piezas: ['patin', 'cerradura', 'posicionamiento'] } },
+    r_operador: { r: { titulo: 'La puerta cierra muy fuerte o golpea', explica: 'El operador de puertas está desajustado, su correa está floja o perdió sus posiciones.', pasos: ['Revisa la correa del operador.', 'Revisa los topes y la velocidad de cierre en su tarjeta.', 'Si cambiaste la tarjeta o hubo un corte, haz el aprendizaje de la puerta.'], piezas: ['operador_puertas', 'puerta_cabina'] } },
+    r_pesacargas: { r: { titulo: 'Marca sobrecarga', explica: 'Si pasa con poca gente, el pesacargas está descalibrado o su sensor dañado.', pasos: ['Prueba con la cabina vacía: si igual suena, es el pesacargas.', 'Revisa el cable y el sensor bajo la cabina.', 'Calibra con pesas conocidas según su manual.'], piezas: ['pesacargas'] } },
+    r_guias: { r: { titulo: 'Golpea o vibra al viajar', explica: 'Rozaderas o rodaderas gastadas, guías sin aceite o una unión de guía desalineada.', pasos: ['Fíjate si el golpe es siempre en el mismo punto del hueco (unión de guía).', 'Revisa el desgaste de rozaderas o rodaderas.', 'Revisa que las aceiteras tengan aceite.'], piezas: ['rozaderas', 'rodaderas', 'aceiteras', 'guias_cabina', 'fijaciones'] } },
+    r_maquina: { r: { titulo: 'Ruido en la máquina', explica: 'Rodamientos gastados, polea o cables gastados, o (en máquinas antiguas) falta de aceite en el reductor.', pasos: ['Escucha si el ruido sube con la velocidad (rodamientos).', 'Revisa la polea y los cables: canales gastados, hilos rotos.', 'En máquinas con reductor, revisa el nivel de aceite.'], piezas: ['maquina', 'polea_traccion', 'cables_traccion'] } },
+    r_freno: { r: { titulo: 'No frena bien', explica: 'Zapatas del freno gastadas o con aceite, o los cables patinan en la polea.', pasos: ['Saca el ascensor de servicio: un freno que patina es peligroso.', 'Revisa las zapatas y que no haya aceite en el tambor.', 'Revisa el desgaste de la polea y de los cables.'], piezas: ['freno', 'polea_traccion', 'cables_traccion'], peligro: 'Con el freno fallando, el ascensor no se usa hasta repararlo.' } },
+    r_encoder: { r: { titulo: 'Arranca con tirones', explica: 'El encoder del motor está flojo o sucio, o su cable tiene interferencia. El variador pierde el control del motor.', pasos: ['Mira si el variador muestra error de encoder o de sobrecorriente.', 'Revisa que el encoder esté bien sujeto y su conector firme.', 'Revisa la malla del cable y que no pase junto a cables de fuerza.'], piezas: ['encoder', 'variador', 'maquina'] } },
+    r_paracaidas: { r: { titulo: 'Actuó el paracaídas', explica: 'El limitador detectó exceso de velocidad (o se disparó en falso) y el paracaídas clavó la cabina en las guías.', pasos: ['Nadie entra a la cabina ni al hueco: llama al técnico.', 'El técnico rescata a las personas con el procedimiento de la marca.', 'Después revisa el limitador, las cuñas, las guías y rearma los contactos.'], piezas: ['paracaidas', 'limitador', 'cable_limitador'], peligro: 'Solo personal capacitado libera un paracaídas.' } },
+    r_atrapados: { r: { titulo: 'Personas atrapadas', explica: 'Lo primero es la gente: que esté tranquila y segura. El ascensor detenido no se cae.', pasos: ['Habla con las personas por la alarma o el intercomunicador y diles que no intenten salir.', 'No abras la puerta a la fuerza ni con la llave si no estás capacitado.', 'Llama a la empresa de mantenimiento o a los bomberos.', 'El rescate lo hace solo personal capacitado con el procedimiento de la marca.'], piezas: ['emergencia', 'rescate'], peligro: 'Nunca saques a alguien si la cabina no está a nivel del piso: puede caer al hueco.' } },
+    r_desnivel: { r: { titulo: 'Para desnivelado', explica: 'Un imán o pantalla del piso se movió, el sensor está sucio, el freno patina o los cables patinan.', pasos: ['Fíjate si pasa en un solo piso (imán o pantalla de ese piso) o en todos (freno, cables, sensor).', 'Revisa la posición de la marca del piso y el sensor de la cabina.', 'Si se pasa en todos, revisa el freno y la polea.'], piezas: ['posicionamiento', 'freno', 'cables_traccion'], peligro: 'Un escalón grande hace tropezar: saca el ascensor de servicio.' } },
+    r_hidraulico: { r: { titulo: 'El hidráulico baja solo', explica: 'Pierde aceite por los sellos del pistón o por una válvula que no cierra bien.', pasos: ['Mira si hay aceite en el vástago o en el recolector.', 'Revisa las válvulas de bajada del bloque.', 'Si se renivela muy seguido, hay que cambiar sellos o válvula.'], piezas: ['piston', 'bloque_valvulas', 'recoge_aceite'] } },
+    r_boton_piso: { r: { titulo: 'Un piso no responde', explica: 'La tarjeta de ese piso perdió la alimentación, la comunicación o su dirección.', pasos: ['Mide los 24 V en el conector de esa botonera.', 'Revisa el cable de comunicación y su conector.', 'Revisa la dirección (microinterruptores) de la tarjeta.'], piezas: ['botonera_piso', 'cableado_hueco'] } },
+    r_cabina: { r: { titulo: 'Los botones de cabina no responden', explica: 'Suele ser un hilo cortado del cable viajero, el conector de la caja del techo o la tarjeta de cabina.', pasos: ['Revisa el conector en la caja del techo de cabina.', 'Revisa la continuidad del cable viajero moviendo la cabina.', 'Después revisa la tarjeta de la botonera.'], piezas: ['botonera_cabina', 'cable_viajero', 'caja_techo'] } },
+    r_pulsador_pegado: { r: { titulo: 'Un botón quedó pegado', explica: 'El pulsador de ese piso quedó presionado y la llamada queda siempre registrada.', pasos: ['Prueba el botón de ese piso: si queda hundido, cámbialo.', 'Si el botón está bien, revisa la tarjeta de ese piso.'], piezas: ['botonera_piso', 'botonera_cabina'] } }
+  }
+};
+
+/* Equipos que se pueden leer con la laptop por puerto serie (solo lectura).
+   Se completan con la investigación (contenido-codigos.js). Aquí van los modos que sirven para cualquier equipo. */
+ASC.perfilesSerie = ASC.perfilesSerie || [];
+ASC.perfilesSerie.push(
+  { id: 'texto', nombre: 'Monitor de texto (cualquier equipo que envíe mensajes)', modo: 'texto', baud: 9600, paridad: 'none', bits: 8, parada: 1,
+    nota: 'Muestra lo que el equipo manda por el puerto serie y busca códigos de falla en el texto.' },
+  { id: 'modbus', nombre: 'Modbus RTU (variadores y controles con RS-485)', modo: 'modbus', baud: 9600, paridad: 'even', bits: 8, parada: 1, esclavo: 1, registro: '0x0000', cantidad: 1,
+    nota: 'Lee el registro donde el equipo guarda la falla actual. La dirección del registro sale del manual de cada equipo.' }
+);

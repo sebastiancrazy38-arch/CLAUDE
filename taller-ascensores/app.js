@@ -683,14 +683,23 @@
     const propia = e.marca && c.marcas && c.marcas[e.marca];   // lo que se sabe de esta pieza en la marca del equipo elegido
     const mar = c.marcas ? [['otis', 'Otis'], ['schindler', 'Schindler'], ['movilift', 'MoviLift']].filter(m => c.marcas[m[0]] && m[0] !== e.marca) : [];
     const volver = S.modo === 'armar' ? 'Volver al armado' : S.modo === 'reto' ? 'Volver al reto' : 'Todas las partes';
+    const sim = ASC.simple && ASC.simple[id];
+    // primero lo sencillo (video y cuatro frases); el detalle técnico queda plegado debajo
     return `<div class="ficha">
       <button type="button" class="btn sec chico volver" data-accion="volver">← ${volver}</button>
       <header><p class="zona-t" style="margin:0">${esc(ASC.zonas[k.z])}</p><h3>${esc(nom(id))}</h3>
-        ${(c.alias && c.alias.length) || c.ingles ? `<p class="alias">${c.alias && c.alias.length ? 'También le dicen: ' + esc(c.alias.join(', ')) : ''}${c.alias && c.alias.length && c.ingles ? ' · ' : ''}${c.ingles ? 'En inglés: <span lang="en">' + esc(c.ingles) + '</span>' : ''}</p>` : ''}</header>
+        ${c.alias && c.alias.length ? `<p class="alias">También le dicen: ${esc(c.alias.slice(0, 3).join(', '))}</p>` : ''}</header>
+      ${ASC.video ? `<section class="video-sec"><div id="video-ficha"></div></section>` : ''}
+      ${sim ? `<section class="simple" aria-label="En simple"><dl>
+        <div><dt>Qué es</dt><dd>${esc(sim.que)}</dd></div><div><dt>Para qué sirve</dt><dd>${esc(sim.sirve)}</dd></div>
+        <div class="mal"><dt>Si falla</dt><dd>${esc(sim.falla)}</dd></div><div class="ok"><dt>Cómo se arregla</dt><dd>${esc(sim.arreglo)}</dd></div></dl></section>`
+        : `<p class="resumen">${esc(c.resumen || k.m)}</p>`}
+      <div class="acciones">${ok3D && S.modo === 'explorar' ? '<button type="button" class="btn oro chico" data-accion="simular">Simular la falla en el ascensor</button>' : ''}${ok3D ? '<button type="button" class="btn sec chico" data-accion="ubicar">Verla en el modelo</button>' : ''}</div>
+      ${repsDe(id).length ? `<section><h4>Repuestos de esta pieza</h4><div class="chips">${repsDe(id).map(r => `<button type="button" data-rep="${r.id}"><b>${esc(nomMarca(r.m))}</b> · ${esc(r.n)}</button>`).join('')}</div></section>` : ''}
+      <details class="tecnico" id="det-tecnico"><summary>Más detalle técnico</summary><div class="tecnico-cuerpo">
       <div class="visor" id="visor"><span>Arrastra para girar la pieza</span></div>
-      ${c.resumen ? `<p class="resumen">${esc(c.resumen)}</p>` : `<p class="resumen">${esc(k.m)}</p>`}
-      ${ASC.video ? `<section class="video-sec"><h4>Video: cómo funciona y cómo falla</h4><div id="video-ficha"></div></section>` : ''}
-      ${ok3D && S.modo === 'explorar' ? `<div class="acciones"><button type="button" class="btn oro chico" data-accion="simular">Simular la falla en el ascensor</button></div>` : ''}
+      ${sim && c.resumen ? `<p class="resumen">${esc(c.resumen)}</p>` : ''}
+      ${c.ingles ? `<p class="alias">En inglés: <span lang="en">${esc(c.ingles)}</span></p>` : ''}
       ${propia ? `<section class="aqui"><h4>En el ${esc(e.nombre)}</h4><p>${esc(propia)}</p></section>` : ''}
       ${c.queHace ? `<section><h4>Qué hace</h4><p>${esc(c.queHace)}</p></section>` : ''}
       ${c.dondeVa || aqui ? `<section><h4>Dónde va</h4>${c.dondeVa ? `<p>${esc(c.dondeVa)}</p>` : ''}${aqui ? `<p class="aqui"><b>En este ascensor:</b> ${esc(aqui)}</p>` : ''}</section>` : ''}
@@ -698,9 +707,8 @@
       ${c.fallas && c.fallas.length ? `<section><h4>Qué puede fallar</h4><ul class="fallas">${c.fallas.map(f => `<li><b>${esc(f.sintoma)}</b>${f.causa ? `<span><em>Causa</em> ${esc(f.causa)}</span>` : ''}${f.revisar ? `<span><em>Se revisa</em> ${esc(f.revisar)}</span>` : ''}</li>`).join('')}</ul></section>` : ''}
       ${c.seguridad ? `<section class="segur"><h4>Seguridad</h4><p>${esc(c.seguridad)}</p></section>` : ''}
       ${mar.length ? `<section><h4>${propia ? 'En las otras marcas' : 'En cada marca'}</h4><dl class="xmarca">${mar.map(m => `<dt>${m[1]}</dt><dd>${esc(c.marcas[m[0]])}</dd>`).join('')}</dl></section>` : ''}
-      ${repsDe(id).length ? `<section><h4>Repuestos de esta pieza</h4><div class="chips">${repsDe(id).map(r => `<button type="button" data-rep="${r.id}"><b>${esc(nomMarca(r.m))}</b> · ${esc(r.n)}</button>`).join('')}</div></section>` : ''}
       ${c.dato ? `<p class="dato">${esc(c.dato)}</p>` : ''}
-      <div class="acciones">${ok3D ? '<button type="button" class="btn sec chico" data-accion="ubicar">Verla en el modelo</button>' : ''}</div>
+      </div></details>
     </div>`;
   }
 
@@ -808,7 +816,12 @@
   function pintarPanel() {
     const P = $('#panel');
     if (mini) { mini.visible = false; if (mini.c.parentNode) mini.c.parentNode.removeChild(mini.c); }
-    if (S.ficha && S.sel) { P.innerHTML = htmlFicha(S.sel); P.scrollTop = 0; montarVisor(); const v = $('#video-ficha'); if (v && ASC.video) ASC.video.montar(v, S.sel); return; }
+    if (S.ficha && S.sel) {
+      P.innerHTML = htmlFicha(S.sel); P.scrollTop = 0;
+      const v = $('#video-ficha'); if (v && ASC.video) ASC.video.montar(v, S.sel, { equipo: S.tipo });
+      const dt = $('#det-tecnico'); if (dt) dt.addEventListener('toggle', () => { if (dt.open) montarVisor(); else if (mini) mini.visible = false; });
+      return;
+    }
     P.innerHTML = S.modo === 'explorar' ? htmlExplorar() : S.modo === 'armar' ? htmlArmar() : htmlReto();
     if (S.modo === 'explorar') pintarLista();
   }
@@ -903,7 +916,13 @@
   function miniVideos(raiz) {
     if (!ASC.video) return;
     const pend = $$('canvas[data-min]', raiz);
-    const dibujar = cv => { try { ASC.video.cuadro(cv, cv.dataset.min, 0, 4.2, raiz); } catch (e) { /* sin miniatura */ } cv.removeAttribute('data-min'); };
+    // miniatura en 3D cuando hay WebGL (un cuadro del video); si no, el dibujo 2D
+    const en3D = !!(ASC.v3d && ASC.v3d.disponible && ASC.v3d.disponible());
+    const dibujar = cv => {
+      const id = cv.dataset.min; cv.removeAttribute('data-min');
+      if (en3D) { ASC.v3d.miniatura(id, url => { if (!url || !cv.isConnected) return; const im = new Image(); im.src = url; im.alt = ''; im.className = 'rep-foto'; cv.replaceWith(im); }, { equipo: S.tipo }); return; }
+      try { ASC.video.cuadro(cv, id, 0, 4.2, raiz); } catch (e) { /* sin miniatura */ }
+    };
     if (!window.IntersectionObserver) { pend.forEach(dibujar); return; }
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); dibujar(e.target); } }), { rootMargin: '200px' });
     pend.forEach(cv => io.observe(cv));
