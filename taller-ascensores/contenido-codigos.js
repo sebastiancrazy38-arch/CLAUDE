@@ -144,6 +144,137 @@ ASC.equiposFalla = [
   "verificado": false
  },
  {
+  "id": "vfded",
+  "familia": "delta_inovance",
+  "marca": "Delta Electronics",
+  "fabricante": "Delta Electronics",
+  "nombre": "VFD-ED (variador para ascensor)",
+  "tipo": "variador",
+  "dondeVer": "En el teclado digital del variador (KPC-CC01) sale el código de la falla, por ejemplo ocA o GFF. El manual trae la explicación de cada código en el capítulo 14 (Fault Codes) y los de parada segura STO en el capítulo 16.",
+  "historial": "El variador guarda las últimas fallas en los parámetros de registro de fallas (grupo 06). No pude leer la tabla exacta de números del VFD-ED: revísala en el manual antes de usarla. Para resetear, primero quita la causa.",
+  "conexion": {
+   "posible": true,
+   "puerto": "Bornes SG1+ y SG1- del variador (RS-485 Modbus). Tiene un interruptor para la resistencia de 120 ohm de fin de línea (de fábrica viene puesta). Para la laptop Delta vende el convertidor USB/RS-485 IFD6530 (sección 6-8 del manual).",
+   "protocolo": "Modbus por RS-485 (el manual tiene el Apéndice B 'Modbus Protocol').",
+   "ajustes": "Grupo 9 de parámetros: 09-00 dirección, 09-01 velocidad (baudios), 09-04 formato (ASCII o RTU, paridad y bits de parada). En otros Delta (VFD-EL-C) la dirección va de 1 a 254 y la velocidad de 4,8 a 19,2 kbps. No pude leer los valores de fábrica del VFD-ED: míralos en la pantalla del variador antes de conectar.",
+   "registroFalla": "NO confirmado para el VFD-ED. En otros variadores Delta (VFD-EL) el registro 2100H es de solo lectura y da el código de la falla. Confírmalo en el Apéndice B del manual VFD-ED antes de usarlo.",
+   "software": "VFDSoft (programa gratis de Delta para PC; hay manual en inglés). También sirve cualquier programa maestro Modbus.",
+   "notas": "Solo lee, no escribas parámetros con el ascensor en servicio. Si el puerto lo usa el tablero de control, no lo desconectes con el ascensor funcionando.",
+   "fuente": "https://vfds.com/content/manuals/delta/delta-vfd-ed-manual.pdf"
+  },
+  "fuentes": [
+   "https://vfds.com/content/manuals/delta/delta-vfd-ed-manual.pdf",
+   "https://www.manualslib.com/manual/1990589/Delta-Vfd-Ed-Series.html?page=318",
+   "https://www.manualslib.com/manual/1990589/Delta-Vfd-Ed-Series.html?page=352",
+   "https://deltronics.ru/images/manual/VFDSoft_manual_en.pdf",
+   "https://www.manualslib.com/manual/3161831/Delta-Vfd-El-C-Series.html"
+  ],
+  "verificado": false
+ },
+ {
+  "id": "vfdvl",
+  "familia": "delta_inovance",
+  "marca": "Delta Electronics",
+  "fabricante": "Delta Electronics",
+  "nombre": "VFD-VL (variador para ascensor, modelo anterior)",
+  "tipo": "variador",
+  "dondeVer": "En el teclado digital del variador. El capítulo 6 del manual (Fault Code Information, pág. 178) explica los códigos.",
+  "historial": "Guarda las 6 últimas fallas; se leen en el teclado o por comunicación. Después de quitar la falla espera 5 segundos antes de resetear (tecla o borne de entrada).",
+  "conexion": {
+   "posible": true,
+   "puerto": "Puerto de comunicación RS-485 del variador (no pude leer los bornes exactos del VFD-VL).",
+   "protocolo": "Modbus (las 6 últimas fallas se pueden leer por comunicación).",
+   "ajustes": "No encontrado en las fuentes que pude abrir.",
+   "registroFalla": "No encontrado.",
+   "software": "VFDSoft de Delta (no confirmé que soporte el VFD-VL).",
+   "notas": "Antes de tocar: espera 5 minutos (equipos de hasta 22 kW) o 10 minutos (30 kW o más) y mide que no haya tensión entre DC+ y DC-.",
+   "fuente": "https://www.manualslib.com/manual/2038802/Delta-Vfd-Vl-Series.html?page=198"
+  },
+  "fuentes": [
+   "https://www.manualslib.com/manual/2038802/Delta-Vfd-Vl-Series.html?page=198",
+   "https://www.manualslib.com/manual/2038802/Delta-Vfd-Vl-Series.html"
+  ],
+  "verificado": false
+ },
+ {
+  "id": "delta_comun",
+  "familia": "delta_inovance",
+  "marca": "Delta Electronics",
+  "fabricante": "Delta Electronics",
+  "nombre": "Delta: códigos comunes de la familia (leídos en manuales C2000 Plus, ME300 y VFD-EL-W)",
+  "tipo": "variador",
+  "dondeVer": "En la pantalla del variador Delta. El VFD-ED y el VFD-VL usan el mismo estilo de códigos (ocA, ocd, GFF...), pero estos textos salen de manuales de OTROS variadores Delta: compáralos con el manual de tu modelo.",
+  "historial": "Ver la ficha del modelo (VFD-ED o VFD-VL).",
+  "conexion": {
+   "posible": false,
+   "software": "VFDSoft de Delta",
+   "notas": "Ficha de apoyo: para conectar la laptop mira la ficha del VFD-ED.",
+   "fuente": "https://www.manualslib.com/manual/2005494/Delta-Me300-Series.html?page=347"
+  },
+  "fuentes": [
+   "https://www.manualslib.com/manual/2005494/Delta-Me300-Series.html?page=347",
+   "https://www.manualslib.com/manual/2923922/Delta-C2000-Plus-Series.html?page=904",
+   "https://www.manualslib.com/manual/2008941/Delta-Vfd-El-W-Series.html?page=165"
+  ],
+  "verificado": false
+ },
+ {
+  "id": "md500",
+  "familia": "delta_inovance",
+  "marca": "Inovance",
+  "fabricante": "Inovance",
+  "nombre": "MD500 (variador de uso general, también se usa en ascensores)",
+  "tipo": "variador",
+  "dondeVer": "En el panel del variador sale 'Err' con un número, por ejemplo Err02. Con una falla (Err) el variador corta la salida al instante y parpadea la luz TUNE/TC. Hay que resetearla a mano.",
+  "historial": "La falla actual se ve en U0-62. Los tipos de falla se guardan en F9-14 y siguientes (el significado de cada número está en el Apéndice C del manual). Para resetear: tecla STOP/RES (con F7-02 = 1, que es lo de fábrica) o una entrada digital con función 9 'reset de falla' (F4-00 a F4-09). También se borra cortando y volviendo a dar energía.",
+  "conexion": {
+   "posible": true,
+   "puerto": "Comunicación RS-485 Modbus del variador (en algunos modelos va en tarjeta de comunicación). No pude confirmar los nombres de los bornes en el manual.",
+   "protocolo": "Modbus RTU (hasta 115200 bps según el manual). También hay tarjetas Modbus-TCP, Profinet y EtherCAT.",
+   "ajustes": "Grupo FD: FD-00 velocidad, FD-01 formato de datos, FD-02 dirección del esclavo (1 a 247 en el MD200 hermano; 0 = difusión). El manual de la tarjeta MD500-EN1 pide FD-00 = 9 (115200 bps) y FD-01 = 3 (8-N-1, sin paridad). No pude confirmar los valores de fábrica: léelos en el panel antes de conectar. La laptop debe tener la misma velocidad y formato que el variador.",
+   "registroFalla": "Dirección 8000H = código de la falla actual (lectura con función 03). El número que llega es el mismo del Err (ej. 2 = sobrecorriente, 5 = sobretensión). Regla de direcciones: grupo en el byte alto y número del parámetro en hexadecimal en el byte bajo; por ejemplo F9-14 = F90EH, FD-00 = FD00H y U0-62 = 703EH (así aparecen en la librería abierta python-inovance para el MD520).",
+   "software": "InoDriverShop (programa de Inovance para Windows: diagnóstico y monitoreo). Bájalo solo de la web oficial de Inovance (Support / Download, buscar 'InoDriverShop'). Confirma que soporte tu modelo.",
+   "notas": "Solo lee: no escribas parámetros con el ascensor en servicio. Si el puerto lo usa el tablero de control del ascensor, no lo desconectes con el equipo funcionando.",
+   "fuente": "https://www.manualslib.com/manual/1590962/Inovance-Md500.html?page=143"
+  },
+  "fuentes": [
+   "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/",
+   "https://www.otomasyonavm.com/en/invance-md-fault-index",
+   "https://www.manualslib.com/manual/1590962/Inovance-Md500.html?page=77",
+   "https://www.manualslib.com/manual/1590962/Inovance-Md500.html?page=143",
+   "https://www.manualslib.com/manual/3297678/Inovance-Md500-En1.html",
+   "https://www.manualslib.com/manual/3297674/Inovance-Md500-Em1.html"
+  ],
+  "verificado": false
+ },
+ {
+  "id": "adl300",
+  "familia": "delta_inovance",
+  "marca": "Gefran",
+  "fabricante": "Gefran (hoy WEG)",
+  "nombre": "ADL300 (variador para ascensor)",
+  "tipo": "variador",
+  "dondeVer": "En el teclado sale el NOMBRE de la alarma (por ejemplo Overvoltage). El número de código solo se ve por la línea serie (con la PC). Las alarmas propias del ascensor se ven en el menú 5.9 'Lift Alarms'.",
+  "historial": "No pude leer dónde guarda el historial de alarmas. La tecla RST resetea las alarmas solo si ya se quitó la causa (capítulo 8.3.11 del manual de arranque rápido).",
+  "conexion": {
+   "posible": true,
+   "puerto": "XS2: interfaz serie RS232 para conectar la PC. XS1: interfaz serie opcional para el teclado.",
+   "protocolo": "Modbus RTU por el puerto RS232. En la versión -C también CANopen (301 y 417); también DCP3 y DCP4.",
+   "ajustes": "No encontrado: dirección, baudios y paridad están en el capítulo Communication/RS232 del manual de funciones (págs. 94-97), que no pude abrir.",
+   "registroFalla": "No encontrado. El parámetro 2172 'SpdFbkLoss code' guarda la causa de la alarma de encoder (viene en hexadecimal; pásalo a binario y compáralo con la tabla del encoder).",
+   "software": "WEG_eXpress (antes GF_eXpress de Gefran). Algunas funciones solo se ajustan desde el teclado.",
+   "notas": "Solo lee, no cambies parámetros con el ascensor en servicio.",
+   "fuente": "https://static.weg.net/medias/downloadcenter/h74/h2c/WEG-ADL300-Functions-descriptions-parameters-asynchronous-1S9FEN-en.pdf"
+  },
+  "fuentes": [
+   "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf",
+   "https://static.weg.net/medias/downloadcenter/h74/h2c/WEG-ADL300-Functions-descriptions-parameters-asynchronous-1S9FEN-en.pdf",
+   "https://www.manualslib.com/manual/1845346/Gefran-Adl300.html",
+   "https://www.manualslib.com/manual/1845346/Gefran-Adl300.html?page=44"
+  ],
+  "verificado": false
+ },
+ {
   "id": "wittur_midi",
   "familia": "europeos",
   "marca": "Wittur",
@@ -742,6 +873,89 @@ ASC.equiposFalla = [
   },
   "fuentes": [
    "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/NIDEC/frequentieregelaars-unidrive-sp-advanced-user-guide-en-iss11-0471-0002-11.pdf"
+  ],
+  "verificado": false
+ },
+ {
+  "id": "yaskawa_l1000a",
+  "familia": "yaskawa_fuji",
+  "marca": "Yaskawa",
+  "fabricante": "Yaskawa",
+  "nombre": "L1000A (variador para ascensor, CIMR-LC)",
+  "tipo": "variador",
+  "dondeVer": "En la pantalla del operador digital del variador. Si el LED ALM queda prendido fijo y sale el código, es FALLA: el variador corta y se activa el contacto de falla MA-MB-MC. Si el LED ALM y el código parpadean, es solo ALARMA (aviso).",
+  "historial": "Monitores U2 (datos de la última falla) y U3 (historial de fallas) en el menú de monitores. El manual dice que los códigos de falla se leen desde los monitores U2-. Ojo: algunas fallas no quedan guardadas en la traza (por ejemplo Uv1, Uv2, Uv3, CPF00, CPF01, CPF06).",
+  "conexion": {
+   "posible": true,
+   "puerto": "Puerto USB tipo B en el variador (cable USB 2.0 A-B, se compra aparte). También bornes de comunicación serial MEMOBUS/Modbus (RS-485/422) con resistencia de terminación por DIP switch S2 (apagada de fábrica).",
+   "protocolo": "USB con DriveWizard Plus; serial MEMOBUS/Modbus RTU",
+   "ajustes": "H5-01 = dirección de esclavo (si es 0 el variador no responde; cada equipo con dirección distinta; apagar y prender para que tome el cambio). H5-02 = velocidad. H5-03 = paridad (0 ninguna, 1 par, 2 impar, según manuales de la misma familia Yaskawa 1000). H5-11 = 1 para poder escribir parámetros por MEMOBUS. Valores de fábrica de dirección/velocidad NO confirmados para L1000A: revisar en el variador antes de conectar.",
+   "registroFalla": "Los códigos de falla se leen por MEMOBUS desde los monitores U2- (tabla 'Fault Trace Contents'). Ejemplos de valores: 0002H = Uv1, 0021H = CE, 0055H = SE1, 0056H = SE2, 0057H = SE3, 0058H = SE4. La dirección exacta del registro de 'falla actual' e historial NO se pudo confirmar para L1000A.",
+   "software": "Yaskawa DriveWizard Plus (instalar primero el driver USB, luego conectar el cable)",
+   "notas": "Antes de conectar, instala el driver USB. Para cambiar parámetros por MEMOBUS pon H5-11 = 1. No cambies parámetros del ascensor sin autorización del supervisor.",
+   "fuente": "https://www.manualslib.com/manual/1257708/Yaskawa-L1000a.html?page=77"
+  },
+  "fuentes": [
+   "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281",
+   "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=273",
+   "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=466",
+   "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=231",
+   "https://www.manualslib.com/manual/1257708/Yaskawa-L1000a.html?page=77",
+   "https://www.manualslib.com/manual/1233533/Yaskawa-L1000a.html"
+  ],
+  "verificado": false
+ },
+ {
+  "id": "yaskawa_l1000e",
+  "familia": "yaskawa_fuji",
+  "marca": "Yaskawa",
+  "fabricante": "Yaskawa",
+  "nombre": "L1000E (variador para ascensor, CIMR-LE)",
+  "tipo": "variador",
+  "dondeVer": "Si tiene monitor LED JVOP-184, la falla se ve por grupos de luces: OV/UV, OH/OL, OC/GF/SC/PGO, CPF/OFA/OFB/OFC. Con el operador digital JVOP-180 se ve el código completo. La tecla RESET borra la falla después de arreglar la causa.",
+  "historial": "No confirmado para L1000E (en el L1000A está en los monitores U2/U3).",
+  "conexion": {
+   "posible": true,
+   "puerto": "Puerto USB tipo B en el variador (cable USB 2.0 A-B, se compra aparte)",
+   "protocolo": "USB con DriveWizard Plus",
+   "ajustes": "Instalar el driver USB en la laptop antes de conectar el cable.",
+   "registroFalla": "No encontrado para L1000E.",
+   "software": "Yaskawa DriveWizard Plus",
+   "notas": "Con DriveWizard Plus se puede ver el funcionamiento del variador y revisar parámetros. La tabla de fallas del L1000E no se pudo leer.",
+   "fuente": "https://www.manualslib.com/manual/1233527/Yaskawa-L1000e.html?page=50"
+  },
+  "fuentes": [
+   "https://www.manualslib.com/manual/1233527/Yaskawa-L1000e.html?page=50",
+   "https://www.manualslib.com/manual/1233527/Yaskawa-L1000e.html?page=52"
+  ],
+  "verificado": false
+ },
+ {
+  "id": "fuji_lm2",
+  "familia": "yaskawa_fuji",
+  "marca": "Fuji Electric",
+  "fabricante": "Fuji Electric",
+  "nombre": "FRENIC-Lift LM2 (LM2A / LM2C, variador para ascensor)",
+  "tipo": "variador",
+  "dondeVer": "En el teclado del variador (TP-E1U o TP-A1-LM2), en modo alarma sale el código. Con el teclado TP-A1-LM2: LED de alarma leve parpadeando = aviso, el variador sigue; LED de alarma grave = el variador corta la salida.",
+  "historial": "En modo alarma, con las teclas de flecha del teclado se ven varias alarmas y el historial de alarmas. El manual de referencia LM2A también muestra el estado del variador en el momento de la alarma.",
+  "conexion": {
+   "posible": true,
+   "puerto": "RS-485 puerto 1 = conector RJ-45 del teclado (hay que quitar el teclado para usarlo); RS-485 puerto 2 = bornera. Cada puerto tiene su switch de resistencia de terminación. El teclado TP-A1-LM2 tiene puerto USB mini-B para PC.",
+   "protocolo": "Modbus RTU, DCP3 y protocolo de FRENIC Loader por RS-485 (el LM2A también tiene CANopen)",
+   "ajustes": "y01 = dirección de estación del puerto 1 (1 a 255, fábrica 1); y11 = dirección del puerto 2. y12 = qué hace si se pierde la comunicación (dispara alarma Er8). Velocidad (y04), paridad (y06) y bits de parada (y07): valores de fábrica NO confirmados para LM2.",
+   "registroFalla": "No encontrado: no pude leer la dirección Modbus del código de alarma actual ni del historial para LM2. En el teclado, el menú PRG>6>3 (depuración de comunicación) permite ver códigos de los grupos S, M, W, X, Z.",
+   "software": "FRENIC Loader (edición para Lift): parámetros, monitoreo y trazas en tiempo real (.RTM) e históricas (.HIM)",
+   "notas": "Si usas el RJ-45 del teclado, primero retira el teclado. No cambies parámetros del ascensor sin autorización del supervisor.",
+   "fuente": "https://www.fujielectric-europe.com/fileadmin/03_Downloads/03_01_Drives_and_Automation/Low_voltage_Drives/LM2A/INR-SI47-1909a-E_Lift_LM2__RM_E_.pdf"
+  },
+  "fuentes": [
+   "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40",
+   "https://www.manualslib.com/manual/1636072/Fuji-Electric-Frenic-Lift-Lm2a-Series.html?page=46",
+   "https://www.manualslib.com/manual/1636072/Fuji-Electric-Frenic-Lift-Lm2a-Series.html?page=70",
+   "https://www.manualslib.com/manual/2157439/Fuji-Electric-Frenic-Lift.html?page=20",
+   "https://www.manualslib.com/manual/1957905/Fuji-Electric-Frenic-Lift-Lm2-Series.html?page=17",
+   "https://www.manualslib.com/manual/1957905/Fuji-Electric-Frenic-Lift-Lm2-Series.html"
   ],
   "verificado": false
  }
@@ -4786,6 +5000,1367 @@ ASC.codigos = [
   ],
   "pieza": "encoder",
   "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/INVT/EC100%20Elevator%20Intelligent%20Integrated%20Machine_V2.5.pdf"
+ },
+ {
+  "equipo": "vfded",
+  "codigo": "ocA",
+  "nombre": "Sobrecorriente al acelerar",
+  "simple": "Al arrancar, el motor jaló más de 3 veces la corriente normal del variador y este se apagó.",
+  "causas": [
+   "Cable del motor en corto o con el forro dañado",
+   "Aceleración muy rápida (tiempo de aceleración muy corto)",
+   "Variador muy chico para ese motor"
+  ],
+  "arreglo": [
+   "Corta la energía, pon candado y espera que el variador se descargue (mide antes de tocar).",
+   "Suelta los cables U, V, W y mide el aislamiento del motor y de los cables con el megóhmetro.",
+   "Revisa bornes flojos o quemados.",
+   "Si todo mide bien, que un técnico alargue el tiempo de aceleración.",
+   "Si sigue, confirma con el proveedor que la potencia del variador alcanza para el motor."
+  ],
+  "peligro": "El variador guarda alta tensión un rato después de cortar la luz. Mide antes de tocar.",
+  "pieza": "cables_motor",
+  "fuente": "https://www.manualslib.com/manual/1990589/Delta-Vfd-Ed-Series.html?page=318"
+ },
+ {
+  "equipo": "vfded",
+  "codigo": "ocd",
+  "nombre": "Sobrecorriente al desacelerar",
+  "simple": "Al frenar, el motor jaló más de 3 veces la corriente normal del variador.",
+  "causas": [
+   "Cable del motor en corto o con mal aislamiento",
+   "Desaceleración muy rápida (tiempo de bajada muy corto)",
+   "Variador muy chico para ese motor"
+  ],
+  "arreglo": [
+   "Corta la energía, pon candado y espera la descarga del variador.",
+   "Mide el aislamiento del motor y sus cables con el megóhmetro.",
+   "Revisa bornes flojos o quemados.",
+   "Si todo mide bien, que un técnico alargue el tiempo de desaceleración."
+  ],
+  "peligro": "El variador guarda alta tensión un rato después de cortar la luz. Mide antes de tocar.",
+  "pieza": "cables_motor",
+  "fuente": "https://www.manualslib.com/manual/1990589/Delta-Vfd-Ed-Series.html?page=318"
+ },
+ {
+  "equipo": "vfded",
+  "codigo": "ocn",
+  "nombre": "Sobrecorriente a velocidad constante",
+  "simple": "Andando a velocidad pareja, la corriente subió más de 3 veces lo normal.",
+  "causas": [
+   "Corto en el motor o en sus cables",
+   "Subida brusca de carga: algo frena o traba al motor",
+   "Variador muy chico para el motor"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Mide el aislamiento del motor y de los cables.",
+   "Revisa que el freno abra completo y que la cabina no roce ni se trabe en las guías.",
+   "Si sigue, confirma con el proveedor el tamaño del variador."
+  ],
+  "pieza": "cables_motor",
+  "fuente": "https://www.manualslib.com/manual/1990589/Delta-Vfd-Ed-Series.html?page=318"
+ },
+ {
+  "equipo": "vfded",
+  "codigo": "GFF",
+  "nombre": "Falla a tierra",
+  "simple": "Un cable de salida al motor está tocando tierra y la corriente de fuga pasó el 60% de la corriente nominal.",
+  "causas": [
+   "Cable del motor pelado o tocando la estructura o la canaleta",
+   "Bobinado del motor dañado (aislamiento bajo)",
+   "Humedad o agua en la caja de bornes del motor",
+   "Módulo de potencia (IGBT) dañado"
+  ],
+  "arreglo": [
+   "Corta la energía, pon candado y mide que no haya tensión.",
+   "Suelta U, V, W del variador y mide el aislamiento a tierra de cada fase con el megóhmetro.",
+   "Revisa la tierra del motor y del variador.",
+   "Si motor y cables miden bien, puede ser el módulo IGBT: llama al técnico del variador."
+  ],
+  "peligro": "Esta protección cuida al variador, no a las personas. Un cable a tierra puede electrocutar: mide antes de tocar.",
+  "pieza": "cables_motor",
+  "fuente": "https://www.manualslib.com/manual/1990589/Delta-Vfd-Ed-Series.html?page=318"
+ },
+ {
+  "equipo": "vfded",
+  "codigo": "STO",
+  "nombre": "Parada segura del torque activada (n.º 76)",
+  "simple": "Se abrieron las entradas de parada segura (STO) y el variador cortó la fuerza al motor.",
+  "causas": [
+   "Se abrió el circuito de seguridad que alimenta las entradas STO",
+   "Cable suelto o roto en los bornes STO",
+   "Relé o contactor de seguridad del tablero que no cierra"
+  ],
+  "arreglo": [
+   "Mira en el tablero qué contacto de seguridad está abierto (puertas, stop, finales de carrera).",
+   "Con la energía cortada y candado, revisa que los bornes STO estén bien ajustados.",
+   "Nunca puentees las entradas STO ni un contacto de seguridad.",
+   "Si todo está cerrado y la falla sigue, llama al técnico del tablero."
+  ],
+  "peligro": "STO es una función de seguridad. Puentearla puede dejar mover la cabina con puertas abiertas.",
+  "pieza": "tablero_control",
+  "fuente": "https://www.manualslib.com/manual/1990589/Delta-Vfd-Ed-Series.html?page=352"
+ },
+ {
+  "equipo": "vfded",
+  "codigo": "STL1",
+  "nombre": "Pérdida de torque seguro 1 (n.º 72, circuito STO1-SCM1)",
+  "simple": "El variador vio una falla en su circuito interno de parada segura, canal 1.",
+  "causas": [
+   "Falla interna del circuito STO1-SCM1",
+   "Solo un canal STO se abre (cableado mal hecho o cable roto)",
+   "Mala conexión en los bornes STO"
+  ],
+  "arreglo": [
+   "Corta la energía, pon candado y revisa que los dos canales STO estén cableados igual y bien ajustados.",
+   "Mide que los dos canales reciban la señal al mismo tiempo.",
+   "No puentees nada.",
+   "Si sigue, el variador necesita servicio técnico de Delta."
+  ],
+  "peligro": "Es una falla del sistema de seguridad: no pongas el ascensor en servicio hasta resolverla.",
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1990589/Delta-Vfd-Ed-Series.html?page=352"
+ },
+ {
+  "equipo": "vfded",
+  "codigo": "STL2",
+  "nombre": "Pérdida de torque seguro 2 (n.º 77, circuito STO2-SCM2)",
+  "simple": "El variador vio una falla en su circuito interno de parada segura, canal 2.",
+  "causas": [
+   "Falla interna del circuito STO2-SCM2",
+   "Solo un canal STO se abre (cableado mal hecho o cable roto)",
+   "Mala conexión en los bornes STO"
+  ],
+  "arreglo": [
+   "Corta la energía, pon candado y revisa el cableado de los dos canales STO.",
+   "Mide que los dos canales reciban la señal al mismo tiempo.",
+   "No puentees nada.",
+   "Si sigue, el variador necesita servicio técnico de Delta."
+  ],
+  "peligro": "Es una falla del sistema de seguridad: no pongas el ascensor en servicio hasta resolverla.",
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1990589/Delta-Vfd-Ed-Series.html?page=352"
+ },
+ {
+  "equipo": "vfded",
+  "codigo": "STL3",
+  "nombre": "Pérdida de torque seguro 3 (n.º 78, los dos canales STO)",
+  "simple": "El variador vio falla en los dos canales internos de parada segura.",
+  "causas": [
+   "Falla interna en los circuitos STO1-SCM1 y STO2-SCM2",
+   "Cableado STO dañado"
+  ],
+  "arreglo": [
+   "Corta la energía, pon candado y revisa el cableado STO completo.",
+   "No puentees nada.",
+   "Llama al servicio técnico de Delta: el variador puede estar dañado."
+  ],
+  "peligro": "Es una falla del sistema de seguridad: no pongas el ascensor en servicio hasta resolverla.",
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1990589/Delta-Vfd-Ed-Series.html?page=352"
+ },
+ {
+  "equipo": "vfdvl",
+  "codigo": "PGF1",
+  "nombre": "Falla de señal del encoder (PGF1)",
+  "simple": "El variador no recibe bien la señal del encoder (sensor de giro del motor).",
+  "causas": [
+   "Cable del encoder suelto, cortado o sin blindaje a tierra",
+   "Tarjeta PG (del encoder) mal conectada o dañada",
+   "Encoder dañado o flojo en el eje"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Revisa cable y conectores del encoder hasta la tarjeta PG; el blindaje debe ir a tierra.",
+   "Revisa que el encoder esté bien fijo al eje del motor.",
+   "Cambia el encoder o la tarjeta PG solo después de medir."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://www.manualslib.com/manual/2038802/Delta-Vfd-Vl-Series.html"
+ },
+ {
+  "equipo": "vfdvl",
+  "codigo": "PGF2",
+  "nombre": "Falla de señal del encoder (PGF2)",
+  "simple": "La señal del encoder se perdió o no llega al variador.",
+  "causas": [
+   "Cable del encoder cortado o desconectado",
+   "Tarjeta PG sin alimentación o dañada",
+   "Encoder dañado"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Revisa continuidad del cable del encoder y sus conectores.",
+   "Mide la alimentación del encoder en la tarjeta PG.",
+   "Cambia el encoder solo si el cable y la tarjeta están bien."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://www.manualslib.com/manual/2038802/Delta-Vfd-Vl-Series.html"
+ },
+ {
+  "equipo": "vfdvl",
+  "codigo": "PGF3",
+  "nombre": "Encoder fuera del nivel 'stall' (PGF3)",
+  "simple": "La velocidad que lee el encoder pasó el nivel de alarma ajustado en el grupo 10.",
+  "causas": [
+   "Encoder flojo o con señal sucia",
+   "Pulsos del encoder mal puestos en los parámetros",
+   "Nivel de alarma del grupo 10 mal ajustado"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Revisa la fijación y el cable del encoder.",
+   "Que un técnico revise los pulsos del encoder y el nivel 'Encoder Stall Level' del grupo 10.",
+   "No pongas el ascensor en servicio sin saber la causa."
+  ],
+  "peligro": "Si la velocidad leída no es la real, la cabina puede moverse mal.",
+  "pieza": "encoder",
+  "fuente": "https://www.manualslib.com/manual/2038802/Delta-Vfd-Vl-Series.html"
+ },
+ {
+  "equipo": "vfdvl",
+  "codigo": "AUE",
+  "nombre": "Error de autoajuste ('Auto Tuning Err')",
+  "simple": "El autoajuste del motor no terminó: hubo una falla o alguien lo detuvo.",
+  "causas": [
+   "Datos de placa del motor mal ingresados",
+   "Se detuvo el autoajuste a mano o se abrió un contacto",
+   "Motor o cables desconectados durante la prueba"
+  ],
+  "arreglo": [
+   "Revisa y vuelve a poner los datos de placa del motor.",
+   "Repite el autoajuste con la cabina en condición segura y sin interrumpirlo.",
+   "Revisa que el contactor de salida cierre durante la prueba.",
+   "Si vuelve a fallar, anota el código y llama al técnico del variador."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2038802/Delta-Vfd-Vl-Series.html"
+ },
+ {
+  "equipo": "delta_comun",
+  "codigo": "ovA",
+  "nombre": "Sobretensión al acelerar",
+  "simple": "La tensión interna del variador (bus DC) subió demasiado mientras el motor aceleraba.",
+  "causas": [
+   "Tensión de la red alta o con picos",
+   "El motor devuelve energía al variador (regeneración)",
+   "Resistencia de frenado desconectada o dañada"
+  ],
+  "arreglo": [
+   "Mide la tensión de entrada: debe estar dentro de lo que dice la placa del variador.",
+   "Con la energía cortada y candado, revisa la resistencia de frenado y sus cables.",
+   "Si la red tiene picos, avisa al electricista del edificio.",
+   "Si sigue, que un técnico revise las rampas y el frenado."
+  ],
+  "peligro": "El variador guarda alta tensión un rato después de cortar la luz. Mide antes de tocar.",
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2005494/Delta-Me300-Series.html?page=347"
+ },
+ {
+  "equipo": "delta_comun",
+  "codigo": "LvA",
+  "nombre": "Baja tensión al acelerar",
+  "simple": "Al acelerar, la tensión dentro del variador bajó demasiado.",
+  "causas": [
+   "Tensión de la red baja",
+   "Falta una fase o un borne R, S, T está flojo",
+   "Carga brusca del motor"
+  ],
+  "arreglo": [
+   "Mide las 3 fases de entrada con el multímetro.",
+   "Con la energía cortada y candado, revisa fusibles, llave principal y bornes R, S, T.",
+   "Revisa que el cable de alimentación no esté recalentado ni sea muy delgado."
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://www.manualslib.com/manual/2005494/Delta-Me300-Series.html?page=347"
+ },
+ {
+  "equipo": "delta_comun",
+  "codigo": "OrP",
+  "nombre": "Protección por pérdida de fase",
+  "simple": "Falta una fase en la alimentación del variador.",
+  "causas": [
+   "Fusible quemado o llave con una fase abierta",
+   "Borne R, S o T flojo",
+   "Corte de una fase en la red del edificio"
+  ],
+  "arreglo": [
+   "Mide las 3 fases de entrada con el multímetro.",
+   "Con la energía cortada y candado, ajusta bornes y revisa fusibles.",
+   "Si falta una fase desde la red, avisa al electricista del edificio."
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://www.manualslib.com/manual/2923922/Delta-C2000-Plus-Series.html?page=904"
+ },
+ {
+  "equipo": "delta_comun",
+  "codigo": "oH1",
+  "nombre": "Sobretemperatura del IGBT (disipador muy caliente)",
+  "simple": "El disipador del variador está demasiado caliente.",
+  "causas": [
+   "Ventilador del variador parado o sucio",
+   "Aletas o rejillas tapadas con polvo",
+   "Cuarto de máquinas muy caliente",
+   "Poco espacio libre alrededor del variador"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Limpia aletas y rejillas; revisa que el ventilador gire libre.",
+   "Mejora la ventilación del cuarto de máquinas.",
+   "Cambia el ventilador si no gira."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2008941/Delta-Vfd-El-W-Series.html?page=165"
+ },
+ {
+  "equipo": "delta_comun",
+  "codigo": "oL",
+  "nombre": "Sobrecarga del variador",
+  "simple": "El variador entregó demasiada corriente por mucho tiempo.",
+  "causas": [
+   "Motor sobrecargado (mucho peso en la cabina o mal balance con el contrapeso)",
+   "Compensación de torque muy alta",
+   "Variador muy chico para el motor"
+  ],
+  "arreglo": [
+   "Revisa que la cabina no lleve más carga de la permitida.",
+   "Revisa que el freno abra completo y que la cabina no roce.",
+   "Que un técnico baje la compensación de torque.",
+   "Si sigue, confirma el tamaño del variador con el proveedor."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2008941/Delta-Vfd-El-W-Series.html?page=165"
+ },
+ {
+  "equipo": "delta_comun",
+  "codigo": "EoL1",
+  "nombre": "Protección térmica electrónica 1 (sobrecarga del motor)",
+  "simple": "El variador calculó que el motor se está calentando por trabajar con mucha corriente.",
+  "causas": [
+   "Motor sobrecargado",
+   "Corriente nominal del motor mal puesta en el parámetro",
+   "Freno que roza o cabina que se traba"
+  ],
+  "arreglo": [
+   "Deja enfriar el motor.",
+   "Revisa que la corriente nominal del motor en el parámetro sea la de la placa.",
+   "Revisa que el freno abra completo y que la cabina corra libre.",
+   "Si sigue, revisa carga y balance con el contrapeso."
+  ],
+  "pieza": "maquina",
+  "fuente": "https://www.manualslib.com/manual/2005494/Delta-Me300-Series.html?page=347"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err02",
+  "nombre": "Sobrecorriente al acelerar",
+  "simple": "Al arrancar, el motor jaló demasiada corriente.",
+  "causas": [
+   "Cable del motor a tierra o en corto",
+   "No se hizo el autoajuste del motor",
+   "Aceleración muy rápida",
+   "Ruido eléctrico externo"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Revisa los cables del motor y mide su aislamiento.",
+   "Haz el autoajuste con los datos de placa del motor.",
+   "Que un técnico alargue la aceleración y active el límite de corriente (F3-19)."
+  ],
+  "pieza": "cables_motor",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err03",
+  "nombre": "Sobrecorriente al desacelerar",
+  "simple": "Al frenar, el motor jaló demasiada corriente.",
+  "causas": [
+   "Cable del motor en corto o a tierra",
+   "No se hizo el autoajuste",
+   "Desaceleración muy rápida",
+   "Falta la resistencia de frenado"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Revisa y mide el aislamiento de los cables del motor.",
+   "Haz el autoajuste.",
+   "Revisa la resistencia de frenado; que un técnico alargue la desaceleración."
+  ],
+  "pieza": "cables_motor",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err04",
+  "nombre": "Sobrecorriente a velocidad constante",
+  "simple": "Andando a velocidad pareja, la corriente subió demasiado.",
+  "causas": [
+   "Cable del motor a tierra",
+   "Refuerzo de torque (torque boost) muy alto",
+   "Variador chico para el motor",
+   "Ruido eléctrico"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Revisa y mide los cables del motor.",
+   "Que un técnico baje el refuerzo de torque.",
+   "Si sigue, consulta si hace falta un variador más grande."
+  ],
+  "pieza": "cables_motor",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err05",
+  "nombre": "Sobretensión al acelerar",
+  "simple": "La tensión interna subió demasiado mientras el motor aceleraba.",
+  "causas": [
+   "Tensión de la red alta",
+   "Aceleración muy corta",
+   "La carga empuja al motor (regeneración)"
+  ],
+  "arreglo": [
+   "Mide la tensión de la red.",
+   "Con la energía cortada, revisa la resistencia de frenado y sus cables.",
+   "Que un técnico active el límite de tensión (F3-23) o alargue la aceleración."
+  ],
+  "peligro": "El variador guarda alta tensión un rato después de cortar la luz. Mide antes de tocar.",
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err06",
+  "nombre": "Sobretensión al desacelerar",
+  "simple": "La tensión interna subió demasiado al frenar el motor.",
+  "causas": [
+   "Desaceleración muy rápida",
+   "La carga empuja al motor",
+   "Falta o falla la resistencia de frenado"
+  ],
+  "arreglo": [
+   "Corta la energía, pon candado y espera la descarga.",
+   "Revisa y mide la resistencia de frenado y sus cables.",
+   "Que un técnico active el límite de tensión o alargue la desaceleración."
+  ],
+  "peligro": "El variador guarda alta tensión un rato después de cortar la luz. Mide antes de tocar.",
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err07",
+  "nombre": "Sobretensión a velocidad constante",
+  "simple": "La tensión interna subió demasiado andando a velocidad pareja.",
+  "causas": [
+   "La carga devuelve energía al variador",
+   "Resistencia de frenado mala o desconectada"
+  ],
+  "arreglo": [
+   "Corta la energía, pon candado y espera la descarga.",
+   "Revisa la resistencia de frenado y sus cables.",
+   "Que un técnico ajuste F3-22 y F3-24 según el manual."
+  ],
+  "peligro": "El variador guarda alta tensión un rato después de cortar la luz. Mide antes de tocar.",
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err08",
+  "nombre": "Falla de la resistencia de precarga / fuente de control",
+  "simple": "Falla en el circuito de carga inicial o en la fuente interna del variador.",
+  "causas": [
+   "Tensión de la red que sube y baja mucho",
+   "Resistencia de precarga dañada",
+   "Fuente de control interna dañada"
+  ],
+  "arreglo": [
+   "Mide la tensión de la red y si es estable.",
+   "No abras el variador.",
+   "Llama al servicio técnico de Inovance."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err09",
+  "nombre": "Baja tensión",
+  "simple": "La tensión interna (bus DC) bajó del mínimo con el variador andando.",
+  "causas": [
+   "Corte o bajón de luz breve",
+   "Tensión de entrada fuera de rango",
+   "Puente rectificador o resistencia de carga dañados"
+  ],
+  "arreglo": [
+   "Mide la tensión de entrada en las 3 fases.",
+   "Con la energía cortada y candado, revisa fusibles y bornes de entrada.",
+   "Si la red está bien y sigue, que un técnico revise el rectificador con el multímetro."
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err10",
+  "nombre": "Sobrecarga del variador",
+  "simple": "El variador trabajó con demasiada carga.",
+  "causas": [
+   "Carga muy pesada",
+   "Motor trabado (rotor bloqueado)",
+   "Variador chico para el motor"
+  ],
+  "arreglo": [
+   "Revisa que la cabina no lleve sobrepeso.",
+   "Revisa que el freno abra completo y que la cabina corra libre.",
+   "Si sigue, consulta si hace falta un variador más grande."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err11",
+  "nombre": "Sobrecarga del motor",
+  "simple": "El motor trabajó con más carga de la permitida.",
+  "causas": [
+   "Protección del motor (F9-01) mal ajustada",
+   "Torque o carga muy alta",
+   "Freno que roza"
+  ],
+  "arreglo": [
+   "Deja enfriar el motor.",
+   "Que un técnico revise F9-01 con los datos de placa.",
+   "Revisa carga de la cabina y que el freno abra completo."
+  ],
+  "pieza": "maquina",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err12",
+  "nombre": "Pérdida de fase de entrada",
+  "simple": "Falta una fase en la alimentación del variador.",
+  "causas": [
+   "Fusible quemado o llave con una fase abierta",
+   "Borne R, S o T flojo",
+   "Rectificador dañado"
+  ],
+  "arreglo": [
+   "Mide las 3 fases de entrada.",
+   "Con la energía cortada y candado, revisa fusibles y bornes R, S, T.",
+   "Si la entrada está bien y sigue, llama al servicio técnico."
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err13",
+  "nombre": "Pérdida de fase de salida",
+  "simple": "Una de las fases que van al motor no está llegando.",
+  "causas": [
+   "Cable del motor cortado o suelto",
+   "Bobina del motor abierta",
+   "Contactor de salida con un contacto malo",
+   "Falla del IGBT del variador"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Mide continuidad de U, V, W hasta el motor y las bobinas del motor.",
+   "Revisa los contactos del contactor de salida.",
+   "Si el motor y los cables están bien, llama al servicio técnico del variador."
+  ],
+  "pieza": "cables_motor",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err14",
+  "nombre": "Sobretemperatura del módulo IGBT",
+  "simple": "La parte de potencia del variador está muy caliente.",
+  "causas": [
+   "Ambiente muy caliente",
+   "Ventilador parado",
+   "Sensor de temperatura dañado"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Limpia las rejillas y revisa que el ventilador gire.",
+   "Mejora la ventilación del cuarto de máquinas.",
+   "Cambia ventilador o sensor solo después de revisar."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err15",
+  "nombre": "Falla externa",
+  "simple": "Se activó una entrada configurada como 'falla externa'.",
+  "causas": [
+   "Una entrada digital (DI) de falla externa se activó",
+   "Señal de falla enviada desde el tablero de control"
+  ],
+  "arreglo": [
+   "Mira en el tablero qué equipo manda la señal de falla.",
+   "Corrige esa causa y luego resetea.",
+   "Que un técnico revise las funciones de las entradas DI."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err16",
+  "nombre": "Falla de comunicación",
+  "simple": "Se cortó la comunicación entre el variador y el equipo que lo controla.",
+  "causas": [
+   "Cable de comunicación malo o con ruido",
+   "Tipo de tarjeta de comunicación mal puesto en F0-28",
+   "Parámetros del grupo FD mal puestos",
+   "Tarjeta del variador dañada"
+  ],
+  "arreglo": [
+   "Revisa el cable de comunicación, sus conectores y el blindaje.",
+   "Que un técnico revise F0-28 y el grupo FD.",
+   "Cambia la tarjeta solo si todo lo anterior está bien."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err17",
+  "nombre": "Falla del contactor",
+  "simple": "Falla en el contactor interno de carga del variador.",
+  "causas": [
+   "Contactor interno dañado",
+   "Tarjeta de mando o fuente interna dañada"
+  ],
+  "arreglo": [
+   "No abras el variador.",
+   "Llama al servicio técnico de Inovance."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err18",
+  "nombre": "Falla de detección de corriente",
+  "simple": "El variador no puede medir bien la corriente.",
+  "causas": [
+   "Sensor de corriente (hall) dañado",
+   "Tarjeta de mando dañada"
+  ],
+  "arreglo": [
+   "Corta y vuelve a dar energía para ver si se repite.",
+   "Si se repite, llama al servicio técnico: se cambia el sensor o la tarjeta."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err19",
+  "nombre": "Falla de autoajuste del motor",
+  "simple": "El autoajuste del motor no se pudo completar.",
+  "causas": [
+   "Datos de placa del motor mal puestos",
+   "Problema con el encoder"
+  ],
+  "arreglo": [
+   "Vuelve a poner los datos de placa del motor.",
+   "Revisa el cableado del encoder.",
+   "Repite el autoajuste con la cabina en condición segura."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err20",
+  "nombre": "Falla del encoder",
+  "simple": "El variador no recibe bien la señal del encoder (sensor de giro).",
+  "causas": [
+   "Tipo o pulsos del encoder mal puestos (F1-27)",
+   "Cable del encoder mal conectado, roto o en corto",
+   "Encoder dañado",
+   "Tarjeta PG dañada"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Revisa cable, conectores y blindaje del encoder.",
+   "Revisa la alimentación de la tarjeta PG y el orden de fases.",
+   "Cambia encoder o tarjeta PG solo después de medir."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err21",
+  "nombre": "Falla de memoria EEPROM",
+  "simple": "El variador no puede leer o grabar su memoria.",
+  "causas": [
+   "Memoria (EEPROM) dañada",
+   "Tarjeta de control dañada"
+  ],
+  "arreglo": [
+   "Corta y vuelve a dar energía.",
+   "Si se repite, llama al servicio técnico: se cambia la tarjeta de control."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err23",
+  "nombre": "Cortocircuito a tierra",
+  "simple": "El motor o su cable están haciendo contacto con tierra.",
+  "causas": [
+   "Aislamiento del motor dañado",
+   "Cable de salida tocando tierra",
+   "Falla interna del variador"
+  ],
+  "arreglo": [
+   "Corta la energía, pon candado y mide que no haya tensión.",
+   "Suelta el motor y mide el aislamiento de cada fase a tierra con el megóhmetro.",
+   "Cambia el cable o repara el motor si mide bajo.",
+   "Si motor y cable están bien, llama al servicio técnico del variador."
+  ],
+  "peligro": "Un cable a tierra puede electrocutar. Mide antes de tocar.",
+  "pieza": "cables_motor",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err26",
+  "nombre": "Tiempo de marcha acumulado alcanzado",
+  "simple": "Se cumplió el tiempo de funcionamiento programado en el variador.",
+  "causas": [
+   "Está activada la función de límite de tiempo de marcha",
+   "Se llegó al tiempo total programado"
+  ],
+  "arreglo": [
+   "Pide a un técnico que revise ese ajuste.",
+   "Antes de reiniciar parámetros, guarda una copia de todos los ajustes."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err27",
+  "nombre": "Falla definida por el usuario 1",
+  "simple": "Se activó una entrada configurada como falla del usuario 1.",
+  "causas": [
+   "Entrada DI o E/S virtual de falla activada",
+   "Señal enviada por el tablero"
+  ],
+  "arreglo": [
+   "Busca qué equipo activa esa entrada y corrige la causa.",
+   "Luego resetea."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err28",
+  "nombre": "Falla definida por el usuario 2",
+  "simple": "Se activó una entrada configurada como falla del usuario 2.",
+  "causas": [
+   "Entrada DI o E/S virtual de falla activada",
+   "Señal enviada por el tablero"
+  ],
+  "arreglo": [
+   "Busca qué equipo activa esa entrada y corrige la causa.",
+   "Luego resetea."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err29",
+  "nombre": "Tiempo de encendido acumulado alcanzado",
+  "simple": "Se cumplió el tiempo de encendido programado en el variador.",
+  "causas": [
+   "Está activado el límite de tiempo de encendido",
+   "Se llegó al tiempo total programado"
+  ],
+  "arreglo": [
+   "Pide a un técnico que revise y reinicie ese contador.",
+   "Antes de cambiar parámetros, guarda una copia de todos los ajustes."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err30",
+  "nombre": "Pérdida de carga",
+  "simple": "La corriente de salida bajó por debajo del nivel ajustado en F9-64.",
+  "causas": [
+   "Motor desconectado o carga suelta",
+   "F9-64 / F9-65 mal ajustados"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Revisa la conexión del motor.",
+   "Que un técnico revise F9-64 y F9-65."
+  ],
+  "pieza": "maquina",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err31",
+  "nombre": "Pérdida de realimentación PID",
+  "simple": "La señal de realimentación del PID bajó del nivel FA-26.",
+  "causas": [
+   "Sensor del PID dañado o desconectado",
+   "FA-26 mal ajustado"
+  ],
+  "arreglo": [
+   "Revisa el sensor y su cable.",
+   "Que un técnico revise FA-26."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err40",
+  "nombre": "Límite de corriente pulso a pulso",
+  "simple": "El variador tuvo que limitar la corriente muchas veces seguidas.",
+  "causas": [
+   "Carga muy pesada",
+   "Variador chico para el motor"
+  ],
+  "arreglo": [
+   "Revisa sobrepeso en la cabina y que el freno abra completo.",
+   "Si sigue, consulta si hace falta un variador más grande."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err41",
+  "nombre": "Cambio de motor en marcha",
+  "simple": "Se cambió la selección de motor mientras el variador estaba andando.",
+  "causas": [
+   "Cambio de motor 1/2 hecho en marcha",
+   "Entrada de selección de motor que cambia sola (cable flojo)"
+  ],
+  "arreglo": [
+   "Cambia de motor solo con el variador parado.",
+   "Luego resetea."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err42",
+  "nombre": "Desviación de velocidad muy grande",
+  "simple": "La velocidad real del motor es muy distinta de la que se pidió.",
+  "causas": [
+   "Datos del encoder que no coinciden",
+   "No se hizo el autoajuste",
+   "F9-69 / F9-70 mal ajustados"
+  ],
+  "arreglo": [
+   "Revisa el encoder y su cable.",
+   "Haz el autoajuste.",
+   "Que un técnico revise F9-69 y F9-70."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err43",
+  "nombre": "Sobrevelocidad del motor",
+  "simple": "El motor giró más rápido de lo permitido.",
+  "causas": [
+   "Encoder o parámetros que no coinciden",
+   "No se hizo el autoajuste",
+   "F9-67 / F9-68 mal ajustados"
+  ],
+  "arreglo": [
+   "No pongas el ascensor en servicio hasta saber la causa.",
+   "Revisa el encoder y su cable.",
+   "Haz el autoajuste.",
+   "Que un técnico revise F9-67 y F9-68."
+  ],
+  "peligro": "La cabina puede ir más rápido de lo normal. Revisa también el limitador de velocidad.",
+  "pieza": "encoder",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err45",
+  "nombre": "Sobretemperatura del motor",
+  "simple": "El sensor de temperatura del motor marca demasiado calor.",
+  "causas": [
+   "Motor muy caliente",
+   "Cable del sensor de temperatura suelto"
+  ],
+  "arreglo": [
+   "Deja enfriar el motor.",
+   "Con la energía cortada, ajusta los cables del sensor de temperatura.",
+   "Mejora la ventilación del motor.",
+   "Que un técnico revise la frecuencia portadora."
+  ],
+  "pieza": "maquina",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err51",
+  "nombre": "Falla de posición inicial",
+  "simple": "El variador no pudo encontrar la posición inicial del motor.",
+  "causas": [
+   "Datos del motor mal puestos o sin autoajuste",
+   "Encoder mal conectado"
+  ],
+  "arreglo": [
+   "Revisa los datos de placa del motor.",
+   "Revisa el cable del encoder.",
+   "Repite el autoajuste.",
+   "Si sigue, llama al técnico del variador."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://www.otomasyonavm.com/en/invance-md-fault-index"
+ },
+ {
+  "equipo": "md500",
+  "codigo": "Err62",
+  "nombre": "Cortocircuito en el circuito de frenado",
+  "simple": "Hay un corto en la parte de frenado (IGBT de frenado).",
+  "causas": [
+   "IGBT de frenado dañado",
+   "Resistencia de frenado o sus cables en corto"
+  ],
+  "arreglo": [
+   "Corta la energía, pon candado y espera la descarga.",
+   "Revisa la resistencia de frenado y sus cables (sin corto ni a tierra).",
+   "Si la resistencia está bien, el IGBT de frenado está dañado: llama al servicio técnico."
+  ],
+  "peligro": "El variador guarda alta tensión un rato después de cortar la luz. Mide antes de tocar.",
+  "pieza": "variador",
+  "fuente": "https://www.jotamachinery.com/about-us/slitter-rewinder-troubleshooting-guide/inovance-md500-error-codes/"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "OV",
+  "nombre": "Overvoltage: sobretensión en el bus DC (código 1)",
+  "simple": "La tensión interna del variador subió demasiado.",
+  "causas": [
+   "El motor devuelve energía al frenar",
+   "Resistencia de frenado o su cable cortado",
+   "Tensión de la red más alta que la puesta en el parámetro 560"
+  ],
+  "arreglo": [
+   "Corta la energía, pon candado y espera la descarga.",
+   "Revisa la resistencia de frenado y su cableado.",
+   "Mide la tensión de la red y compárala con el parámetro 560."
+  ],
+  "peligro": "El variador guarda alta tensión un rato después de cortar la luz. Mide antes de tocar.",
+  "pieza": "variador",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "UV",
+  "nombre": "Undervoltage: baja tensión (código 2)",
+  "simple": "Llega poca tensión a la parte de potencia del variador.",
+  "causas": [
+   "Tensión de la red baja",
+   "Caída de tensión grande en los cables",
+   "Conexiones flojas (por ejemplo bornes del contactor)"
+  ],
+  "arreglo": [
+   "Mide la tensión de la red.",
+   "Con la energía cortada y candado, ajusta bornes y conexiones.",
+   "Revisa que el parámetro 560 tenga la tensión real de la red."
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "GNDF",
+  "nombre": "Ground fault: falla a tierra (código 3)",
+  "simple": "Hay un corto a tierra en la salida del variador o en el motor.",
+  "causas": [
+   "Cable del motor tocando tierra",
+   "Motor con el aislamiento dañado"
+  ],
+  "arreglo": [
+   "Corta la energía, pon candado y mide que no haya tensión.",
+   "Revisa el cableado del variador y del motor.",
+   "Mide el aislamiento del motor con el megóhmetro."
+  ],
+  "peligro": "Un cable a tierra puede electrocutar. Mide antes de tocar.",
+  "pieza": "cables_motor",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "OC",
+  "nombre": "Overcurrent: sobrecorriente instantánea (código 4)",
+  "simple": "Saltó la protección de sobrecorriente instantánea.",
+  "causas": [
+   "Parámetros del regulador de corriente mal puestos",
+   "Corto entre fases del motor",
+   "Falla a tierra en la salida"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Revisa y mide el cableado al motor.",
+   "Que un técnico revise los parámetros del regulador de corriente (menú 17)."
+  ],
+  "pieza": "cables_motor",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "DES",
+  "nombre": "Desaturation: desaturación del IGBT (código 5)",
+  "simple": "Hubo una sobrecorriente instantánea en el puente de IGBT.",
+  "causas": [
+   "Corto o fuga a tierra en la salida",
+   "Resistencia de frenado con mal aislamiento",
+   "Falla interna del variador"
+  ],
+  "arreglo": [
+   "Apaga y vuelve a encender el variador.",
+   "Con la energía cortada y candado, revisa el aislamiento de la resistencia de frenado.",
+   "Revisa que no haya fugas a tierra en motor y cables.",
+   "Si sigue, llama al servicio técnico."
+  ],
+  "pieza": "variador",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "MUV",
+  "nombre": "MultiUndervolt: muchas bajas de tensión (código 6)",
+  "simple": "Hubo más bajas de tensión seguidas de las que permite el parámetro 4650.",
+  "causas": [
+   "Red con bajones repetidos",
+   "Conexiones flojas en la entrada"
+  ],
+  "arreglo": [
+   "Haz las mismas revisiones de la alarma UV.",
+   "Mide la red por un rato para ver los bajones."
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "MOC",
+  "nombre": "MultiOvercurr: muchas sobrecorrientes (código 7)",
+  "simple": "Hubo 2 rearranques por sobrecorriente en menos de 30 segundos.",
+  "causas": [
+   "Cables del motor en corto o a tierra (como en la alarma OC)",
+   "Parámetros del regulador de corriente mal puestos"
+  ],
+  "arreglo": [
+   "Haz las mismas revisiones de la alarma OC.",
+   "No sigas reseteando sin encontrar la causa."
+  ],
+  "pieza": "cables_motor",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "MDES",
+  "nombre": "MultiDesat: muchas desaturaciones (código 8)",
+  "simple": "Hubo 2 rearranques por desaturación en menos de 30 segundos.",
+  "causas": [
+   "Demasiadas alarmas de desaturación (DES)",
+   "Cables del motor muy largos (más de 100 m) o muy capacitivos"
+  ],
+  "arreglo": [
+   "Haz las mismas revisiones de la alarma DES.",
+   "Revisa el largo y tipo del cable del motor.",
+   "Si sigue, llama al servicio técnico."
+  ],
+  "pieza": "variador",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "HOT",
+  "nombre": "Heatsink OT: disipador muy caliente (código 9)",
+  "simple": "El disipador del variador está demasiado caliente.",
+  "causas": [
+   "Ventilador parado",
+   "Disipador tapado con polvo",
+   "Rejillas del tablero tapadas"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Revisa que el ventilador gire.",
+   "Limpia disipador y rejillas del tablero."
+  ],
+  "pieza": "variador",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "HSOT",
+  "nombre": "Temperatura del módulo IGBT fuera de rango",
+  "simple": "La temperatura del módulo IGBT está muy alta o muy baja.",
+  "causas": [
+   "Mala ventilación del variador",
+   "Cuarto de máquinas muy caliente o muy frío"
+  ],
+  "arreglo": [
+   "Revisa ventilador y limpieza del disipador.",
+   "Revisa la temperatura del cuarto de máquinas."
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1845346/Gefran-Adl300.html"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "MOT",
+  "nombre": "Motor OT: motor muy caliente (código 12)",
+  "simple": "El motor está demasiado caliente.",
+  "causas": [
+   "Ciclo de trabajo muy pesado (muchos viajes)",
+   "Motor sin buena ventilación"
+  ],
+  "arreglo": [
+   "Deja enfriar el motor.",
+   "Revisa la ventilación del motor; se puede poner un ventilador.",
+   "Revisa la cantidad de viajes y la carga."
+  ],
+  "pieza": "maquina",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "BOL",
+  "nombre": "Bres overload: sobrecarga de la resistencia de frenado (código 15)",
+  "simple": "La resistencia de frenado recibe más corriente de la que aguanta.",
+  "causas": [
+   "Resistencia de frenado de tamaño equivocado",
+   "Resistencia dañada"
+  ],
+  "arreglo": [
+   "Corta la energía, pon candado y espera la descarga.",
+   "Revisa el estado y el valor de la resistencia de frenado.",
+   "Confirma con el proveedor que el tamaño sea el correcto."
+  ],
+  "peligro": "La resistencia de frenado se pone muy caliente. No la toques recién apagada.",
+  "pieza": "variador",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "PHL",
+  "nombre": "Phase loss: pérdida de fase de entrada (código 16)",
+  "simple": "Falta una fase en la alimentación del variador.",
+  "causas": [
+   "Protección (fusible o llave) antes del variador disparada",
+   "Falta una fase en la red"
+  ],
+  "arreglo": [
+   "Mide las 3 fases de entrada.",
+   "Revisa fusibles y llave antes del variador (con la energía cortada y candado)."
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "Opt Bus fault",
+  "nombre": "Falla de la tarjeta opcional de bus (código 17)",
+  "simple": "Falla en la tarjeta opcional de comunicación del variador.",
+  "causas": [
+   "Problema de comunicación (si el primer dígito antes de la H del subcódigo es 0)",
+   "Problema de configuración (si ese dígito no es 0)"
+  ],
+  "arreglo": [
+   "Anota el subcódigo de la alarma.",
+   "Revisa cable y conector de la tarjeta de comunicación.",
+   "Si es de configuración, que un técnico revise los parámetros del bus."
+  ],
+  "pieza": "variador",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h74/h2c/WEG-ADL300-Functions-descriptions-parameters-asynchronous-1S9FEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "SFL",
+  "nombre": "Speed fbk loss: pérdida de señal del encoder (código 22)",
+  "simple": "El variador no recibe la señal del encoder (sensor de giro).",
+  "causas": [
+   "Encoder desconectado o mal conectado",
+   "Encoder sin alimentación",
+   "Canales A-B o blindaje con mala conexión",
+   "No hay tarjeta de encoder instalada"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Revisa los canales A y B, el blindaje y la alimentación del encoder (parámetro 2102).",
+   "Mira el parámetro 2172 para saber la causa exacta.",
+   "Comprueba la velocidad del motor en el parámetro 260."
+  ],
+  "pieza": "encoder",
+  "fuente": "https://www.manualslib.com/manual/1845346/Gefran-Adl300.html?page=44"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "OS",
+  "nombre": "Overspeed: sobrevelocidad (código 23)",
+  "simple": "El motor pasó la velocidad máxima puesta en el parámetro 4540.",
+  "causas": [
+   "Referencia de velocidad muy alta",
+   "La carga arrastra al motor"
+  ],
+  "arreglo": [
+   "No pongas el ascensor en servicio hasta saber la causa.",
+   "Que un técnico revise la referencia de velocidad y el parámetro 4540.",
+   "Revisa el encoder y el balance cabina-contrapeso."
+  ],
+  "peligro": "La cabina puede ir más rápido de lo normal. Revisa también el limitador de velocidad.",
+  "pieza": "variador",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "PRR",
+  "nombre": "Power down: sin potencia al habilitar (código 26)",
+  "simple": "Se habilitó el variador pero no había energía en su parte de potencia.",
+  "causas": [
+   "Contactor de red abierto",
+   "Llave principal apagada"
+  ],
+  "arreglo": [
+   "Revisa que la parte de potencia tenga energía antes de habilitar.",
+   "Revisa el contactor de entrada."
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "PHLO",
+  "nombre": "Phaseloss out: pérdida de fase de salida (código 27)",
+  "simple": "Falta una fase entre el variador y el motor.",
+  "causas": [
+   "Cable del motor suelto o cortado",
+   "Contactor de salida con un contacto malo"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Revisa la conexión variador-motor.",
+   "Revisa los contactos del contactor de salida."
+  ],
+  "pieza": "cables_motor",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "DOL",
+  "nombre": "Drive overload: sobrecarga del variador",
+  "simple": "La corriente de salida pasó la sobrecarga permitida.",
+  "causas": [
+   "Carga excesiva",
+   "Aceleraciones muy fuertes",
+   "Ciclo de sobrecarga fuera de límite"
+  ],
+  "arreglo": [
+   "Revisa sobrepeso en la cabina y el balance con el contrapeso.",
+   "Revisa que el freno abra completo.",
+   "Que un técnico revise las aceleraciones."
+  ],
+  "pieza": "variador",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "External fault",
+  "nombre": "Alarma externa",
+  "simple": "Una entrada digital programada como alarma externa no recibe sus +24 V.",
+  "causas": [
+   "Borne de la entrada flojo",
+   "Se abrió el contacto que da los 24 V"
+  ],
+  "arreglo": [
+   "Con la energía cortada y candado, ajusta los tornillos del borne.",
+   "Mide los 24 V en la entrada.",
+   "Busca qué contacto del tablero abrió."
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h11/hb9/WEG-ADL300-Fast-installations-commissioning-1S9FNEN-en.pdf"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "Contactor feedback",
+  "nombre": "Retorno del contactor (PLC 1, código 33)",
+  "simple": "El variador no recibe la señal de que el contactor del motor cerró o abrió.",
+  "causas": [
+   "Contactor dañado (falla electromecánica)",
+   "Error de cableado del contacto de retorno"
+  ],
+  "arreglo": [
+   "Corta la energía y pon candado.",
+   "Revisa el cableado del contacto auxiliar del contactor.",
+   "Cambia el contactor si no conmuta bien."
+  ],
+  "peligro": "No puentees el contacto de retorno: el variador lo usa para no mover el motor con el contactor mal.",
+  "pieza": "tablero_control",
+  "fuente": "https://www.manualslib.com/manual/1845346/Gefran-Adl300.html"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "Brake feedback",
+  "nombre": "Retorno del freno (PLC 2, código 34)",
+  "simple": "El variador no recibe la señal de que el freno abrió o cerró.",
+  "causas": [
+   "Microcontacto del freno dañado o desajustado",
+   "Error de cableado"
+  ],
+  "arreglo": [
+   "Corta la energía, pon candado y asegura la cabina.",
+   "Revisa el cableado del microcontacto del freno.",
+   "Ajusta o cambia el microcontacto."
+  ],
+  "peligro": "Una falla de freno puede dejar mover la cabina. No la pongas en servicio hasta resolverla.",
+  "pieza": "micro_freno",
+  "fuente": "https://www.manualslib.com/manual/1845346/Gefran-Adl300.html"
+ },
+ {
+  "equipo": "adl300",
+  "codigo": "Brake failure",
+  "nombre": "Falla de freno (alarma de ascensor)",
+  "simple": "No llegó la señal que confirma que el freno abrió o cerró.",
+  "causas": [
+   "Pieza del freno con falla electromecánica",
+   "Error de cableado"
+  ],
+  "arreglo": [
+   "Corta la energía, pon candado y asegura la cabina.",
+   "Revisa el freno y su cableado.",
+   "Mira en el menú 5.9 'Lift Alarms' que la alarma de freno esté activa antes de resetear.",
+   "Si vuelve, revisa la instalación completa."
+  ],
+  "peligro": "Una falla de freno puede dejar mover la cabina. No la pongas en servicio hasta resolverla.",
+  "pieza": "freno",
+  "fuente": "https://static.weg.net/medias/downloadcenter/h74/h2c/WEG-ADL300-Functions-descriptions-parameters-asynchronous-1S9FEN-en.pdf"
  },
  {
   "equipo": "wittur_midi",
@@ -14031,5 +15606,1216 @@ ASC.codigos = [
   ],
   "pieza": "variador",
   "fuente": "https://raw.githubusercontent.com/Andhias/ans-elevator-library/main/files/NIDEC/frequentieregelaars-unidrive-sp-advanced-user-guide-en-iss11-0471-0002-11.pdf"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "oC",
+  "nombre": "Sobrecorriente",
+  "simple": "Salió demasiada corriente del variador hacia el motor.",
+  "causas": [
+   "Corto o aislamiento malo en cables del motor o en el motor",
+   "Freno que no abre y el motor arranca trabado",
+   "Aceleración muy rápida o datos del motor mal programados",
+   "Contactor del motor que abre o cierra con el variador en marcha"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta; espera que se apague la luz CHARGE",
+   "Desconecta el motor del variador y mide aislamiento de motor y cables con megóhmetro",
+   "Revisa que el freno abra bien y que la cabina no esté trabada",
+   "Revisa con el supervisor datos del motor y tiempos de aceleración",
+   "Si todo mide bien y la falla sigue, llama al servicio técnico del variador"
+  ],
+  "peligro": "Alto voltaje: el variador queda cargado varios minutos después de apagar. Mide antes de tocar.",
+  "pieza": "cables_motor",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "GF",
+  "nombre": "Falla a tierra",
+  "simple": "Se está escapando corriente a tierra en la salida del variador (cables o motor).",
+  "causas": [
+   "Aislamiento dañado en el cable del motor",
+   "Bobinado del motor húmedo o dañado",
+   "Cable pelado que roza la estructura o la canaleta"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta; espera la descarga del variador",
+   "Desconecta el motor y mide aislamiento a tierra de cada fase con megóhmetro",
+   "Busca el cable dañado y repáralo o cámbialo",
+   "No resetees muchas veces seguidas sin encontrar la causa"
+  ],
+  "peligro": "Riesgo de choque eléctrico: hay corriente que se va a tierra.",
+  "pieza": "cables_motor",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "ov",
+  "nombre": "Sobretensión",
+  "simple": "El voltaje interno (bus DC) del variador subió demasiado, casi siempre al frenar o al bajar con carga.",
+  "causas": [
+   "Resistencia de frenado desconectada, abierta o de valor equivocado",
+   "Desaceleración programada muy rápida",
+   "Voltaje de la red muy alto o con picos",
+   "Falla del transistor de frenado"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta; espera la descarga",
+   "Mide la resistencia de frenado (ohmios) y compárala con su placa; revisa sus cables",
+   "Mide el voltaje de entrada entre fases",
+   "Revisa con el supervisor el tiempo de desaceleración"
+  ],
+  "peligro": "Alto voltaje en el bus DC y la resistencia de frenado puede estar muy caliente.",
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "Uv1",
+  "nombre": "Subtensión (bus DC)",
+  "simple": "El voltaje interno del variador bajó demasiado mientras trabajaba.",
+  "causas": [
+   "Corte o bajón de la energía de entrada",
+   "Falta una fase o hay un borne flojo en la alimentación",
+   "Llave o contactor de entrada en mal estado",
+   "Fusibles de entrada quemados"
+  ],
+  "arreglo": [
+   "Mide el voltaje de las tres fases en la entrada del variador",
+   "Con energía cortada y bloqueada, ajusta bornes y revisa fusibles y contactor de entrada",
+   "Si la red es inestable, avisa al supervisor y al electricista del edificio"
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "Uv2",
+  "nombre": "Subtensión de la fuente de control",
+  "simple": "Falló la fuente interna que alimenta el control del variador.",
+  "causas": [
+   "Voltaje de entrada muy bajo o inestable",
+   "Falla interna de la fuente de control del variador"
+  ],
+  "arreglo": [
+   "Mide el voltaje de entrada",
+   "Apaga, espera la descarga y vuelve a encender",
+   "Si se repite con buen voltaje, llama al servicio técnico del variador"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "Uv3",
+  "nombre": "Falla del circuito de carga suave",
+  "simple": "Falló el circuito que carga despacio los condensadores del variador al encender.",
+  "causas": [
+   "Encendidos y apagados muy seguidos",
+   "Relé o contactor interno de precarga dañado",
+   "Voltaje de entrada muy bajo al encender"
+  ],
+  "arreglo": [
+   "No prendas y apagues seguido; espera unos minutos",
+   "Mide el voltaje de entrada",
+   "Si se repite, llama al servicio técnico del variador"
+  ],
+  "peligro": "Alto voltaje interno: no abras el variador con energía.",
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "LF",
+  "nombre": "Pérdida de fase de salida",
+  "simple": "Falta una fase entre el variador y el motor.",
+  "causas": [
+   "Cable del motor cortado o borne flojo (U, V, W)",
+   "Contactor del motor con un contacto quemado o que no cierra bien",
+   "Bobinado del motor abierto"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Ajusta los bornes U, V, W en el variador, el contactor y el motor",
+   "Mide continuidad y resistencia de los tres bobinados del motor (deben ser parecidas)",
+   "Cambia el contactor si tiene contactos quemados"
+  ],
+  "pieza": "cables_motor",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "LF2",
+  "nombre": "Desbalance de corriente de salida",
+  "simple": "La corriente en las tres fases del motor no es pareja.",
+  "causas": [
+   "Borne flojo o contacto del contactor gastado",
+   "Bobinado del motor dañado",
+   "Falla en la etapa de salida del variador"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Ajusta bornes y revisa los contactos del contactor del motor",
+   "Mide la resistencia de los tres bobinados del motor",
+   "Si motor y cables están bien, llama al servicio técnico del variador"
+  ],
+  "pieza": "cables_motor",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "PF",
+  "nombre": "Pérdida de fase de entrada",
+  "simple": "Falta una fase en la entrada o el voltaje de entrada está desbalanceado.",
+  "causas": [
+   "Fusible de entrada quemado",
+   "Borne flojo en R/S/T o en la llave principal",
+   "Red eléctrica con una fase caída o desbalanceada"
+  ],
+  "arreglo": [
+   "Mide el voltaje entre fases (L1-L2, L2-L3, L1-L3); deben ser parecidos",
+   "Con energía cortada y bloqueada, revisa fusibles y ajusta bornes",
+   "Si la red viene mal, avisa al electricista del edificio"
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "oH",
+  "nombre": "Sobrecalentamiento del disipador",
+  "simple": "El disipador (radiador) del variador está muy caliente.",
+  "causas": [
+   "Ventilador del variador parado o sucio",
+   "Sala de máquinas muy caliente o sin ventilación",
+   "Disipador tapado con polvo",
+   "Mucha carga o demasiados viajes seguidos"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Limpia el disipador y el ventilador",
+   "Comprueba que el ventilador gire al encender; cámbialo si no gira",
+   "Mejora la ventilación de la sala de máquinas"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "oH1",
+  "nombre": "Sobrecalentamiento del disipador (falla)",
+  "simple": "El disipador del variador está demasiado caliente y el variador se detiene.",
+  "causas": [
+   "Ventilador del variador malo",
+   "Disipador sucio o tapado",
+   "Sala de máquinas muy caliente"
+  ],
+  "arreglo": [
+   "Deja enfriar el variador",
+   "Con energía cortada y bloqueada, limpia disipador y ventilador",
+   "Revisa que el ventilador gire; cámbialo si está malo",
+   "Mejora la ventilación de la sala"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=466"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "oL1",
+  "nombre": "Sobrecarga del motor",
+  "simple": "El motor trabajó con demasiada corriente por mucho tiempo.",
+  "causas": [
+   "Cabina con sobrepeso o contrapeso mal balanceado",
+   "Freno que roza o no abre del todo",
+   "Corriente nominal del motor mal programada",
+   "Mucha fricción en guías o máquina"
+  ],
+  "arreglo": [
+   "Deja enfriar el motor",
+   "Verifica la carga y el balance cabina/contrapeso",
+   "Revisa que el freno abra completo",
+   "Revisa con el supervisor los datos del motor programados"
+  ],
+  "pieza": "maquina",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "oL2",
+  "nombre": "Sobrecarga del variador",
+  "simple": "El variador entregó más corriente de la que aguanta por mucho tiempo.",
+  "causas": [
+   "Sobrecarga o mal balance cabina/contrapeso",
+   "Freno que no abre bien",
+   "Variador pequeño para el motor"
+  ],
+  "arreglo": [
+   "Deja enfriar el variador",
+   "Verifica la carga y el balance",
+   "Revisa que el freno abra completo",
+   "Consulta al supervisor si el variador es del tamaño correcto"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "rr",
+  "nombre": "Falla del transistor de frenado",
+  "simple": "El transistor que manda la energía a la resistencia de frenado está dañado.",
+  "causas": [
+   "Resistencia de frenado en corto o de valor muy bajo",
+   "Cable de la resistencia en corto a tierra",
+   "Transistor interno del variador dañado"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta; espera la descarga",
+   "Mide la resistencia de frenado y el aislamiento de sus cables",
+   "Si la resistencia está bien, el variador necesita servicio técnico"
+  ],
+  "peligro": "Alto voltaje en bornes de la resistencia de frenado.",
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "PGo",
+  "nombre": "Encoder desconectado",
+  "simple": "El variador no recibe la señal del encoder.",
+  "causas": [
+   "Cable o conector del encoder suelto o cortado",
+   "Tarjeta del encoder (PG) mal conectada",
+   "Encoder dañado o sin alimentación",
+   "Freno que no abre y el motor no gira"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Revisa el conector y el cable del encoder hasta la tarjeta PG",
+   "Mide la alimentación del encoder en la tarjeta",
+   "Comprueba que el freno abra al arrancar"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "dEv",
+  "nombre": "Desviación de velocidad excesiva",
+  "simple": "La velocidad real del motor es muy distinta a la que pide el variador.",
+  "causas": [
+   "Freno que no abre a tiempo",
+   "Sobrecarga o mal balance cabina/contrapeso",
+   "Señal del encoder con ruido o mal conectada",
+   "Aceleración muy rápida"
+  ],
+  "arreglo": [
+   "Revisa que el freno abra a tiempo",
+   "Verifica carga y balance",
+   "Revisa cable y blindaje del encoder",
+   "Revisa con el supervisor los ajustes de aceleración"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "CE",
+  "nombre": "Error de comunicación MEMOBUS/Modbus",
+  "simple": "Se cortó o falla la comunicación serial con el tablero o la PC.",
+  "causas": [
+   "Cable RS-485 suelto o con hilos invertidos",
+   "Dirección, velocidad o paridad distintas entre los equipos",
+   "Falta resistencia de terminación o hay ruido eléctrico"
+  ],
+  "arreglo": [
+   "Revisa el cable y los bornes de comunicación",
+   "Comprueba que H5-01, H5-02 y H5-03 coincidan con el tablero o la PC",
+   "Revisa la resistencia de terminación (DIP switch S2)"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "bUS",
+  "nombre": "Error de comunicación de tarjeta opcional",
+  "simple": "Falló la comunicación de la tarjeta opcional de red del variador.",
+  "causas": [
+   "Tarjeta opcional mal insertada",
+   "Cable de red suelto",
+   "El tablero (maestro) dejó de comunicar"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Revisa que la tarjeta opcional esté bien puesta",
+   "Revisa el cable de red y que el tablero esté funcionando"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "CF",
+  "nombre": "Falla de control",
+  "simple": "El variador no logra controlar bien el motor.",
+  "causas": [
+   "Datos del motor mal ingresados o falta el autoajuste",
+   "Carga trabada o freno cerrado"
+  ],
+  "arreglo": [
+   "Revisa que el freno abra y la cabina no esté trabada",
+   "Revisa con el supervisor los datos del motor y el autoajuste"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "CoF",
+  "nombre": "Falla de offset de corriente",
+  "simple": "El variador detectó un error en su medición de corriente.",
+  "causas": [
+   "Falla del circuito interno que mide la corriente",
+   "Ruido eléctrico o arranque con el motor todavía girando"
+  ],
+  "arreglo": [
+   "Apaga, espera la descarga y vuelve a encender",
+   "Revisa tierras y blindajes",
+   "Si se repite, llama al servicio técnico del variador"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "CPF00 / CPF01",
+  "nombre": "Error del circuito de control",
+  "simple": "Hay una falla en la tarjeta de control del variador.",
+  "causas": [
+   "Ruido eléctrico fuerte",
+   "Tarjeta de control dañada",
+   "Operador (teclado) mal conectado"
+  ],
+  "arreglo": [
+   "Apaga, espera la descarga y vuelve a encender",
+   "Revisa tierras y que el operador esté bien conectado",
+   "Si se repite, llama al servicio técnico (posible cambio de tarjeta)"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "CPF02",
+  "nombre": "Error de conversión A/D",
+  "simple": "Falla el circuito que lee las señales analógicas en la tarjeta de control.",
+  "causas": [
+   "Ruido eléctrico",
+   "Tarjeta de control dañada"
+  ],
+  "arreglo": [
+   "Apaga, espera la descarga y vuelve a encender",
+   "Revisa tierras y cables de control",
+   "Si se repite, llama al servicio técnico"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "CPF03",
+  "nombre": "Error de conexión de la tarjeta de control",
+  "simple": "La tarjeta de control no está bien conectada dentro del variador.",
+  "causas": [
+   "Conector interno flojo",
+   "Tarjeta de control dañada"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta; espera la descarga",
+   "Revisa que la tarjeta y sus conectores estén bien puestos",
+   "Si sigue, llama al servicio técnico"
+  ],
+  "peligro": "Alto voltaje interno: espera la descarga antes de abrir.",
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "CPF06",
+  "nombre": "Error de datos de EEPROM",
+  "simple": "Se dañaron los datos de la memoria donde se guardan los parámetros.",
+  "causas": [
+   "Corte de energía mientras se guardaban parámetros",
+   "Memoria de la tarjeta dañada"
+  ],
+  "arreglo": [
+   "Apaga, espera la descarga y vuelve a encender",
+   "Con el supervisor, recarga los parámetros desde una copia de respaldo",
+   "Si sigue, llama al servicio técnico"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "EF0",
+  "nombre": "Falla externa desde tarjeta opcional",
+  "simple": "La tarjeta opcional de comunicación mandó una señal de falla externa.",
+  "causas": [
+   "El tablero envió una falla por la red",
+   "Error en la configuración de la red"
+  ],
+  "arreglo": [
+   "Mira en el tablero de control qué falla mandó",
+   "Soluciona esa causa y resetea"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "EF3 a EF8",
+  "nombre": "Falla externa (borne S3 a S8)",
+  "simple": "Se activó una entrada (S3 a S8) programada como falla externa.",
+  "causas": [
+   "El tablero de control mandó una señal de falla",
+   "Cable o contacto de esa entrada suelto",
+   "Entrada mal programada"
+  ],
+  "arreglo": [
+   "Mira en el plano qué equipo va conectado a ese borne",
+   "Soluciona la causa en ese equipo",
+   "Revisa el cable de la entrada",
+   "Nunca puentees la entrada para quitar la falla"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=281"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "SE1",
+  "nombre": "Error de respuesta del contactor del motor",
+  "simple": "El contactor del motor no confirmó que cerró dentro del tiempo programado (S6-10).",
+  "causas": [
+   "Contactor que no cierra o está pegado",
+   "Contacto auxiliar de confirmación sucio o cable suelto",
+   "Bobina del contactor sin tensión"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Revisa el contacto auxiliar del contactor y su cable hasta la entrada del variador",
+   "Comprueba que la bobina del contactor reciba tensión al dar marcha",
+   "Cambia el contactor si está malo; no puentees la confirmación"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=273"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "SE2",
+  "nombre": "Error de corriente al arranque",
+  "simple": "Al dar marcha no salió suficiente corriente al motor, y el freno no se manda abrir.",
+  "causas": [
+   "Contactor del motor que no cerró",
+   "Cable del motor cortado o borne suelto",
+   "Bobinado del motor abierto"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Revisa contactor del motor y bornes U, V, W",
+   "Mide continuidad de los bobinados del motor"
+  ],
+  "pieza": "cables_motor",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=273"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "SE3",
+  "nombre": "Error de corriente de salida",
+  "simple": "Después de abrir el freno, la corriente del motor cayó por debajo del 25 %.",
+  "causas": [
+   "Contactor del motor que se abrió durante el viaje",
+   "Cable o borne del motor flojo",
+   "Corte en la cadena de seguridad que suelta el contactor"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Revisa contactor del motor y bornes",
+   "Revisa la cadena de seguridad en el tablero (sin puentear nada)"
+  ],
+  "peligro": "Si el motor pierde corriente con el freno abierto, la cabina puede moverse: verifica que el freno cierre bien.",
+  "pieza": "cables_motor",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=273"
+ },
+ {
+  "equipo": "yaskawa_l1000a",
+  "codigo": "SE4",
+  "nombre": "Error de respuesta del freno",
+  "simple": "Las señales de confirmación del freno no cambiaron a tiempo (S6-05, 500 ms de fábrica).",
+  "causas": [
+   "Micro (contacto) de freno desajustado o malo",
+   "Freno que no abre o no cierra",
+   "Cable de la señal del freno suelto"
+  ],
+  "arreglo": [
+   "Asegura la cabina y el contrapeso; corta la energía, bloquea y etiqueta",
+   "Revisa el ajuste de los micros de freno y su cableado",
+   "Revisa el freno con el procedimiento del fabricante",
+   "Nunca puentees el micro de freno"
+  ],
+  "peligro": "El freno es una pieza de seguridad: la cabina puede moverse si el freno falla.",
+  "pieza": "micro_freno",
+  "fuente": "https://www.manualslib.com/manual/1229958/Yaskawa-L1000a.html?page=273"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "OC1",
+  "nombre": "Sobrecorriente al acelerar",
+  "simple": "Salió demasiada corriente al motor mientras aceleraba.",
+  "causas": [
+   "Freno que no abre",
+   "Contrapeso mal balanceado o cabina trabada",
+   "Error de conexión en cables del motor o contactores",
+   "Aceleración muy rápida"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta; espera la descarga del variador",
+   "Revisa que el freno abra y que la cabina no esté trabada",
+   "Revisa conexiones del motor y contactores",
+   "Revisa con el supervisor el balance y la aceleración"
+  ],
+  "peligro": "Alto voltaje: el variador queda cargado unos minutos después de apagar.",
+  "pieza": "freno",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "OC2",
+  "nombre": "Sobrecorriente al desacelerar",
+  "simple": "Salió demasiada corriente al motor mientras frenaba (desaceleración).",
+  "causas": [
+   "Desaceleración muy rápida",
+   "Contrapeso mal balanceado",
+   "Error de conexión en cables del motor o contactores"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Revisa cables del motor y contactores",
+   "Revisa con el supervisor el tiempo de desaceleración y el balance"
+  ],
+  "peligro": "Alto voltaje: espera la descarga antes de tocar.",
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "OC3",
+  "nombre": "Sobrecorriente a velocidad constante",
+  "simple": "Salió demasiada corriente al motor mientras viajaba a velocidad fija.",
+  "causas": [
+   "Exceso de carga en la cabina",
+   "Freno que roza",
+   "Cabina o contrapeso trabados",
+   "Corto en cables del motor"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Revisa el freno y que nada esté trabado en el hueco",
+   "Mide aislamiento de cables del motor"
+  ],
+  "peligro": "Alto voltaje: espera la descarga antes de tocar.",
+  "pieza": "cables_motor",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "OV1",
+  "nombre": "Sobretensión al acelerar",
+  "simple": "El voltaje interno (bus DC) subió demasiado mientras aceleraba.",
+  "causas": [
+   "Voltaje de la red muy alto o con picos",
+   "Resistencia de frenado desconectada o dañada"
+  ],
+  "arreglo": [
+   "Mide el voltaje de entrada entre fases",
+   "Con energía cortada y bloqueada, revisa la resistencia de frenado y sus cables"
+  ],
+  "peligro": "Alto voltaje en el bus DC.",
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "OV2",
+  "nombre": "Sobretensión al desacelerar",
+  "simple": "El voltaje interno (bus DC) subió demasiado mientras frenaba.",
+  "causas": [
+   "Resistencia de frenado no conectada o dañada",
+   "Tiempo de desaceleración muy corto",
+   "Resistencia de frenado de poca potencia"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta; espera la descarga",
+   "Mide la resistencia de frenado y compárala con su placa",
+   "Revisa con el supervisor el tiempo de desaceleración"
+  ],
+  "peligro": "Alto voltaje en el bus DC; la resistencia de frenado puede quemar.",
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "OV3",
+  "nombre": "Sobretensión a velocidad constante",
+  "simple": "El voltaje interno (bus DC) subió demasiado mientras viajaba a velocidad fija.",
+  "causas": [
+   "Resistencia de frenado no conectada o dañada",
+   "Cabina que baja con mucha carga y el motor genera energía",
+   "Voltaje de la red muy alto"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta; espera la descarga",
+   "Revisa la resistencia de frenado y sus cables",
+   "Mide el voltaje de entrada"
+  ],
+  "peligro": "Alto voltaje en el bus DC.",
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "LV",
+  "nombre": "Subtensión",
+  "simple": "El voltaje interno (bus DC) bajó por debajo del nivel mínimo.",
+  "causas": [
+   "Voltaje de la red bajo",
+   "Corte de energía",
+   "Borne flojo o fusible quemado en la entrada"
+  ],
+  "arreglo": [
+   "Mide el voltaje de las tres fases en la entrada",
+   "Con energía cortada y bloqueada, revisa fusibles y ajusta bornes",
+   "Si la red es inestable, avisa al electricista del edificio"
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "Lin",
+  "nombre": "Pérdida de fase de entrada",
+  "simple": "Falta una fase en la entrada o el voltaje entre fases está muy desbalanceado.",
+  "causas": [
+   "Fusible de entrada quemado",
+   "Borne flojo en la entrada",
+   "Red eléctrica con una fase caída"
+  ],
+  "arreglo": [
+   "Mide el voltaje entre fases; deben ser parecidos",
+   "Con energía cortada y bloqueada, revisa fusibles y bornes"
+  ],
+  "pieza": "interruptor_principal",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "OPL",
+  "nombre": "Pérdida de fase de salida",
+  "simple": "Falta una fase entre el variador y el motor.",
+  "causas": [
+   "Cable del motor cortado o borne flojo",
+   "Contactor del motor que no cierra bien",
+   "Bobinado del motor abierto"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Ajusta bornes U, V, W y revisa contactos del contactor",
+   "Mide la resistencia de los tres bobinados del motor"
+  ],
+  "pieza": "cables_motor",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "OH1",
+  "nombre": "Sobretemperatura del disipador",
+  "simple": "El disipador (radiador) del variador se calentó demasiado.",
+  "causas": [
+   "Ventilador del variador malo",
+   "Temperatura alta en la sala o en el tablero",
+   "Disipador sucio"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Limpia disipador y ventilador",
+   "Comprueba que el ventilador gire; cámbialo si no gira",
+   "Mejora la ventilación"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.fujielectric-europe.com/fileadmin/03_Downloads/03_01_Drives_and_Automation/Low_voltage_Drives/LM2C/SG_FRENIC_LM2C_EN_1_1_0__3ph_230V_included_.pdf"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "OH2",
+  "nombre": "Alarma externa",
+  "simple": "Una entrada programada como alarma externa (THR) no está activa.",
+  "causas": [
+   "El equipo conectado a esa entrada mandó alarma (por ejemplo un térmico)",
+   "Cable de la entrada suelto o cortado",
+   "Entrada programada como THR sin nada conectado"
+  ],
+  "arreglo": [
+   "Mira en el plano qué va conectado a la entrada THR",
+   "Soluciona la causa en ese equipo",
+   "Revisa el cable de la entrada; no la puentees"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.fujielectric-europe.com/fileadmin/03_Downloads/03_01_Drives_and_Automation/Low_voltage_Drives/LM2C/SG_FRENIC_LM2C_EN_1_1_0__3ph_230V_included_.pdf"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "OH3",
+  "nombre": "Sobretemperatura interna del variador",
+  "simple": "La temperatura dentro del variador pasó el límite.",
+  "causas": [
+   "Sala o tablero muy caliente",
+   "Ventilador del tablero o del variador malo"
+  ],
+  "arreglo": [
+   "Deja enfriar",
+   "Revisa ventiladores y ventilación del tablero",
+   "Mejora la ventilación de la sala de máquinas"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "OH4",
+  "nombre": "Protección del motor (termistor PTC/NTC)",
+  "simple": "El termistor del motor avisó que el motor está muy caliente.",
+  "causas": [
+   "Motor sobrecargado o con muchos viajes seguidos",
+   "Ventilador del motor malo o pequeño",
+   "Cable del termistor suelto"
+  ],
+  "arreglo": [
+   "Deja enfriar el motor",
+   "Revisa el ventilador del motor",
+   "Revisa el cable del termistor hasta el variador",
+   "Verifica carga y balance de la cabina"
+  ],
+  "pieza": "maquina",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "OH6",
+  "nombre": "Sobretemperatura de la resistencia de carga",
+  "simple": "Se calentó la resistencia interna de carga (precarga) del variador.",
+  "causas": [
+   "Encendidos y apagados muy seguidos del variador",
+   "Cortes de energía repetidos en poco tiempo"
+  ],
+  "arreglo": [
+   "Deja el variador apagado unos minutos para que enfríe",
+   "Evita prender y apagar seguido",
+   "Si se repite sin causa, llama al servicio técnico"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "OL1",
+  "nombre": "Sobrecarga del motor",
+  "simple": "La protección térmica electrónica del motor se activó por exceso de corriente.",
+  "causas": [
+   "Exceso de carga o mal balance cabina/contrapeso",
+   "Freno que roza",
+   "Datos del motor mal programados"
+  ],
+  "arreglo": [
+   "Deja enfriar el motor",
+   "Verifica carga, balance y freno",
+   "Revisa con el supervisor los datos del motor"
+  ],
+  "pieza": "maquina",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "OLU",
+  "nombre": "Sobrecarga del variador",
+  "simple": "El variador trabajó con más corriente de la que aguanta.",
+  "causas": [
+   "Exceso de carga o mal balance",
+   "Freno que no abre bien",
+   "Ventilación pobre del variador"
+  ],
+  "arreglo": [
+   "Deja enfriar el variador",
+   "Verifica carga, balance y freno",
+   "Limpia disipador y ventilador"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "Er1",
+  "nombre": "Error de memoria",
+  "simple": "Hubo un error al guardar datos en la memoria del variador.",
+  "causas": [
+   "Corte de energía mientras se guardaban parámetros",
+   "Memoria dañada"
+  ],
+  "arreglo": [
+   "Apaga, espera y vuelve a encender",
+   "Con el supervisor, revisa o recarga los parámetros",
+   "Si sigue, llama al servicio técnico"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "Er2",
+  "nombre": "Error de comunicación con el teclado",
+  "simple": "El variador no se comunica bien con el teclado.",
+  "causas": [
+   "Cable o conector del teclado flojo o dañado",
+   "Teclado dañado"
+  ],
+  "arreglo": [
+   "Revisa y vuelve a conectar el cable del teclado",
+   "Prueba con otro cable o teclado"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "Er3",
+  "nombre": "Error de CPU",
+  "simple": "Falló el procesador (CPU) del variador.",
+  "causas": [
+   "Ruido eléctrico fuerte",
+   "Tarjeta de control dañada"
+  ],
+  "arreglo": [
+   "Apaga, espera la descarga y vuelve a encender",
+   "Revisa tierras y blindajes",
+   "Si se repite, llama al servicio técnico"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "Er4",
+  "nombre": "Error de comunicación con tarjeta opcional",
+  "simple": "Falla la comunicación entre el variador y una tarjeta opcional.",
+  "causas": [
+   "Tarjeta opcional mal insertada",
+   "Tarjeta opcional dañada"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Revisa que la tarjeta opcional esté bien puesta",
+   "Si sigue, llama al servicio técnico"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "Er6",
+  "nombre": "Error de operación",
+  "simple": "Se intentó una operación incorrecta (error en la secuencia de marcha).",
+  "causas": [
+   "Ajustes de las funciones L11 a L18 mal hechos",
+   "Valores de velocidad (multipaso) repetidos",
+   "Señales del freno o del contactor (MC) en estado incorrecto"
+  ],
+  "arreglo": [
+   "Revisa que las señales de freno y contactor lleguen bien al variador",
+   "Revisa con el supervisor las funciones L11 a L18 y las velocidades",
+   "Resetea y prueba en inspección"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.fujielectric-europe.com/fileadmin/03_Downloads/03_01_Drives_and_Automation/Low_voltage_Drives/LM2C/SG_FRENIC_LM2C_EN_1_1_0__3ph_230V_included_.pdf"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "Er7",
+  "nombre": "Error de autoajuste (tuning)",
+  "simple": "Falló el autoajuste del motor o el ajuste de la posición de los polos magnéticos.",
+  "causas": [
+   "Falta una fase entre el variador y el motor",
+   "Datos de placa del motor mal ingresados",
+   "Freno o contactor no actuaron durante el ajuste"
+  ],
+  "arreglo": [
+   "Revisa cables del motor y contactor",
+   "Revisa con el supervisor los datos de placa del motor",
+   "Repite el autoajuste siguiendo el manual"
+  ],
+  "peligro": "Durante el autoajuste el motor puede girar: asegura la cabina y que no haya nadie en el hueco.",
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/2157439/Fuji-Electric-Frenic-Lift.html?page=20"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "Er8",
+  "nombre": "Error de comunicación RS-485 (puerto 1)",
+  "simple": "Se cortó la comunicación por el puerto RS-485 1.",
+  "causas": [
+   "Cable de comunicación suelto o dañado",
+   "Dirección o velocidad distintas entre equipos",
+   "Falta resistencia de terminación o hay ruido"
+  ],
+  "arreglo": [
+   "Revisa el cable y el conector RJ-45",
+   "Revisa que la configuración (y01 y demás) coincida con el tablero o la PC",
+   "Revisa el switch de resistencia de terminación"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "ErP",
+  "nombre": "Error de comunicación RS-485 (puerto 2)",
+  "simple": "Se cortó la comunicación por el puerto RS-485 2 (bornera).",
+  "causas": [
+   "Cable de comunicación suelto o dañado",
+   "Configuración distinta entre equipos",
+   "Falta resistencia de terminación o hay ruido"
+  ],
+  "arreglo": [
+   "Revisa el cable en la bornera",
+   "Revisa la configuración del puerto 2 (y11 y demás)",
+   "Revisa el switch de resistencia de terminación"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.manualslib.com/manual/2364985/Fuji-Electric-Frenic-Lift-Lm2c-Series.html?page=40"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "Ert",
+  "nombre": "Error de comunicación CANopen",
+  "simple": "Falla la comunicación CANopen entre el variador y el tablero.",
+  "causas": [
+   "Cable CAN suelto o dañado",
+   "Falta resistencia de terminación",
+   "Tablero sin comunicar"
+  ],
+  "arreglo": [
+   "Revisa cable y conectores CAN",
+   "Revisa la resistencia de terminación",
+   "Revisa que el tablero esté funcionando"
+  ],
+  "pieza": "tablero_control",
+  "fuente": "https://www.manualslib.com/manual/1636072/Fuji-Electric-Frenic-Lift-Lm2a-Series.html?page=46"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "PG",
+  "nombre": "Cable del encoder cortado",
+  "simple": "El variador detectó que el cableado del encoder está cortado.",
+  "causas": [
+   "Cable del encoder cortado o conector suelto",
+   "Encoder dañado",
+   "Tarjeta del encoder mal conectada"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Revisa conector y cable del encoder",
+   "Mide la alimentación del encoder"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://www.manualslib.com/manual/1636072/Fuji-Electric-Frenic-Lift-Lm2a-Series.html?page=46"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "OS",
+  "nombre": "Sobrevelocidad",
+  "simple": "El motor pasó la velocidad máxima permitida.",
+  "causas": [
+   "Señal del encoder con ruido o mal conectada",
+   "Cabina arrastrada por desbalance o freno débil",
+   "Ajustes de velocidad incorrectos"
+  ],
+  "arreglo": [
+   "Revisa cable y blindaje del encoder",
+   "Revisa el freno y el balance cabina/contrapeso",
+   "Revisa con el supervisor los ajustes de velocidad"
+  ],
+  "peligro": "Sobrevelocidad es peligrosa: verifica freno, limitador y paracaídas antes de volver a servicio.",
+  "pieza": "encoder",
+  "fuente": "https://www.manualslib.com/manual/1636072/Fuji-Electric-Frenic-Lift-Lm2a-Series.html?page=46"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "ErE",
+  "nombre": "Diferencia de velocidad",
+  "simple": "La velocidad real del motor no coincide con la que pide el variador.",
+  "causas": [
+   "Freno que no abre a tiempo",
+   "Encoder con ruido o mal conectado",
+   "Sobrecarga o mal balance"
+  ],
+  "arreglo": [
+   "Revisa que el freno abra a tiempo",
+   "Revisa cable del encoder",
+   "Verifica carga y balance"
+  ],
+  "pieza": "encoder",
+  "fuente": "https://www.manualslib.com/manual/1636072/Fuji-Electric-Frenic-Lift-Lm2a-Series.html?page=46"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "Ot",
+  "nombre": "Sobre corriente de torque",
+  "simple": "El variador pidió demasiado torque (fuerza) al motor.",
+  "causas": [
+   "Cabina o contrapeso trabados",
+   "Freno que no abre",
+   "Sobrecarga"
+  ],
+  "arreglo": [
+   "Revisa que nada esté trabado en el hueco",
+   "Revisa que el freno abra",
+   "Verifica la carga"
+  ],
+  "pieza": "maquina",
+  "fuente": "https://www.manualslib.com/manual/1636072/Fuji-Electric-Frenic-Lift-Lm2a-Series.html?page=46"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "ECL",
+  "nombre": "Error de lógica personalizable",
+  "simple": "Hay un error en la lógica programable interna del variador.",
+  "causas": [
+   "Programa de lógica personalizable mal configurado",
+   "Cambio de parámetros reciente sin revisar"
+  ],
+  "arreglo": [
+   "Anota el código y lo que se cambió últimamente",
+   "Avisa al supervisor para revisar la lógica programada"
+  ],
+  "pieza": "variador",
+  "fuente": "https://www.manualslib.com/manual/1636072/Fuji-Electric-Frenic-Lift-Lm2a-Series.html?page=46"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "Eo",
+  "nombre": "Choque entre salida ENOFF y entradas EN1/EN2",
+  "simple": "La salida ENOFF y las entradas de habilitación EN1/EN2 no están de acuerdo (rebote).",
+  "causas": [
+   "Cableado de EN1/EN2 mal hecho",
+   "Contacto que rebota en la cadena de seguridad"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Revisa el cableado de EN1, EN2 y ENOFF con el plano",
+   "Nunca puentees EN1/EN2"
+  ],
+  "peligro": "EN1/EN2 son entradas de seguridad (corte de torque): no se puentean.",
+  "pieza": "tablero_control",
+  "fuente": "https://www.manualslib.com/manual/1636072/Fuji-Electric-Frenic-Lift-Lm2a-Series.html?page=46"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "ECF",
+  "nombre": "Falla del circuito EN1/EN2",
+  "simple": "Hay una falla en el circuito de las entradas de seguridad EN1 y EN2; deben cambiar al mismo tiempo.",
+  "causas": [
+   "EN1 y EN2 no llegan juntas (diferencia mayor a 50 ms)",
+   "Cable suelto en una de las dos entradas",
+   "Contacto de seguridad gastado"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Revisa que EN1 y EN2 vengan del mismo contacto y estén bien ajustadas",
+   "Cambia el contacto o relé que falla",
+   "Nunca puentees EN1/EN2"
+  ],
+  "peligro": "EN1/EN2 son entradas de seguridad: no se puentean.",
+  "pieza": "tablero_control",
+  "fuente": "https://www.manualslib.com/manual/1636072/Fuji-Electric-Frenic-Lift-Lm2a-Series.html?page=70"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "nrb",
+  "nombre": "Cable del termistor NTC cortado",
+  "simple": "Se detectó un corte en el circuito del termistor NTC.",
+  "causas": [
+   "Cable del termistor cortado o suelto",
+   "Termistor dañado"
+  ],
+  "arreglo": [
+   "Corta la energía, bloquea y etiqueta",
+   "Revisa el cable del termistor hasta el variador",
+   "Mide el termistor con el multímetro"
+  ],
+  "pieza": "maquina",
+  "fuente": "https://www.manualslib.com/manual/1636072/Fuji-Electric-Frenic-Lift-Lm2a-Series.html?page=46"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "rbA",
+  "nombre": "Rescate por freno sin movimiento",
+  "simple": "Durante el rescate abriendo el freno, la cabina no se movió.",
+  "causas": [
+   "Cabina y contrapeso casi balanceados (no se mueve sola)",
+   "Freno que no abrió",
+   "Encoder sin señal"
+  ],
+  "arreglo": [
+   "Sigue el procedimiento de rescate del edificio; solo personal autorizado",
+   "Revisa que el freno abra",
+   "Si la cabina está balanceada, usa otro método de rescate autorizado"
+  ],
+  "peligro": "Rescate con pasajeros: riesgo de movimiento de la cabina. Solo personal capacitado.",
+  "pieza": "rescate",
+  "fuente": "https://www.manualslib.com/manual/1636072/Fuji-Electric-Frenic-Lift-Lm2a-Series.html?page=46"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "bbE",
+  "nombre": "Falla de confirmación del freno",
+  "simple": "La orden al freno y la señal de confirmación del freno no coinciden.",
+  "causas": [
+   "Micro (contacto) de freno desajustado o malo",
+   "Freno que no abre o no cierra",
+   "Cable de la señal de freno suelto"
+  ],
+  "arreglo": [
+   "Asegura la cabina; corta la energía, bloquea y etiqueta",
+   "Revisa el ajuste de los micros de freno y su cableado",
+   "Revisa el freno con el procedimiento del fabricante",
+   "Nunca puentees el micro de freno"
+  ],
+  "peligro": "El freno es una pieza de seguridad: la cabina puede moverse si falla.",
+  "pieza": "micro_freno",
+  "fuente": "https://www.manualslib.com/manual/1636072/Fuji-Electric-Frenic-Lift-Lm2a-Series.html?page=46"
+ },
+ {
+  "equipo": "fuji_lm2",
+  "codigo": "tCA",
+  "nombre": "Contador de viajes al límite",
+  "simple": "El número de cambios de dirección (viajes) llegó al límite programado.",
+  "causas": [
+   "Se cumplió el número de viajes programado como aviso de mantenimiento",
+   "El límite del contador quedó programado muy bajo"
+  ],
+  "arreglo": [
+   "Avisa al supervisor para hacer el mantenimiento programado",
+   "El supervisor resetea el contador después del mantenimiento"
+  ],
+  "fuente": "https://www.manualslib.com/manual/1636072/Fuji-Electric-Frenic-Lift-Lm2a-Series.html?page=46"
  }
 ];
