@@ -182,17 +182,17 @@
     construir: function (K) { return armarLimitador(K); },
     funciona: {
       dur: 19,
-      subt: [[0, 'El limitador es una polea con dos pesas. Un cable delgado la une a la cabina, así que gira a su misma velocidad.'],
+      subt: [[0, 'El limitador es una polea con dos pesas. Un cable la une a la cabina y gira a su misma velocidad.'],
         [4.5, 'Las pesas giran con la polea. Mientras más rápido gira, más se abren hacia afuera.'],
         [8.5, 'Si la cabina va muy rápido, una pesa golpea el interruptor: se corta la corriente y frena el motor.'],
         [12.4, 'Si aun así se sigue embalando, un gancho traba la polea. El cable se detiene y jala el paracaídas de la cabina.']],
-      cam: [[0, [0.55, 1.15, 1.15], [0, 0.98, 0]], [4.5, [0.3, 1.1, 0.88], [0, 1.02, 0]], [8.5, [0.38, 1.22, 0.9], [0.02, 1.08, 0]], [12.4, [-0.32, 1.12, 0.98], [-0.03, 0.97, 0]], [16, [0.38, 0.98, 1.25], [0.05, 0.82, 0]], [19, [0.55, 1.15, 1.15], [0, 0.96, 0]]],
+      cam: [[0, [0.55, 1.15, 1.15], [0, 0.98, 0]], [4.5, [0.3, 1.1, 0.88], [0, 1.02, 0]], [8.5, [0.38, 1.22, 0.9], [0.02, 1.08, 0]], [12.4, [-0.32, 1.12, 0.98], [-0.03, 0.97, 0]], [16, [0.5, 1.12, 1.35], [0.02, 0.93, 0]], [19, [0.55, 1.15, 1.15], [0, 0.96, 0]]],
       anim: function (t, s, K) {
         var tl = 12.7, v = t < tl ? limVel(t) : 0;
         var cab = K.integ(function (x) { return x < tl ? limVel(x) * 0.5 : 0; }, t);
         var abre = t >= tl ? 1 : K.cl((v - 0.95) / 0.35), sw = abre > 0.62, traba = t >= 12.5;
         limPone(s, K, { ang: cab / ((RL + 0.012)), cab: cab, abre: abre, sw: sw, traba: traba });
-        s.flecha.visible = t > tl; if (t > tl) s.flecha.apuntar([(RL + 0.012) + 0.05, 0.35, 0.02], [(RL + 0.012) + 0.05, 0.6, 0.02]);
+        s.flecha.visible = t > tl; if (t > tl) s.flecha.apuntar([(RL + 0.012) + 0.05, 0.74, 0.02], [(RL + 0.012) + 0.05, 0.96, 0.02]);
         s.chis.emitir(t, [-0.1, GY + 0.13, 0.02], K.entre(t, 12.5, 13.3), 0.08);
         K.marcar(s.pesas.map(function (p) { return p.pesa; }), K.entre(t, 4.5, 8.5) ? (K.parpadeo(t, 1) ? 'foco' : null) : null);
         K.marcar(s.sw.cuerpo, K.entre(t, 8.5, 12.4) ? 'foco' : null); K.marcar(s.canal, null); K.marcar(s.pesas.map(function (p) { return p.mugre; }), null);
@@ -200,7 +200,7 @@
         if (t < 4.5) { K.rotulo('Polea', [0, GY - 0.16, 0.03]); K.rotulo('Cable a la cabina', [(RL + 0.012), 0.5, 0], 'der'); }
         if (K.entre(t, 4.5, 8.5)) K.rotulo('Pesas', s.pesas[0].pesa);
         if (K.entre(t, 8.5, 12.4)) K.rotulo('Interruptor', [0.03, GY + 0.25, 0.04]);
-        if (t > 12.4) { K.rotulo('Gancho (traba)', [-0.2, GY + 0.14, 0.0], 'izq'); if (t > tl) K.rotulo('Jala el paracaídas', [(RL + 0.012) + 0.05, 0.45, 0.02], 'der'); }
+        if (t > 12.4) { K.rotulo('Gancho (traba)', [-0.2, GY + 0.14, 0.0], 'izq'); if (t > tl) K.rotulo('Jala el paracaídas', [(RL + 0.012) + 0.06, 0.8, 0.02], 'der'); }
         var vt = t >= tl ? ['DETENIDA', 'mal'] : v > 1.25 ? ['MUY ALTA', 'mal'] : v > 1.08 ? ['ALTA', 'ac'] : ['NORMAL', 'ok'];
         K.tabla([['VELOCIDAD', vt[0], vt[1]], ['INTERRUPTOR', sw ? 'ABIERTO: MOTOR SIN CORRIENTE' : 'CERRADO', sw ? 'mal' : 'ok'], ['POLEA', traba ? 'TRABADA' : 'GIRA', traba ? 'mal' : '']]);
       }
@@ -210,7 +210,7 @@
       subt: [[0, 'Falla 1: la canaleta de la polea, por donde pasa el cable, se gastó con los años.'],
         [4, 'Cuando el gancho traba la polea, el cable resbala y sigue de largo: no jala el paracaídas a tiempo.'],
         [9, 'Falla 2: pesas sucias u oxidadas. El limitador se dispara a velocidad normal y la cabina se clava sin motivo.'],
-        [14.5, 'Arreglo: el técnico lo limpia y lo prueba, y cambia la polea y el cable gastados. Viene sellado: no se regula a mano.']],
+        [14.5, 'Arreglo: limpiarlo, probarlo y cambiar la polea y el cable gastados. Viene sellado: no se regula a mano.']],
       cam: [[0, [0.3, 1.35, 0.62], [0, 1.08, 0]], [4, [0.42, 1.25, 0.88], [0, 1.04, 0]], [9, [0.5, 1.12, 0.8], [0.02, 1.0, 0]], [14.5, [0.6, 1.2, 1.0], [0, 0.97, 0]], [19.5, [0.6, 1.2, 1.05], [0, 0.96, 0]]],
       anim: function (t, s, K) {
         var cab, ang, abre, sw, traba, sucia = false, vt;
@@ -370,7 +370,7 @@
         [4.5, 'Va amarrado a una palanca de la cabina. Cuando la cabina viaja, el cable corre con ella.'],
         [9, 'Por eso la polea del limitador gira igual de rápido que la cabina.'],
         [13, 'Si la cabina se embala, el limitador frena el cable. La cabina sigue bajando y el cable jala la palanca del paracaídas.']],
-      cam: [[0, [2.2, 2.9, 9.6], [-0.45, 2.45, 0]], [3.8, [2.2, 2.9, 9.4], [-0.45, 2.45, 0]], [5.2, [-0.15, 1.95, 2.9], [-0.85, 1.4, 0.2]], [8.6, [-0.15, 1.95, 2.9], [-0.85, 1.42, 0.2]], [10, [0.0, 5.35, 1.9], [-1.05, 4.9, 0.2]], [12.6, [0.0, 5.3, 1.9], [-1.05, 4.9, 0.2]], [13.6, [-0.2, 1.85, 2.5], [-0.85, 1.3, 0.2]], [19.5, [-0.05, 1.95, 2.8], [-0.8, 1.32, 0.2]]],
+      cam: [[0, [2.2, 2.9, 9.6], [-0.45, 2.45, 0]], [3.8, [2.2, 2.9, 9.4], [-0.45, 2.45, 0]], [5.2, [-0.15, 1.95, 2.9], [-0.85, 1.4, 0.2]], [8.6, [-0.15, 1.95, 2.9], [-0.85, 1.42, 0.2]], [10, [0.0, 5.35, 1.9], [-1.05, 4.9, 0.2]], [12.6, [0.0, 5.3, 1.9], [-1.05, 4.9, 0.2]], [13.6, [-0.3, 1.7, 2.1], [-0.85, 1.2, 0.2]], [19.5, [-0.2, 1.8, 2.4], [-0.82, 1.22, 0.2]]],
       anim: function (t, s, K) {
         var o = lazoFunciona(t, s, K);
         lazoPone(s, K, t, o);
@@ -389,7 +389,7 @@
       subt: [[0, 'Falla 1: con los años el cable se estira, como un elástico viejo.'],
         [4, 'La pesa de abajo baja poco a poco hasta apretar su interruptor. El ascensor se para y no arranca.'],
         [9.5, 'Falla 2: hilos rotos. El cable se pela con el roce y se puede cortar.'],
-        [14, 'Arreglo: con el ascensor detenido, el técnico acorta el cable y la pesa vuelve a su altura. Si tiene hilos rotos, lo cambia.']],
+        [14, 'Arreglo: con el ascensor detenido, se acorta el cable y la pesa vuelve a su altura. Con hilos rotos, se cambia.']],
       cam: [[0, [2.2, 2.9, 9.6], [-0.45, 2.45, 0]], [3.6, [0.3, 1.15, 2.4], [-1.05, 0.42, 0.2]], [9, [0.3, 1.15, 2.4], [-1.05, 0.42, 0.2]], [10.2, [-0.2, 3.4, 2.2], [-1.05, 3.0, 0.2]], [13.6, [-0.2, 3.4, 2.2], [-1.05, 3.0, 0.2]], [14.8, [1.4, 2.6, 7.4], [-0.5, 2.3, 0]], [19, [1.5, 2.6, 7.6], [-0.5, 2.3, 0]]],
       anim: function (t, s, K) {
         var o, pel = null, fix = 0;
@@ -584,7 +584,7 @@
         [8.5, 'La palanca sube las cuñas: se meten entre el bloque y el riel y lo muerden con fuerza.'],
         [12.5, 'La cabina se queda clavada en el riel, aunque no haya luz. Y un interruptor apaga el motor.'],
         [16.5, 'Solo el técnico la suelta: sube la cabina con la máquina y revisa el limitador, las cuñas y el riel.']],
-      cam: [[0, [0.42, 0.06, 0.72], [0.05, -0.02, 0.0]], [4.2, [0.42, 0.04, 0.72], [0.06, -0.03, 0.0]], [5.6, [0.62, 0.0, 0.62], [0.13, -0.08, 0.0]], [8.2, [0.62, 0.0, 0.62], [0.13, -0.06, 0.0]], [9.4, [0.07, 0.05, 0.36], [0, 0.02, 0.02]], [12.3, [0.07, 0.05, 0.36], [0, 0.04, 0.02]], [13.5, [0.45, -0.02, 0.5], [0.12, -0.05, 0.0]], [16.3, [0.45, -0.02, 0.5], [0.12, -0.05, 0.0]], [20, [0.42, 0.06, 0.75], [0.05, -0.02, 0.0]]],
+      cam: [[0, [0.26, 0.06, 0.74], [0.05, -0.02, 0.0]], [4.2, [0.3, 0.04, 0.74], [0.06, -0.03, 0.0]], [5.6, [0.62, 0.0, 0.62], [0.13, -0.08, 0.0]], [8.2, [0.62, 0.0, 0.62], [0.13, -0.06, 0.0]], [9.4, [0.07, 0.05, 0.36], [0, 0.02, 0.02]], [12.3, [0.07, 0.05, 0.36], [0, 0.04, 0.02]], [13.5, [0.45, -0.02, 0.5], [0.12, -0.05, 0.0]], [16.3, [0.45, -0.02, 0.5], [0.12, -0.05, 0.0]], [20, [0.42, 0.06, 0.75], [0.05, -0.02, 0.0]]],
       anim: function (t, s, K) {
         var o = cunaFunciona(t, K);
         cunaPone(s, K, t, o);
@@ -860,8 +860,8 @@
     s.cab.add(K.caja(1.2, 2.2, 1.4, M.inox, 0, 1.1, 0));
     s.cab.add(K.caja(1.4, 0.1, 0.16, M.aceroOsc, 0, 2.45, 0)); [-1, 1].forEach(function (l) { s.cab.add(K.caja(0.06, 2.6, 0.1, M.aceroOsc, l * 0.65, 1.2, 0)); });
     var sh = new T.Shape(); sh.moveTo(0, -LVA / 2); sh.lineTo(0, LVA / 2); sh.lineTo(-0.04, LVA / 2 - 0.06); sh.lineTo(-0.04, -LVA / 2 + 0.06); sh.lineTo(0, -LVA / 2);
-    var gL = new T.ExtrudeGeometry(sh, { depth: 0.05, bevelEnabled: false }); gL.translate(0, 0, -0.025);
-    s.leva = new T.Mesh(gL, K.mat(0xc9d1d8, { metalness: 0.6, roughness: 0.3 })); s.leva.position.set(LVX, 1.5, LVZ); s.cab.add(s.leva);
+    var gL = new T.ExtrudeGeometry(sh, { depth: 0.08, bevelEnabled: false }); gL.translate(0, 0, -0.04);
+    s.leva = new T.Mesh(gL, K.mat(0xe07b22, { metalness: 0.3, roughness: 0.45 })); s.leva.position.set(LVX, 1.5, LVZ); s.cab.add(s.leva);
     s.cab.add(K.caja(0.07, 0.04, 0.04, M.aceroOsc, -0.625, 1.15, LVZ), K.caja(0.07, 0.04, 0.04, M.aceroOsc, -0.625, 1.85, LVZ));
     // los dos interruptores, fijados al riel con su soporte
     s.sws = [SWF, SWB].map(function (y, i) {
@@ -887,8 +887,8 @@
       w.m.g.position.y = y + 0.03; w.sop.position.y = y + 0.06;
       var yr = y - LBR * 0.72, k = sinR ? 0 : levaEmpuja(o.cf, yr), rx = RX0 + (RX1 - RX0) * k;
       w.m.brazo.rotation.z = Math.asin(K.cl((rx - SBX) / LBR));
-      w.rueda.visible = !sinR;
-      w.rota.visible = sinR; if (sinR) w.rota.position.set(-0.9, 6.21 - 0.012, LVZ);
+      w.rueda.visible = !sinR; w.rota.visible = false;
+      w.m.brazo.children[0].scale.y = sinR ? 0.45 : 1; w.m.brazo.children[0].position.y = sinR ? -LBR * 0.225 : -LBR / 2;
       var abierto = k > 0.5;
       w.m.led.material = abierto ? (i === 0 ? s.rojo : s.amar) : s.verde;
       est.push(abierto);
@@ -905,7 +905,7 @@
         [4.5, 'Al llegar al último piso, la leva empuja primero el interruptor de frenado: la cabina llega despacio.'],
         [9, 'En un viaje normal la cabina para en el piso y no llega a tocar el final de carrera.'],
         [13, 'Si la cabina se pasa unos centímetros, la leva empuja la ruedita del final: se corta la corriente y frena.']],
-      cam: [[0, [1.7, 4.5, 6.2], [-0.3, 4.1, 0]], [4, [1.7, 4.5, 6.2], [-0.3, 4.2, 0]], [5.2, [-0.6, 4.5, 1.6], [-0.72, 4.35, 0.35]], [8.6, [-0.6, 4.6, 1.6], [-0.72, 4.5, 0.35]], [10, [-0.35, 5.0, 1.9], [-0.72, 4.75, 0.35]], [12.6, [-0.35, 5.0, 1.9], [-0.72, 4.75, 0.35]], [13.8, [-0.6, 5.2, 1.4], [-0.72, 5.08, 0.35]], [18, [-0.5, 5.2, 1.6], [-0.72, 5.05, 0.35]]],
+      cam: [[0, [-3.0, 5.0, 4.4], [-0.55, 4.25, 0.2]], [4, [-3.0, 5.0, 4.4], [-0.55, 4.3, 0.2]], [5.2, [-1.45, 4.5, 1.55], [-0.72, 4.33, 0.35]], [8.6, [-1.45, 4.55, 1.55], [-0.72, 4.38, 0.35]], [10, [-1.9, 5.0, 2.5], [-0.68, 4.7, 0.3]], [12.6, [-1.9, 5.0, 2.5], [-0.68, 4.7, 0.3]], [13.8, [-1.4, 5.25, 1.45], [-0.72, 5.08, 0.35]], [18, [-1.45, 5.25, 1.6], [-0.72, 5.05, 0.35]]],
       anim: function (t, s, K) {
         var cf = K.kf(t, [[0, 1.2], [4.4, 2.3], [8.4, PT], [13, PT], [14.6, PT + 0.2], [15, PT + 0.21]]);
         var e = finPone(s, K, t, { cf: cf });
@@ -926,7 +926,7 @@
         [4, 'La cabina se pasa del piso, la leva no encuentra la ruedita y el ascensor no se detiene.'],
         [9.5, 'Falla 2: el interruptor se corrió hacia abajo. La cabina se para antes de llegar al piso y queda bloqueada.'],
         [14.5, 'Arreglo: con el ascensor detenido, cambiar la ruedita y poner el interruptor en su sitio. Nunca se puentea.']],
-      cam: [[0, [-0.55, 5.2, 1.4], [-0.75, 5.1, 0.35]], [4, [-0.4, 5.2, 1.9], [-0.72, 5.1, 0.35]], [9.3, [-0.4, 5.2, 1.9], [-0.72, 5.1, 0.35]], [10.2, [-0.4, 4.85, 1.9], [-0.72, 4.7, 0.35]], [14.3, [-0.4, 4.85, 1.9], [-0.72, 4.7, 0.35]], [15.3, [-0.5, 5.1, 1.7], [-0.72, 4.95, 0.35]], [19, [-0.5, 5.1, 1.7], [-0.72, 4.95, 0.35]]],
+      cam: [[0, [-1.35, 5.25, 1.45], [-0.72, 5.08, 0.35]], [4, [-1.6, 5.25, 2.0], [-0.7, 5.05, 0.3]], [9.3, [-1.6, 5.25, 2.0], [-0.7, 5.05, 0.3]], [10.2, [-1.5, 4.95, 1.8], [-0.72, 4.75, 0.35]], [14.3, [-1.5, 4.95, 1.8], [-0.72, 4.75, 0.35]], [15.3, [-1.4, 5.2, 1.6], [-0.72, 5.03, 0.35]], [19, [-1.45, 5.2, 1.7], [-0.72, 5.03, 0.35]]],
       anim: function (t, s, K) {
         var e;
         if (t < 9.5) {
@@ -963,8 +963,7 @@
     var M = K.M, T = K.T, s = mats(K);
     s.mPiso = K.mat(0x5d646b, { roughness: 0.95, metalness: 0 }); s.mMuro = K.mat(0xa9b1b8, { roughness: 0.95, metalness: 0 });
     K.add(K.caja(2.6, 0.1, 2.0, s.mPiso, 0, -0.05, -0.05));
-    K.add(K.caja(2.6, 4.6, 0.06, s.mMuro, 0, 2.3, -1.05));
-    K.add(K.caja(0.06, 4.6, 2.0, s.mMuro, -1.3, 2.3, -0.05));
+    K.add(K.caja(0.06, 1.0, 2.0, s.mMuro, -1.3, 0.5, -0.05));   // muro del costado (solo abajo, para ver adentro)
     // muro del frente (lado del pasillo) con el vano de la puerta del piso 1
     K.add(K.caja(2.6, PF, 0.1, s.mMuro, 0, PF / 2, FZ + 0.05));
     K.add(K.caja(0.85, 2.6, 0.1, s.mMuro, -0.825, PF + 1.3, FZ + 0.05)); K.add(K.caja(0.95, 2.6, 0.1, s.mMuro, 0.825, PF + 1.3, FZ + 0.05));
@@ -1039,12 +1038,12 @@
     construir: function (K) { return armarStop(K); },
     funciona: {
       dur: 23,
-      subt: [[0, 'El stop del foso es un botón rojo tipo hongo. Está junto a la puerta del piso más bajo, al lado de la escalera.'],
+      subt: [[0, 'El stop del foso es un botón rojo tipo hongo, junto a la puerta del piso más bajo y a la escalera.'],
         [4.2, 'Antes de bajar, el técnico lo aprieta. El botón queda trabado y el ascensor no se mueve por nada.'],
         [8.5, 'Recién entonces baja por la escalera. Así la cabina no puede bajar y aplastarlo.'],
         [13.2, 'Mientras trabaja en el foso, aunque alguien llame al ascensor, este no se mueve.'],
         [18, 'Al terminar, sale del foso y recién ahí gira el botón para soltarlo. El ascensor vuelve a funcionar.']],
-      cam: [[0, [1.0, 2.3, -0.75], [-0.25, 1.5, 0.9]], [3.2, [0.2, STY + 0.25, 0.0], [STX, STY - 0.05, FZ]], [7.6, [0.2, STY + 0.25, 0.0], [STX, STY - 0.05, FZ]], [8.6, [1.0, 2.0, -0.8], [0.1, 1.0, 0.7]], [17.4, [1.0, 2.0, -0.8], [0.1, 1.0, 0.7]], [19.6, [0.75, 2.2, -0.6], [-0.3, 1.6, 0.9]], [21, [0.2, STY + 0.25, 0.0], [STX, STY - 0.05, FZ]], [23, [0.25, STY + 0.28, 0.05], [STX, STY - 0.05, FZ]]],
+      cam: [[0, [1.9, 3.0, -3.2], [-0.15, 1.85, 0.7]], [2.6, [1.9, 3.0, -3.2], [-0.15, 1.9, 0.7]], [3.6, [0.2, STY + 0.25, 0.0], [STX, STY - 0.05, FZ]], [7.6, [0.2, STY + 0.25, 0.0], [STX, STY - 0.05, FZ]], [8.6, [1.8, 2.5, -3.1], [0.1, 1.2, 0.6]], [17.4, [1.8, 2.5, -3.1], [0.1, 1.2, 0.6]], [19.6, [1.3, 2.8, -2.0], [-0.1, 2.0, 0.8]], [20.8, [0.2, STY + 0.25, 0.0], [STX, STY - 0.05, FZ]], [23, [0.25, STY + 0.28, 0.05], [STX, STY - 0.05, FZ]]],
       anim: function (t, s, K) {
         var o = tecCamino(t), ap = K.kf(t, [[3.8, 0], [4.1, 1], [21.2, 1], [21.8, 0]]), giro = K.kf(t, [[21.0, 0], [21.5, 1.2], [22, 0]]);
         stopPone(s, K, t, { ap: ap, giro: giro, tec: o });
@@ -1060,7 +1059,7 @@
         [4.5, 'El ascensor queda parado aunque todo lo demás esté bien. Por eso este botón es lo primero que se revisa.'],
         [9, 'Falla 2: entra agua al foso y moja la cajita. El contacto se oxida y el ascensor se para solo, sin motivo.'],
         [14, 'Arreglo: girar el botón para soltarlo, secar el foso y cambiar el contacto oxidado.']],
-      cam: [[0, [1.0, 2.3, -0.75], [-0.25, 1.5, 0.9]], [4.3, [0.25, STY + 0.2, 0.05], [STX, STY - 0.05, FZ]], [8.8, [0.25, STY + 0.2, 0.05], [STX, STY - 0.05, FZ]], [9.8, [0.9, 1.9, -0.7], [-0.2, 1.1, 0.7]], [13.8, [0.9, 1.9, -0.7], [-0.2, 1.1, 0.7]], [15, [0.4, STY + 0.2, -0.1], [STX, STY - 0.1, FZ]], [19, [0.5, STY + 0.25, -0.2], [STX, STY - 0.15, FZ]]],
+      cam: [[0, [1.9, 3.0, -3.2], [-0.15, 1.85, 0.7]], [4.3, [0.25, STY + 0.2, 0.05], [STX, STY - 0.05, FZ]], [8.8, [0.25, STY + 0.2, 0.05], [STX, STY - 0.05, FZ]], [9.8, [1.6, 2.5, -3.2], [-0.2, 1.25, 0.6]], [13.8, [1.6, 2.5, -3.2], [-0.2, 1.25, 0.6]], [15, [0.4, STY + 0.2, -0.1], [STX, STY - 0.1, FZ]], [19, [0.5, STY + 0.25, -0.2], [STX, STY - 0.15, FZ]]],
       anim: function (t, s, K) {
         if (t < 9) {
           stopPone(s, K, t, { ap: 1, tec: t < 2.2 ? { p: [K.kf(t, [[0, -0.3], [2.2, -0.3]]), PF, K.kf(t, [[0, 1.3], [2.2, 2.4]])], ry: 0, camina: true } : null });
@@ -1089,19 +1088,19 @@
   // =====================================================================================
   // 7) Contacto de cable flojo (hidráulico de tiro indirecto): amarre con resortes, platina e interruptor
   // =====================================================================================
-  var HX = -0.2, PY = 0.58, RP2 = 0.2, KQ = 4.0, CZS = [-0.06, 0.06], LR0 = 0.08, LR1 = 0.17, VAR = 0.2;
+  var HX = -0.2, PY = 0.58, RP2 = 0.2, KQ = 5.0, CZS = [-0.06, 0.06], LR0 = 0.08, LR1 = 0.17, VAR = 0.2;
   function armarFlojo(K) {
     var M = K.M, T = K.T, s = mats(K);
     s.mPiso = K.mat(0x5d646b, { roughness: 0.95, metalness: 0 }); s.mMuro = K.mat(0xa9b1b8, { roughness: 0.95, metalness: 0 });
     K.add(K.caja(3.0, 0.1, 2.0, s.mPiso, 0.4, -0.05, -0.1));
     K.add(K.caja(3.0, 4.4, 0.06, s.mMuro, 0.4, 2.2, -0.75));
     // pistón: cilindro y vástago con la polea arriba
-    K.add(K.cil(0.09, 3.0, M.gris, 0, 1.5, -0.3, null, 24)); K.add(K.caja(0.4, 0.06, 0.4, M.aceroOsc, 0, 0.03, -0.3));
-    s.vast = K.add(K.cil(0.055, 1, M.cromo, 0, 0, -0.3, null, 20));
+    K.add(K.cil(0.09, 3.5, M.gris, 0, 1.75, 0, null, 24)); K.add(K.caja(0.36, 0.06, 0.36, M.aceroOsc, 0, 0.03, 0));
+    s.vast = K.add(K.cil(0.055, 1, M.cromo, 0, 0, 0, null, 20));
     s.polea = K.add(new T.Group());
-    s.polea.add(K.polea(RP2, 0.2, M.acero, M.hierro)); s.polea.add(K.caja(0.06, 0.16, 0.3, M.aceroOsc, 0, -0.1, -0.12));
+    s.polea.add(K.polea(RP2, 0.2, M.acero, M.hierro)); s.polea.add(K.caja(0.06, 0.3, 0.02, M.aceroOsc, 0, -0.1, 0.115), K.caja(0.06, 0.3, 0.02, M.aceroOsc, 0, -0.1, -0.115));
     // amarre fijo de los cables (abajo, junto al pistón): placa, varillas, resortes, tuercas y platina
-    K.add(K.caja(0.04, PY + 0.05, 0.04, M.aceroOsc, HX - 0.09, (PY + 0.05) / 2, 0)); K.add(K.caja(0.2, 0.03, 0.26, M.azul, HX, PY, 0));
+    K.add(K.caja(0.04, PY + 0.05, 0.04, M.aceroOsc, HX - 0.09, (PY + 0.05) / 2, -0.1)); K.add(K.caja(0.2, 0.03, 0.26, M.azul, HX, PY, 0));
     s.cables = CZS.map(function (z) {
       var c = {
         z: z, var: K.add(K.cable(0.007, M.acero)), res: K.add(K.grupo([K.resorte(0.026, 1, 6, 0.006, M.cobre)])),
@@ -1126,8 +1125,8 @@
   //    extra [0, 0] (cuánto más largo es cada cable), rebote, dySw (interruptor más cerca), ajuste (giro de tuercas)
   function flojoPone(s, K, t, o) {
     var ry = o.ry, hLibre = 2 * ry - KQ, hc = o.hc != null ? Math.max(o.hc, hLibre) : hLibre, flojo = o.hc != null ? Math.max(0, o.hc - hLibre) : 0;
-    s.vast.scale.y = ry - 3.0 + 0.01; s.vast.position.y = 3.0 + (ry - 3.0) / 2;
-    s.polea.position.set(0, ry, 0); s.polea.children[0].rotation.z = (ry - 3.4) / RP2;
+    s.vast.scale.y = ry - 3.5 + 0.01; s.vast.position.y = 3.5 + (ry - 3.5) / 2;
+    s.polea.position.set(0, ry, 0); s.polea.children[0].rotation.z = (ry - 3.9) / RP2;
     s.cab.position.y = hc - 2.55;
     var largos = [], tens = [];
     s.cables.forEach(function (c, i) {
@@ -1164,17 +1163,17 @@
     funciona: {
       dur: 18.5,
       subt: [[0, 'En este ascensor hidráulico, la cabina cuelga de dos cables que pasan por una polea encima del pistón.'],
-        [4.5, 'Abajo, cada cable se amarra a una varilla con resorte. Con el peso de la cabina, los dos resortes están apretados y parejos.'],
+        [4.5, 'Abajo, cada cable se amarra a una varilla con resorte. Con el peso de la cabina, los resortes quedan apretados y parejos.'],
         [9, 'Si la cabina se traba y el pistón sigue bajando, los cables se aflojan y los resortes se estiran.'],
         [13.5, 'La platina amarilla aprieta el interruptor y el ascensor se detiene, antes de que un cable se salga de la polea.']],
-      cam: [[0, [2.4, 2.7, 6.0], [0.35, 1.9, 0]], [4, [2.4, 2.7, 6.0], [0.35, 1.9, 0]], [5.2, [0.35, 0.72, 0.7], [HX, 0.46, 0]], [8.6, [0.35, 0.72, 0.7], [HX, 0.46, 0]], [9.8, [1.6, 2.3, 4.6], [0.3, 1.9, 0]], [12.6, [1.6, 2.3, 4.6], [0.3, 1.9, 0]], [13.6, [0.3, 0.6, 0.62], [HX, 0.4, 0]], [18.5, [0.35, 0.65, 0.7], [HX, 0.42, 0]]],
+      cam: [[0, [2.7, 3.0, 7.2], [0.35, 2.2, 0]], [4, [2.7, 3.0, 7.2], [0.35, 2.2, 0]], [5.2, [-0.78, 0.76, 0.72], [HX, 0.46, 0]], [8.6, [-0.78, 0.76, 0.72], [HX, 0.46, 0]], [9.8, [1.5, 3.4, 3.4], [0.3, 3.0, 0]], [12.6, [1.5, 3.4, 3.4], [0.3, 3.0, 0]], [13.6, [-0.72, 0.64, 0.66], [HX, 0.42, 0]], [18.5, [-0.78, 0.7, 0.72], [HX, 0.43, 0]]],
       anim: function (t, s, K) {
-        var ry = K.kf(t, [[0, 3.42], [4, 3.72], [9.6, 3.72], [12.4, 3.6]]), hc = t > 9.6 ? 2 * 3.72 - KQ : null;
+        var ry = K.kf(t, [[0, 3.92], [4, 4.2], [9.6, 4.2], [12.4, 4.05]]), hc = t > 9.6 ? 2 * 4.2 - KQ : null;
         var r = flojoPone(s, K, t, { ry: ry, hc: hc });
         K.marcar(s.polea, t < 4.5 ? (K.parpadeo(t, 1) ? 'foco' : null) : null);
         K.marcar(s.cables.map(function (c) { return c.res; }), K.entre(t, 4.5, 13.5) ? 'foco' : null);
         K.marcar(s.platina, null); K.marcar(s.sw.cuerpo, t > 13.5 ? 'foco' : null);
-        s.chis.emitir(t, [0.33, hc != null ? hc - 2.55 + 1.2 : 0, 0.06], K.entre(t, 9.6, 10.2), 0.12);
+        s.chis.emitir(t, [0.33, hc != null ? hc - 2.55 : 0, 0.06], K.entre(t, 9.6, 10.2), 0.12);
         if (t < 4.5) { K.rotulo('Polea del pistón', [0, ry + 0.24, 0], 'der'); K.rotulo('Amarre de los cables', [HX, 0.6, 0.1], 'izq'); }
         if (K.entre(t, 4.5, 9)) { K.rotulo('Resortes apretados', [HX, 0.47, 0.08], 'der'); K.rotulo('Interruptor', [HX, 0.32, -0.03], 'izq'); }
         if (K.entre(t, 9, 13.5)) { K.rotulo('Cabina trabada', [0.9, r.hc - 0.6, 0.6], 'der'); if (r.flojo > 0.01) K.rotulo('Cables flojos', [RP2 + 0.05, (ry + r.hc) / 2, 0.1], 'der'); }
@@ -1188,20 +1187,20 @@
         [4.5, 'Su resorte queda más largo, la platina se inclina y aprieta el interruptor: el ascensor se para y no vuelve a arrancar.'],
         [9.5, 'Falla 2: el interruptor está muy pegado a la platina. Con el rebote al arrancar, se abre y el ascensor se para.'],
         [14, 'Arreglo: el técnico busca la causa e iguala los cables con sus tuercas, hasta que los resortes queden parejos.']],
-      cam: [[0, [0.35, 0.68, 0.72], [HX, 0.44, 0]], [9.3, [0.35, 0.68, 0.72], [HX, 0.44, 0]], [10, [0.5, 0.75, 0.55], [HX, 0.42, 0]], [13.8, [0.5, 0.75, 0.55], [HX, 0.42, 0]], [14.6, [0.3, 0.66, 0.66], [HX, 0.44, 0]], [19, [0.35, 0.7, 0.72], [HX, 0.45, 0]]],
+      cam: [[0, [-0.78, 0.72, 0.72], [HX, 0.44, 0]], [9.3, [-0.78, 0.72, 0.72], [HX, 0.44, 0]], [10, [-0.68, 0.62, 0.55], [HX, 0.4, 0]], [13.8, [-0.68, 0.62, 0.55], [HX, 0.4, 0]], [14.6, [-0.74, 0.7, 0.68], [HX, 0.44, 0]], [19, [-0.78, 0.72, 0.72], [HX, 0.45, 0]]],
       anim: function (t, s, K) {
         var r;
         if (t < 9.5) {
-          var ex = K.kf(t, [[0.5, 0], [6, 0.04]]);
-          r = flojoPone(s, K, t, { ry: 3.6, extra: [0, ex] });
+          var ex = K.kf(t, [[0.5, 0], [6, 0.013]]);
+          r = flojoPone(s, K, t, { ry: 4.05, extra: [0, ex] });
           K.marcar(s.cables[1].res, K.parpadeo(t, 2) ? 'mal' : null); K.marcar(s.cables[0].res, null);
           K.marcar(s.sw.cuerpo, r.abierto ? 'mal' : null);
           K.rotulo('Resorte más largo', [HX, 0.47, 0.08], 'der');
-          K.tabla([['RESORTES', ex > 0.01 ? 'DISPAREJOS' : 'PAREJOS', ex > 0.01 ? 'mal' : 'ok'], ['INTERRUPTOR', r.abierto ? 'ABIERTO' : 'CERRADO', r.abierto ? 'mal' : 'ok']]);
+          K.tabla([['RESORTES', ex > 0.004 ? 'DISPAREJOS' : 'PAREJOS', ex > 0.004 ? 'mal' : 'ok'], ['INTERRUPTOR', r.abierto ? 'ABIERTO' : 'CERRADO', r.abierto ? 'mal' : 'ok']]);
           if (r.abierto) K.aviso('El ascensor no arranca');
         } else if (t < 14) {
           var u = (t - 9.5) % 2.2, reb = u < 1 ? Math.sin(u * 22) * 0.012 * (1 - u) : 0;
-          r = flojoPone(s, K, t, { ry: 3.5 + 0.05 * Math.floor((t - 9.5) / 2.2) + 0.05 * K.ph(u, 0, 1.6), rebote: reb, dySw: 0.009 });
+          r = flojoPone(s, K, t, { ry: 3.95 + 0.05 * Math.floor((t - 9.5) / 2.2) + 0.05 * K.ph(u, 0, 1.6), rebote: reb, dySw: 0.009 });
           K.marcar(s.cables.map(function (c) { return c.res; }), null);
           K.marcar(s.sw.cuerpo, r.abierto ? 'mal' : null);
           K.rotulo('Muy pegado', [HX, 0.33, -0.03], 'izq');
@@ -1209,7 +1208,7 @@
           if (r.abierto) K.aviso('Parada de golpe');
         } else {
           var aj = K.ph(t, 14.5, 17);
-          r = flojoPone(s, K, t, { ry: 3.6, extra: [0, 0.04 * (1 - aj)], ajuste: aj, dySw: 0.009 * (1 - aj) });
+          r = flojoPone(s, K, t, { ry: 4.05, extra: [0, 0.013 * (1 - aj)], ajuste: aj, dySw: 0.009 * (1 - aj) });
           K.marcar(s.cables.map(function (c) { return c.res; }), aj > 0.99 ? 'foco' : null); K.marcar(s.sw.cuerpo, null);
           K.marcar(s.cables.map(function (c) { return c.tuerca; }), aj < 0.99 ? 'foco' : null);
           if (aj < 0.99) K.rotulo('Ajusta las tuercas', [HX, 0.38, 0.08], 'der');
