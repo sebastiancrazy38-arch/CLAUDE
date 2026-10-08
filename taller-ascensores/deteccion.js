@@ -176,7 +176,7 @@
   function htmlLaptop() {
     const p = perfil() || {}, ps = permitido();
     const aviso = ps === 'nosoporta' ? `<div class="aviso mal"><b>Este navegador no tiene puerto USB-serie.</b><p>Usa Google Chrome o Microsoft Edge en una laptop con Windows, Mac o Linux. En el celular no funciona.</p></div>`
-      : ps === 'bloqueado' ? `<div class="aviso mal"><b>Desde esta vista el navegador no deja usar el USB.</b><p>Abre la app en una pestaña propia de Chrome o Edge: <a href="${esc(location.href)}" target="_blank" rel="noopener">abrir en otra pestaña</a>. Si tampoco funciona, descarga la carpeta de la app y abre <b>index.html</b> en Chrome. Mientras tanto puedes probar con «Probar sin equipo».</p></div>` : '';
+      : ps === 'bloqueado' ? `<div class="aviso mal"><b>Desde esta vista el navegador no deja usar el USB.</b><p>Abre la app en una pestaña propia de Chrome o Edge: <a href="${esc(location.href)}" target="_blank" rel="noopener">abrir en otra pestaña</a>. Si tampoco funciona, <a href="taller-ascensores-laptop.html" download target="_blank" rel="noopener">descarga la versión para laptop</a> (un solo archivo): guárdala y ábrela con doble clic en Chrome o Edge. Mientras tanto puedes probar con «Probar sin equipo».</p></div>` : '';
     return `<div class="det-laptop">
       <div class="det-pasos">
         <h3>Qué necesitas</h3>
