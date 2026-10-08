@@ -113,7 +113,7 @@
   }
   function armarHueco(K, id) {
     var M = K.M, T = K.T, s = { id: id, K: K };
-    var vidrio = K.mat(0xc3c8cc, { transparent: true, opacity: 0.1, depthWrite: false }), muro = K.mat(0x5a6269, { roughness: 0.95, metalness: 0 });
+    var vidrio = K.mat(0xc3c8cc, { transparent: true, opacity: 0.1, depthWrite: false }), muro = K.mat(0x464d54, { roughness: 0.95, metalness: 0 });
     K.add(K.caja(2.12, 10.4, 0.06, muro, 0, 4.7, -1.45));
     K.add(K.caja(0.06, 10.4, 2.5, muro, -1.03, 4.7, -0.2));
     K.add(K.caja(0.06, 10.4, 2.5, vidrio, 1.03, 4.7, -0.2));
@@ -317,7 +317,7 @@
     var M = K.M, T = K.T, s = { id: id, K: K };
     s.raiz = K.add(new T.Group());
     var R = function (o) { s.raiz.add(o); return o; };
-    R(K.caja(4.4, 4.6, 0.06, K.mat(0x5a6269, { roughness: 0.95, metalness: 0 }), 0, 1.6, -0.29));
+    R(K.caja(4.4, 4.6, 0.06, K.mat(0x464d54, { roughness: 0.95, metalness: 0 }), 0, 1.6, -0.29));
     R(K.caja(4.4, 0.06, 2.4, K.mat(0x4a5056, { roughness: 0.95, metalness: 0 }), 0, -0.33, 0.9));
     s.abajo = R(K.riel(JF + 0.3)); s.abajo.position.set(0, -0.3, 0);
     s.arriba = R(K.riel(3.0 - JF)); s.arriba.position.set(0, JF, 0);
@@ -428,16 +428,14 @@
   // ---------- bastidor de cabina ----------
   function armarBastidor(K, id) {
     var M = K.M, T = K.T, s = { id: id, K: K };
-    K.add(K.caja(4, 6, 0.06, K.mat(0x5a6269, { roughness: 0.95, metalness: 0 }), 0, 2.4, -1.0));
-    K.add(K.caja(4, 0.2, 1.6, K.mat(0x8d9399, { roughness: 0.9, metalness: 0 }), 0, -0.1, 1.46));   // piso del edificio
-    K.add(K.caja(1.0, 0.022, 0.1, M.acero, 0, 0.001, 0.71));                                          // pisadera del piso
+    K.add(K.caja(4, 6, 0.06, K.mat(0x464d54, { roughness: 0.95, metalness: 0 }), 0, 2.4, -1.0));
+    s.piso = [K.add(K.caja(2.4, 0.2, 1.2, K.mat(0x50565c, { roughness: 0.9, metalness: 0 }), 0, -0.1, 1.26)), K.add(K.caja(1.0, 0.022, 0.1, M.acero, 0, 0.001, 0.71))];   // piso del edificio y su pisadera
     s.guias = [-1, 1].map(function (d) { var r = K.add(K.riel(6.5)); r.position.set(d * 0.76, -0.8, 0); r.rotation.y = -d * PI / 2; return r; });
     var c = s.car = K.add(new T.Group());
     // esqueleto: columnas, viga de arriba (dos perfiles) y viga de abajo
-    s.bas = K.add(K.grupo([K.caja(0.08, 3.13, 0.14, M.aceroOsc, -0.64, 1.315, 0), K.caja(0.08, 3.13, 0.14, M.aceroOsc, 0.64, 1.315, 0),
-      K.caja(1.36, 0.16, 0.05, M.aceroOsc, 0, 2.62, 0.055), K.caja(1.36, 0.16, 0.05, M.aceroOsc, 0, 2.62, -0.055), K.caja(1.36, 0.14, 0.16, M.aceroOsc, 0, -0.19, 0)]), c);
+    s.bas = K.add(K.grupo([K.caja(0.08, 3.13, 0.14, M.hierro, -0.64, 1.315, 0), K.caja(0.08, 3.13, 0.14, M.hierro, 0.64, 1.315, 0),
+      K.caja(1.36, 0.16, 0.05, M.hierro, 0, 2.62, 0.055), K.caja(1.36, 0.16, 0.05, M.hierro, 0, 2.62, -0.055), K.caja(1.36, 0.14, 0.16, M.hierro, 0, -0.19, 0)]), c);
     s.amarre = K.add(K.caja(0.22, 0.08, 0.16, M.hierro, 0, 2.74, 0), c);
-    s.tensores = [[-1, 1], [1, 1], [-1, -1], [1, -1]].map(function (q) { return K.add(K.cable(0.01, M.acero), c).pon([q[0] * 0.64, 0.9, 0], [q[0] * 0.55, -0.03, q[1] * 0.58]); });
     // tacos de goma entre la viga de abajo y la plataforma
     s.tacoMat = K.mat(0x25282c, { roughness: 0.95, metalness: 0 });
     s.tacos = [-0.48, -0.2, 0.2, 0.48].map(function (x) { return K.add(K.cil(0.045, 0.05, s.tacoMat, x, -0.095, 0, null, 16), c); });
@@ -469,7 +467,7 @@
     s.panel.depthWrite = s.panel.opacity > 0.95; s.puertaM.depthWrite = s.panel.depthWrite;
     s.tacos.forEach(function (tc) { tc.scale.y = o.taco || 1; tc.position.y = -0.12 + 0.025 * (o.taco || 1); });
     s.cables.forEach(function (cb, i) { var x = -0.045 + i * 0.03; cb.pon([x, y + 2.78, 0], [x, 6.4, 0]); });
-    s.flecha.visible = !!o.flecha;
+    s.flecha.visible = !!o.flecha; s.piso.forEach(function (p) { p.visible = !!o.piso; });
     if (o.flecha) s.flecha.apuntar([0.18, y + 3.0, 0], [0.18, y + 3.55, 0]);
   }
   var BAS_Y = [[0, 0], [9.3, 0], [13, 1.2], [18, 1.2]];
@@ -483,10 +481,10 @@
         [4.5, 'La cabina que ves por dentro es una caja liviana. Va apoyada en el bastidor, encima de unos tacos de goma.'],
         [9, 'Los cables se amarran a la viga de arriba: ellos cargan el bastidor, y el bastidor carga la cabina.'],
         [13.5, 'En sus cuatro esquinas lleva las zapatas que corren por las guías, y abajo, el paracaídas.']],
-      cam: [[0, [2.5, 1.7, 4.3], [0, 1.25, 0]], [4, [2.4, 1.6, 4.1], [0, 1.2, 0]], [5.4, [1.7, 0.75, 2.5], [0, 0.35, 0]], [8.6, [1.6, 0.7, 2.4], [0, 0.3, 0]],
-        [9.8, [2.6, 2.5, 4.4], [0, 2.0, 0]], [13, [2.6, 3.3, 4.4], [0, 2.7, 0]], [14.4, [1.5, 1.75, 1.6], [0.66, 1.3, 0]], [18, [1.55, 1.8, 1.75], [0.66, 1.3, 0]]],
+      cam: [[0, [0.45, 1.5, 5.0], [0, 1.22, 0]], [4, [0.7, 1.45, 4.8], [0, 1.2, 0]], [5.4, [0.95, 0.22, 1.65], [0.25, -0.06, 0]], [8.6, [0.92, 0.24, 1.6], [0.25, -0.04, 0]],
+        [9.8, [1.4, 2.4, 4.6], [0, 1.9, 0]], [13, [1.4, 3.4, 4.6], [0, 2.8, 0]], [14.4, [1.75, 1.5, 1.2], [0.68, 1.25, 0]], [18, [1.8, 1.55, 1.3], [0.68, 1.25, 0]]],
       anim: function (t, s, K) {
-        var y = K.kf(t, BAS_Y), op = K.kf(t, [[0, 1], [4.6, 1], [5.4, 0.22], [8.6, 0.22], [9.4, 1]]);
+        var y = K.kf(t, BAS_Y), op = K.kf(t, [[0, 0.55], [4.6, 0.55], [5.4, 0.3], [8.6, 0.3], [9.4, 1]]);
         var alza = K.kf(t, [[0, 0], [5.6, 0], [6.4, 0.09], [7.6, 0.09], [8.4, 0]]);
         bastidorPone(s, K, { y: y, op: op, cy: alza, flecha: K.entre(t, 9.3, 13) });
         K.marcar(s.bas, t < 4.5 ? (K.parpadeo(t, 1) ? 'foco' : null) : null);
@@ -506,14 +504,14 @@
       subt: [[0, 'Falla 1: los tacos de goma se vencieron o hay pernos flojos. La cabina vibra y suena a lata al arrancar y frenar.'],
         [5, 'Falla 2: el bastidor se descuadró. La cabina queda inclinada y su piso no empata con el piso del edificio.'],
         [10.5, 'Arreglo: con la cabina vacía y asegurada, el técnico cambia los tacos, ajusta los pernos y nivela la plataforma.']],
-      cam: [[0, [1.7, 1.1, 2.9], [0, 0.6, 0]], [4.6, [1.7, 1.3, 2.9], [0, 0.8, 0]], [5.6, [0.75, 0.45, 2.0], [0, 0.05, 0.6]], [10.2, [0.7, 0.45, 2.0], [0, 0.05, 0.6]],
-        [11.4, [1.9, 1.2, 3.4], [0, 0.7, 0]], [16, [2.0, 1.3, 3.6], [0, 0.8, 0]]],
+      cam: [[0, [1.2, 0.4, 2.2], [0.15, 0.05, 0]], [4.6, [1.2, 0.4, 2.2], [0.15, 0.05, 0]], [5.6, [0.75, 0.45, 2.0], [0, 0.05, 0.6]], [10.2, [0.7, 0.45, 2.0], [0, 0.05, 0.6]],
+        [11.4, [1.3, 1.0, 3.6], [0, 0.6, 0]], [16, [1.3, 1.1, 3.8], [0, 0.7, 0]]],
       anim: function (t, s, K) {
-        var y = K.kf(t, [[0, 0], [1, 0], [2.4, 0.45], [3.2, 0.45], [4.4, 0]]), v = Math.abs(K.kf(t + 0.05, [[0, 0], [1, 0], [2.4, 0.45], [3.2, 0.45], [4.4, 0]]) - K.kf(t - 0.05, [[0, 0], [1, 0], [2.4, 0.45], [3.2, 0.45], [4.4, 0]])) * 10;
+        var sub = [[0, 0], [1, 0], [2.4, 0.25], [3.2, 0.25], [4.4, 0]], y = K.kf(t, sub), v = rapidez(K, sub, t);
         var arr = K.ph(t, 11, 12.5), vib = t < 5 ? Math.min(1, v * 2.5 + 0.15) : 0;
         var incl = t >= 5 ? 0.03 * K.ph(t, 5.2, 6.4) * (1 - arr) : 0;
         var taco = t < 11.5 ? 0.45 : K.mix(0.45, 1, arr);
-        bastidorPone(s, K, { y: y, cy: vib * 0.007 * Math.sin(t * 47) - (1 - taco) * 0.05, cx: vib * 0.006 * Math.sin(t * 39), crx: vib * 0.006 * Math.sin(t * 31), crz: incl, taco: taco });
+        bastidorPone(s, K, { y: y, cy: vib * 0.007 * Math.sin(t * 47) - (1 - taco) * 0.05, cx: vib * 0.006 * Math.sin(t * 39), crx: vib * 0.006 * Math.sin(t * 31), crz: incl, taco: taco, piso: t >= 5 });
         K.marcar(s.tacos, t < 11 ? (K.parpadeo(t, 2) ? 'mal' : null) : t > 12.5 ? 'foco' : null);
         K.marcar(s.bas, K.entre(t, 5, 10.5) ? (K.parpadeo(t, 2) ? 'mal' : null) : t > 12.5 ? 'foco' : null);
         if (t < 5) { K.rotulo('Tacos vencidos', [0.48, y - 0.1, 0.05]); if (vib > 0.3) K.aviso('Vibra y suena a lata'); }
@@ -527,7 +525,7 @@
   // ---------- zapata deslizante (rozadera) y su aceitera, de cerca sobre la guía ----------
   function armarZapata(K, id) {
     var M = K.M, T = K.T, s = { id: id, K: K };
-    K.add(K.caja(3, 4.8, 0.06, K.mat(0x5a6269, { roughness: 0.95, metalness: 0 }), 0, 1.2, -0.3));
+    K.add(K.caja(3, 4.8, 0.06, K.mat(0x464d54, { roughness: 0.95, metalness: 0 }), 0, 1.2, -0.3));
     K.add(K.caja(3, 0.06, 2, K.mat(0x4a5056, { roughness: 0.95, metalness: 0 }), 0, -0.63, 0.7));
     s.riel = K.add(K.riel(3.8)); s.riel.position.set(0, -0.6, 0);
     [0.4, 1.9].forEach(function (y) {
@@ -535,28 +533,27 @@
       K.add(K.caja(0.26, 0.17, 0.012, M.aceroOsc, 0, y, -0.264));
     });
     // película de aceite, guía seca y rayas sobre la hoja de la guía
-    s.filmM = K.mat(0x9c6f12, { transparent: true, opacity: 0.35, roughness: 0.08, metalness: 0.4, depthWrite: false });
+    s.filmM = K.mat(0x6d5a2a, { transparent: true, opacity: 0.12, roughness: 0.08, metalness: 0.4, depthWrite: false });
     s.film = K.add(K.caja(0.0192, 3.8, 0.072, s.filmM, 0, 1.3, 0.001));
     s.secoM = K.mat(0x7a6650, { transparent: true, opacity: 0, roughness: 1, metalness: 0, depthWrite: false });
     s.seco = K.add(K.caja(0.0198, 3.8, 0.0725, s.secoM, 0, 1.3, 0.001));
     var raya = K.mat(0x2a2522, { roughness: 1, metalness: 0 });
     s.rayas = [0.02, -0.012, 0.004].map(function (z) { return K.add(K.caja(0.0204, 1, 0.0025, raya, 0, 0, z)); });
     // bandeja del foso con su aceite, y el charco cuando gotea de más
-    s.aceiteM = K.mat(0xc99228, { roughness: 0.15, metalness: 0.1, transparent: true, opacity: 0.9 });
+    s.aceiteM = K.mat(0xd08414, { roughness: 0.15, metalness: 0.1, transparent: true, opacity: 0.92 });
     K.add(K.caja(0.22, 0.008, 0.22, M.hierro, 0, -0.596, 0.02));
     [[0, 0.13], [0, -0.09]].forEach(function (q) { K.add(K.caja(0.22, 0.04, 0.006, M.hierro, 0, -0.58, q[1])); });
     [-0.11, 0.11].forEach(function (x) { K.add(K.caja(0.006, 0.04, 0.22, M.hierro, x, -0.58, 0.02)); });
     s.bandeja = K.add(K.caja(0.21, 0.01, 0.21, s.aceiteM, 0, -0.588, 0.02));
-    s.charco = K.add(K.cil(0.22, 0.004, s.aceiteM, 0.24, -0.598, 0.3, null, 32));
+    s.charco = K.add(K.cil(0.15, 0.004, K.mat(0x6b4a12, { roughness: 0.1, metalness: 0.2 }), 0.22, -0.598, 0.28, null, 32));
     // zapata con un trozo de la columna del bastidor, y la aceitera al costado
     s.forroM = K.mat(0xf0e2a8, { roughness: 0.7, metalness: 0 });
     var z = zapataU(K, s.forroM); z.g.rotation.y = -PI / 2; z.g.position.set(0, 0, 0.035);
     s.zapata = z.g; s.forros = z.forros;
-    s.carro = K.add(K.grupo([z.g, K.caja(0.12, 0.4, 0.07, M.aceroOsc, 0, -0.27, 0.12)]));
+    s.carro = K.add(K.grupo([z.g, K.caja(0.12, 0.16, 0.012, M.aceroOsc, 0, 0, 0.089), K.caja(0.1, 0.1, 0.25, M.hierro, 0, 0, 0.22)]));
     s.vasoM = K.mat(0xd8e4ea, { transparent: true, opacity: 0.35, roughness: 0.1, metalness: 0, depthWrite: false });
     s.fieltro = K.mat(0xf4f1e8, { roughness: 1, metalness: 0 }); s.fieltroSeco = K.mat(0x4a4338, { roughness: 1, metalness: 0 });
-    s.mecha = [K.caja(0.05, 0.022, 0.012, s.fieltro, 0.036, 0.095, 0.02), K.caja(0.006, 0.045, 0.03, s.fieltro, 0.011, 0.09, 0.02), K.caja(0.006, 0.045, 0.03, s.fieltro, -0.011, 0.09, 0.02),
-      K.caja(0.03, 0.045, 0.008, s.fieltro, 0, 0.09, 0.039)];
+    s.mecha = [K.caja(0.054, 0.026, 0.026, s.fieltro, 0.036, 0.095, 0.02)];
     s.aceite = K.cil(0.03, 0.07, s.aceiteM, 0.065, 0.11, 0.07, null, 20);
     s.vaso = K.grupo([K.cil(0.035, 0.08, s.vasoM, 0.065, 0.11, 0.07, null, 20), K.cil(0.038, 0.01, M.hierro, 0.065, 0.155, 0.07, null, 20), K.cil(0.012, 0.012, M.rojo, 0.065, 0.165, 0.07, null, 12),
       K.caja(0.05, 0.012, 0.05, M.hierro, 0.065, 0.066, 0.07), K.caja(0.012, 0.03, 0.04, M.hierro, 0.03, 0.06, 0.07)]);
@@ -601,16 +598,16 @@
   }
   var ZAP_CAM = {
     rozaderas: [
-      [[0, [0.85, 1.65, 1.25], [0, 1.15, 0]], [4, [0.8, 1.6, 1.2], [0, 1.15, 0]], [5.2, [-0.13, 1.5, 0.24], [0, 1.22, 0.01]], [8.8, [-0.13, 1.5, 0.24], [0, 1.22, 0.01]],
-        [9.8, [0.55, 1.55, 0.75], [0, 1.3, 0]], [13, [0.55, 2.2, 0.75], [0, 1.95, 0]], [14.2, [0.32, 2.2, 0.36], [0.03, 2.05, 0.04]], [18, [0.32, 2.12, 0.36], [0.03, 1.97, 0.04]]],
-      [[0, [-0.13, 1.5, 0.24], [0, 1.22, 0.01]], [4.2, [-0.13, 1.5, 0.24], [0, 1.22, 0.01]], [5.2, [0.5, 1.15, 0.65], [0, 0.95, 0]], [9.4, [0.5, 0.65, 0.65], [0, 0.45, 0]],
-        [10.4, [0.42, 0.75, 0.55], [0, 0.6, 0.01]], [13.8, [0.42, 1.45, 0.55], [0, 1.3, 0.01]], [14.8, [-0.13, 1.68, 0.24], [0, 1.42, 0.01]], [19, [-0.13, 1.68, 0.24], [0, 1.42, 0.01]]]
+      [[0, [0.85, 1.6, 1.3], [0, 1.15, 0.05]], [4, [0.8, 1.55, 1.25], [0, 1.15, 0.05]], [5.2, [-0.12, 1.48, 0.2], [0, 1.24, 0.0]], [8.8, [-0.12, 1.48, 0.2], [0, 1.24, 0.0]],
+        [9.8, [0.55, 1.55, 0.75], [0, 1.3, 0]], [13, [0.55, 2.2, 0.75], [0, 1.95, 0]], [14.2, [-0.2, 2.22, 0.3], [0.03, 2.02, 0.03]], [18, [-0.2, 2.14, 0.3], [0.03, 1.94, 0.03]]],
+      [[0, [-0.12, 1.48, 0.2], [0, 1.24, 0.0]], [4.2, [-0.12, 1.48, 0.2], [0, 1.24, 0.0]], [5.2, [0.5, 1.15, 0.65], [0, 0.95, 0]], [9.4, [0.5, 0.65, 0.65], [0, 0.45, 0]],
+        [10.4, [0.42, 0.75, 0.55], [0, 0.6, 0.01]], [13.8, [0.42, 1.45, 0.55], [0, 1.3, 0.01]], [14.8, [-0.12, 1.68, 0.2], [0, 1.44, 0.0]], [19, [-0.12, 1.68, 0.2], [0, 1.44, 0.0]]]
     ],
     aceiteras: [
-      [[0, [0.3, 1.45, 0.34], [0.03, 1.3, 0.05]], [4.2, [0.3, 1.43, 0.34], [0.03, 1.3, 0.05]], [5.2, [0.2, 1.38, 0.24], [0.02, 1.29, 0.03]], [8.6, [0.2, 1.38, 0.24], [0.02, 1.29, 0.03]],
+      [[0, [-0.2, 1.48, 0.32], [0.03, 1.29, 0.04]], [4.2, [-0.2, 1.46, 0.32], [0.03, 1.29, 0.04]], [5.2, [-0.14, 1.4, 0.22], [0.02, 1.29, 0.03]], [8.6, [-0.14, 1.4, 0.22], [0.02, 1.29, 0.03]],
         [9.8, [0.6, 1.6, 0.8], [0, 1.4, 0]], [13, [0.6, 2.5, 0.8], [0, 2.3, 0]], [14.2, [0.38, -0.3, 0.55], [0, -0.52, 0.02]], [18, [0.36, -0.32, 0.5], [0, -0.53, 0.02]]],
-      [[0, [0.3, 1.45, 0.34], [0.03, 1.3, 0.05]], [4.2, [0.3, 1.43, 0.34], [0.03, 1.3, 0.05]], [5.2, [0.5, 1.3, 0.6], [0, 1.1, 0]], [9.4, [0.5, 0.75, 0.6], [0, 0.55, 0]],
-        [10.4, [0.6, -0.25, 0.85], [0.08, -0.55, 0.12]], [13.8, [0.6, -0.25, 0.85], [0.08, -0.55, 0.12]], [14.8, [0.3, 0.75, 0.34], [0.03, 0.6, 0.05]], [19, [0.3, 0.75, 0.34], [0.03, 0.6, 0.05]]]
+      [[0, [-0.2, 1.48, 0.32], [0.03, 1.29, 0.04]], [4.2, [-0.2, 1.46, 0.32], [0.03, 1.29, 0.04]], [5.2, [0.5, 1.3, 0.6], [0, 1.1, 0]], [9.4, [0.5, 0.75, 0.6], [0, 0.55, 0]],
+        [10.4, [0.6, -0.25, 0.85], [0.08, -0.55, 0.12]], [13.8, [0.6, -0.25, 0.85], [0.08, -0.55, 0.12]], [14.8, [-0.2, 0.78, 0.32], [0.03, 0.59, 0.04]], [19, [-0.2, 0.78, 0.32], [0.03, 0.59, 0.04]]]
     ]
   };
   var ROZ_F = [[0, 1.2], [9.2, 1.2], [13, 2.0], [18, 1.92]], ROZ_X = [[0, 1.2], [4.8, 1.2], [9.2, 0.45], [10.2, 0.45], [13.8, 1.4], [19, 1.4]];
@@ -635,12 +632,12 @@
       },
       anim: function (t, s, K, id) {
         var ace = id === 'aceiteras', ys = K.kf(t, ace ? ACE_F : ROZ_F);
-        zapataPone(s, K, { ys: ys, nivel: ace ? K.kf(t, [[0, 0.85], [18, 0.72]]) : 0.8, film: ace ? K.kf(t, [[0, 0.12], [9, 0.12], [12.5, 0.4]]) : 0.3 });
+        zapataPone(s, K, { ys: ys, nivel: ace ? K.kf(t, [[0, 0.85], [18, 0.72]]) : 0.8, film: ace ? K.kf(t, [[0, 0.05], [9, 0.05], [12.5, 0.3]]) : 0.12 });
         if (!ace) {
           K.marcar(s.zapata, t < 4.5 ? (K.parpadeo(t, 1) ? 'foco' : null) : null);
           K.marcar(s.forros, K.entre(t, 4.5, 9) ? 'foco' : null);
           K.marcar(s.aceitera, t > 13.5 ? (K.parpadeo(t, 1) ? 'foco' : null) : null);
-          if (t < 4.5) { K.rotulo('Zapata (rozadera)', [0, ys + 0.05, 0.08]); K.rotulo('Guía', [0, ys + 0.45, 0.03], 'izq'); K.rotulo('Columna del bastidor', [0, ys - 0.3, 0.16], 'izq'); }
+          if (t < 4.5) { K.rotulo('Zapata (rozadera)', [0, ys + 0.05, 0.08]); K.rotulo('Guía', [0, ys + 0.45, 0.03], 'izq'); K.rotulo('Bastidor', [0, ys, 0.3], 'izq'); }
           else if (t < 9) { K.rotulo('Forro de plástico', [-0.012, ys + 0.06, 0.02], 'izq'); K.rotulo('Guía', [0, ys + 0.06, -0.03]); }
           else if (t < 13.5) {
             K.rotulo('Zapata', [0, ys, 0.08]);
@@ -653,7 +650,7 @@
           K.marcar(s.vaso, t < 4.5 ? (K.parpadeo(t, 1) ? 'foco' : null) : null);
           K.marcar(s.mecha, K.entre(t, 4.5, 9) ? (K.parpadeo(t, 1) ? 'foco' : null) : null);
           if (t < 4.5) { K.rotulo('Aceitera', [0.1, ys + 0.14, 0.07]); K.rotulo('Aceite', [0.065, ys + 0.1, 0.105], 'izq'); }
-          else if (t < 9) { K.rotulo('Mecha de fieltro', [-0.011, ys + 0.09, 0.03], 'izq'); gotear(s, t, ys + 0.085, ys + 0.03, 0.009, 0.03, 2, 0.6); }
+          else if (t < 9) { K.rotulo('Mecha de fieltro', [0.02, ys + 0.1, 0.02], 'izq'); gotear(s, t, ys + 0.08, ys + 0.0, 0.009, 0.03, 2, 0.6); }
           else if (t < 13.5) K.rotulo('Guía mojada, con brillo', [0, ys - 0.25, 0.035], 'izq');
           else { K.rotulo('Bandeja', [0.11, -0.57, 0.12]); gotear(s, t, -0.1, -0.585, 0.009, 0.03, 3, 0.7); }
           K.tabla([['ACEITE', 'LLENO', 'ok'], ['GUÍA', 'APENAS MOJADA', 'ok']]);
@@ -680,7 +677,7 @@
         var hol = 0.003 * (1 - des) + 0.0005, sw = Math.sin(t * 13);
         var x = K.entre(t, 4.5, 14) && v > 0.03 ? hol * sw : 0, golpe = K.entre(t, 4.5, 9.5) && v > 0.03 && Math.abs(sw) > 0.85;
         var raspa = K.entre(t, 10.2, 14) && v > 0.03;
-        zapataPone(s, K, { ys: ys, x: x, desgaste: des, film: t < 9.5 ? 0.3 : t < 14 ? 0 : 0.3 * nuevo, seco: K.entre(t, 9.5, 14) ? 0.6 : 0.6 * (1 - nuevo), rayas: t >= 10.2 ? [0.45 - 0.065, ys - 0.065] : null, chis: golpe || raspa });
+        zapataPone(s, K, { ys: ys, x: x, desgaste: des, film: t < 9.5 ? 0.12 : t < 14 ? 0 : 0.12 * nuevo, seco: K.entre(t, 9.5, 14) ? 0.6 : 0.6 * (1 - nuevo), rayas: t >= 10.2 ? [0.45 - 0.065, ys - 0.065] : null, chis: golpe || raspa });
         if (golpe) s.chispas.emitir(t, [(sw > 0 ? 1 : -1) * 0.008, ys, 0.02], true, 0.06);
         else if (raspa) s.chispas.emitir(t, [0.01, ys - 0.065, 0.02], true, 0.07);
         K.marcar(s.forros, t < 9.5 ? (K.parpadeo(t, 2) ? 'mal' : null) : t > 15.4 ? 'foco' : null);
@@ -698,16 +695,155 @@
     var ys = K.kf(t, ACE_X), v = rapidez(K, ACE_X, t), lleno = K.ph(t, 14.4, 15.8);
     var raspa = K.entre(t, 4.8, 9.5) && v > 0.03, gotea = K.entre(t, 9.5, 14.4);
     var nivel = t < 9.5 ? 0 : t < 14 ? 0.95 : K.mix(0, 0.85, lleno);
-    zapataPone(s, K, { ys: ys, nivel: nivel, mechaSeca: t < 14.4, film: t < 4.5 ? 0.1 : t < 9.5 ? 0 : t < 14 ? 0.55 : 0.3, seco: K.entre(t, 4.5, 9.5) ? 0.6 : 0, raja: gotea,
+    zapataPone(s, K, { ys: ys, nivel: nivel, mechaSeca: t < 14.4, film: t < 4.5 ? 0.05 : t < 9.5 ? 0 : t < 14 ? 0.45 : 0.2, seco: K.entre(t, 4.5, 9.5) ? 0.6 : 0, raja: gotea,
       charco: K.kf(t, [[9.5, 0], [13.8, 1], [15.5, 1], [16.6, 0]]), bandeja: K.kf(t, [[9.5, 0.4], [12, 1]]), chis: raspa });
     if (raspa) s.chispas.emitir(t, [0.01, ys - 0.065, 0.02], true, 0.07);
     if (gotea) gotear(s, t, -0.05, -0.585, 0.009, 0.03, 3, 1.1);
     K.marcar(s.vaso, t < 4.5 || gotea ? (K.parpadeo(t, 2) ? 'mal' : null) : t > 15.8 ? 'foco' : null);
     K.marcar(s.mecha, t < 4.5 ? (K.parpadeo(t, 2) ? 'mal' : null) : null);
-    if (t < 4.5) { K.rotulo('Vacía', [0.1, ys + 0.14, 0.07]); K.rotulo('Mecha seca y dura', [-0.011, ys + 0.09, 0.03], 'izq'); }
+    if (t < 4.5) { K.rotulo('Vacía', [0.1, ys + 0.14, 0.07]); K.rotulo('Mecha seca y dura', [0.02, ys + 0.1, 0.02], 'izq'); }
     else if (t < 9.5) { K.rotulo('Guía seca', [0, ys - 0.25, 0.035], 'izq'); if (raspa) K.aviso('Chirrido en todo el viaje'); }
     else if (t < 14) { K.rotulo('Aceite en el foso', [0.24, -0.59, 0.3]); K.rotulo('Bandeja rebalsada', [-0.11, -0.57, 0.02], 'izq'); if (t > 11) K.aviso('Aceite chorreado en el foso'); }
-    else if (t > 15.8) { K.rotulo('Aceitera llena', [0.1, ys + 0.14, 0.07]); K.rotulo('Mecha nueva', [-0.011, ys + 0.09, 0.03], 'izq'); K.aviso('Guía apenas mojada', false); }
+    else if (t > 15.8) { K.rotulo('Aceitera llena', [0.1, ys + 0.14, 0.07]); K.rotulo('Mecha nueva', [0.02, ys + 0.1, 0.02], 'izq'); K.aviso('Guía apenas mojada', false); }
     K.tabla([['ACEITE', nivel < 0.05 ? 'VACÍA' : gotea ? 'SE CHORREA' : 'LLENA', nivel < 0.05 || gotea ? 'mal' : 'ok'], ['GUÍA', t < 9.5 ? 'SECA' : t < 14 ? 'CHORREADA' : 'APENAS MOJADA', t < 14 ? 'mal' : 'ok']]);
   }
+
+  // ---------- rodaderas: tres ruedas con resorte que ruedan por la guía ----------
+  var RR = 0.05, FLAT = 1.2, JR = 1.6;   // radio de rueda, ancho del plano (rad) y altura de una unión de guía
+  // llanta de goma (eje a lo largo de Y); con plano = true tiene un lado aplastado hacia +X
+  function llanta(K, m, plano) {
+    var g = new K.T.CylinderGeometry(RR, RR, 0.026, 40);
+    if (plano) {
+      var p = g.attributes.position, c = RR * Math.cos(FLAT / 2);
+      for (var i = 0; i < p.count; i++) { if (p.getX(i) > c) p.setX(i, c); }
+      g.computeVertexNormals();
+    }
+    return new K.T.Mesh(g, m);
+  }
+  // rueda que gira: grupo con la llanta, el cubo y una raya roja para ver que da vueltas (eje = Y del grupo)
+  function rueda(K, plano) {
+    var M = K.M, g = new K.T.Group();
+    var ll = llanta(K, M.goma, false), lp = llanta(K, M.goma, true);
+    g.add(ll, lp, K.cil(0.022, 0.03, M.acero, 0, 0, 0, null, 16), K.caja(0.03, 0.028, 0.01, M.rojo, 0.03, 0, 0));
+    g.llanta = ll; g.plana = lp; lp.visible = !!plano; ll.visible = !plano;
+    return g;
+  }
+  function armarRodadera(K, id) {
+    var M = K.M, T = K.T, s = { id: id, K: K };
+    K.add(K.caja(3, 4.8, 0.06, K.mat(0x464d54, { roughness: 0.95, metalness: 0 }), 0, 1.2, -0.3));
+    s.riel = K.add(K.riel(4)); s.riel.position.set(0, -0.6, 0);
+    [0.4, 1.9].forEach(function (y) {
+      K.add(K.caja(0.2, 0.12, 0.012, M.aceroOsc, 0, y, -0.052)); K.add(K.caja(0.012, 0.1, 0.24, M.aceroOsc, 0.075, y, -0.17)); K.add(K.caja(0.012, 0.1, 0.24, M.aceroOsc, -0.075, y, -0.17));
+      K.add(K.caja(0.26, 0.17, 0.012, M.aceroOsc, 0, y, -0.264));
+    });
+    K.add(K.caja(0.0175, 0.004, 0.071, M.negro, 0, JR, 0.0005));   // la unión entre dos tramos
+    s.aceiteM = K.mat(0x6d5a2a, { transparent: true, opacity: 0, roughness: 0.08, metalness: 0.4, depthWrite: false });
+    s.aceite = K.add(K.caja(0.0195, 4, 0.072, s.aceiteM, 0, 1.4, 0.001));
+    // la rodadera: base atornillada al bastidor, una rueda de frente y dos de costado, cada una con su resorte
+    var r = s.rod = K.add(new T.Group());
+    r.add(K.caja(0.38, 0.015, 0.22, M.hierro, 0, -0.12, 0.15),  K.caja(0.42, 0.1, 0.3, M.aceroOsc, 0, -0.18, 0.2), K.caja(0.05, 0.12, 0.015, M.hierro, 0, -0.06, 0.225));
+    // rueda de frente: apoya en la punta de la hoja (eje a lo largo de X)
+    s.frente = new T.Group(); r.add(s.frente);
+    s.rf = rueda(K, false); s.rf.rotation.z = PI / 2;   // eje Y del grupo → X
+    s.rfGiro = new T.Group(); s.rfGiro.add(s.rf); s.frente.add(s.rfGiro);
+    s.frente.add(K.caja(0.006, 0.03, 0.075, M.hierro, 0.021, 0, 0.037), K.caja(0.006, 0.03, 0.075, M.hierro, -0.021, 0, 0.037), K.caja(0.05, 0.035, 0.012, M.hierro, 0, 0, 0.078),
+      K.cil(0.006, 0.05, M.acero, 0, 0, 0, 'x', 8));
+    s.resF = K.resorte(0.016, 1, 6, 0.003, M.rojo); s.resF.rotation.x = PI / 2; r.add(s.resF);
+    // ruedas de costado: aprietan las dos caras de la hoja (eje a lo largo de Z)
+    s.lados = [-1, 1].map(function (d) {
+      var g = new T.Group(); r.add(g);
+      var w = rueda(K, false); w.rotation.x = PI / 2; var giro = new T.Group(); giro.add(w); g.add(giro);
+      g.add(K.cil(0.007, 0.05, M.acero, 0, 0, 0.005, 'z', 8), K.caja(0.06, 0.02, 0.012, M.hierro, d * 0.03, 0, 0.022));
+      var res = K.resorte(0.014, 1, 6, 0.003, M.rojo); res.rotation.z = -d * PI / 2; r.add(res);
+      r.add(K.caja(0.02, 0.2, 0.05, M.hierro, d * 0.17, -0.02, 0.022), K.caja(0.16, 0.015, 0.06, M.hierro, d * 0.11, -0.12, 0.01));
+      return { d: d, g: g, w: w, giro: giro, res: res };
+    });
+    s.ruedas = [s.rf, s.lados[0].w, s.lados[1].w];
+    s.resortes = [s.resF, s.lados[0].res, s.lados[1].res];
+    s.chispas = K.add(K.chispas(12));
+    return s;
+  }
+  // o: ys (altura de la rodadera), plano (rueda de frente con plano), hinchada (rueda de costado mala), resbala (0…1), aceite
+  function rodaderaPone(s, K, o) {
+    var ys = o.ys, r = s.rod;
+    r.position.set(0, ys, 0);
+    var giro = ys / RR * (1 - (o.resbala || 0) * 0.7);
+    // rueda de frente: su centro se acerca a la guía cuando el plano mira a la guía, y salta en la unión
+    var yF = ys - 0.05, a = -giro, alfa = ((a + PI / 2) % (2 * PI) + 3 * PI) % (2 * PI) - PI;
+    var reff = RR;
+    if (o.plano && Math.abs(alfa) < FLAT / 2) reff = RR * Math.cos(FLAT / 2) / Math.cos(alfa);
+    var golpe = o.plano && Math.abs(Math.abs(alfa) - FLAT / 2) < 0.12;
+    var salto = 0.006 * Math.exp(-Math.pow((yF - JR) / 0.025, 2)) * (o.uniones === false ? 0 : 1);
+    var zF = 0.035 + reff + salto;
+    s.frente.position.set(0, -0.05, zF);
+    s.rfGiro.rotation.x = a;
+    s.rf.llanta.visible = !o.plano; s.rf.plana.visible = !!o.plano;
+    var ini = zF + 0.084;
+    s.resF.position.set(0, -0.05, ini); s.resF.scale.y = Math.max(0.01, 0.2175 - ini);
+    s.lados.forEach(function (l, i) {
+      var hin = i === 1 && o.hinchada ? 1.12 : 1, x = l.d * (0.008 + RR * hin);
+      l.g.position.set(x, 0.07, 0);
+      l.giro.rotation.z = l.d * giro;
+      l.w.scale.set(hin, 1, hin);
+      var a0 = x + l.d * 0.06;
+      l.res.position.set(a0, 0.07, 0.022); l.res.scale.y = Math.max(0.01, Math.abs(l.d * 0.16 - a0));
+    });
+    s.aceiteM.opacity = o.aceite || 0; s.aceite.visible = (o.aceite || 0) > 0.01;
+    if (!o.chis) s.chispas.emitir(0, [0, 0, 0], false);
+    return { golpe: golpe, salto: salto };
+  }
+  var ROD_F = [[0, 1.0], [3, 1.0], [9, 1.38], [13.5, 1.9], [17.6, 0.7]];
+  var ROD_X = [[0, 1.2], [2.5, 1.2], [4.5, 1.27], [9.5, 2.3], [10, 2.3], [14, 1.6], [19, 1.6]];
+  V3.escena('rodadera', ['rodaderas'], {
+    fov: 36,
+    poster: 5,
+    construir: function (K, id) { return armarRodadera(K, id); },
+    funciona: {
+      dur: 18,
+      subt: [[0, 'Las rodaderas son juegos de tres ruedas que abrazan la guía. Hacen el trabajo de las zapatas, pero rodando.'],
+        [4.5, 'Una rueda apoya en la punta de la guía y las otras dos la aprietan por los costados, como una pinza.'],
+        [9, 'Cada rueda tiene un resorte que la empuja contra la guía y se traga los golpecitos de las uniones.'],
+        [13.5, 'Por eso el viaje es suave y callado. Trabajan con la guía seca y limpia, sin aceite.']],
+      cam: [[0, [0.7, 1.4, 0.3], [0, 1.02, 0.05]], [4, [0.66, 1.38, 0.28], [0, 1.02, 0.05]], [5.2, [0.1, 1.54, 0.2], [0, 1.12, 0.04]], [8.8, [0.1, 1.8, 0.2], [0, 1.38, 0.04]],
+        [10, [0.38, 1.52, 0.14], [0, 1.45, 0.08]], [13, [0.38, 1.95, 0.14], [0, 1.88, 0.08]], [14.4, [0.75, 1.95, -0.1], [0, 1.6, 0.05]], [18, [0.75, 1.05, -0.1], [0, 0.75, 0.05]]],
+      anim: function (t, s, K) {
+        var ys = K.kf(t, ROD_F);
+        var r = rodaderaPone(s, K, { ys: ys });
+        K.marcar(s.ruedas, t < 4.5 ? (K.parpadeo(t, 1) ? 'foco' : null) : null);
+        K.marcar(s.rf, K.entre(t, 4.5, 6.8) ? 'foco' : null);
+        K.marcar([s.lados[0].w, s.lados[1].w], K.entre(t, 6.8, 9) ? 'foco' : null);
+        K.marcar(s.resortes, K.entre(t, 9, 13.5) ? 'foco' : null);
+        if (t < 4.5) { K.rotulo('Rodadera: 3 ruedas', [0.06, ys + 0.13, 0.05]); K.rotulo('Guía', [0, ys + 0.45, 0.03], 'izq'); }
+        else if (t < 6.8) K.rotulo('Rueda de frente', [0, ys - 0.05, 0.14]);
+        else if (t < 9) { K.rotulo('Rueda de costado', [0.1, ys + 0.07, 0.0]); K.rotulo('Rueda de costado', [-0.1, ys + 0.07, 0.0], 'izq'); }
+        else if (t < 13.5) { K.rotulo('Resorte', [0.12, ys + 0.07, 0.15]); if (r.salto > 0.002) K.aviso('El resorte se traga el golpe', false); }
+        else K.rotulo('Guía seca y limpia', [0, ys + 0.35, 0.035], 'izq');
+        var mov = rumbo(K, ROD_F, t);
+        K.tabla([['CABINA', mov, mov === 'PARADA' ? '' : 'ac'], ['RUEDAS', mov === 'PARADA' ? 'QUIETAS' : 'GIRAN', mov === 'PARADA' ? '' : 'ok']]);
+      }
+    },
+    falla: {
+      dur: 19,
+      subt: [[0, 'Falla 1: una rueda tiene un plano: su goma se aplastó en un punto por estar mucho tiempo parada.'],
+        [4.5, 'En cada vuelta el plano golpea la guía: tac-tac-tac, más rápido mientras más rápido viaja.'],
+        [9.5, 'Falla 2: si cae aceite o grasa en la guía, la goma resbala, se hincha y se cuartea.'],
+        [14, 'Arreglo: con el ascensor detenido, cambiar la rueda dañada, regular los resortes y dejar la guía seca y limpia.']],
+      cam: [[0, [0.3, 1.17, 0.1], [0, 1.15, 0.085]], [4.2, [0.3, 1.2, 0.1], [0, 1.17, 0.085]], [5.4, [0.55, 1.78, -0.05], [0, 1.6, 0.05]], [9.4, [0.55, 2.48, -0.05], [0, 2.3, 0.05]],
+        [10.4, [0.35, 2.5, -0.15], [0.05, 2.36, 0.0]], [13.8, [0.35, 1.8, -0.15], [0.05, 1.66, 0.0]], [14.8, [0.55, 1.85, 0.0], [0, 1.6, 0.05]], [19, [0.58, 1.88, 0.02], [0, 1.6, 0.05]]],
+      anim: function (t, s, K) {
+        var ys = K.kf(t, ROD_X), v = rapidez(K, ROD_X, t), nueva = K.ph(t, 14.4, 15.4);
+        var plano = t < 14.8, malo = K.entre(t, 9.5, 14.8);
+        var r = rodaderaPone(s, K, { ys: ys, plano: plano, hinchada: malo, resbala: malo ? 1 : 0, aceite: malo ? 0.45 : 0.45 * (1 - nueva), uniones: !plano, chis: false });
+        var tac = plano && t < 9.5 && r.golpe && v > 0.02;
+        if (tac) s.chispas.emitir(t, [0, ys - 0.05, 0.04], true, 0.05);
+        K.marcar(s.rf, t < 9.5 ? (tac || K.parpadeo(t, 1.5) ? 'mal' : null) : t > 15.4 ? 'foco' : null);
+        K.marcar(s.lados[1].w, malo ? (K.parpadeo(t, 2) ? 'mal' : null) : t > 15.4 ? 'foco' : null);
+        if (t < 4.5) K.rotulo('Plano en la goma', [0, ys - 0.05, 0.14]);
+        else if (t < 9.5) { K.rotulo('Rueda con plano', [0, ys - 0.05, 0.14]); if (v > 0.02) K.aviso('Tac-tac-tac'); }
+        else if (t < 14) { K.rotulo('Goma hinchada', [0.11, ys + 0.07, 0.0]); K.rotulo('Aceite en la guía', [0, ys - 0.3, 0.035]); if (v > 0.02) K.aviso('La rueda resbala'); }
+        else if (t > 15.4) { K.rotulo('Ruedas nuevas', [0, ys - 0.05, 0.14]); K.aviso('Guía seca, viaje callado', false); }
+        K.tabla([['RUEDA', t < 9.5 ? 'CON PLANO' : t < 14.8 ? 'HINCHADA' : 'NUEVA', t < 14.8 ? 'mal' : 'ok'], ['GUÍA', malo ? 'CON ACEITE' : 'SECA', malo ? 'mal' : 'ok']]);
+      }
+    }
+  });
 })();
