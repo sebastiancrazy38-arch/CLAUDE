@@ -119,6 +119,7 @@
   function ondas(K, color) {
     var T = K.T, g = new T.Group(), mats = [];
     for (var i = 0; i < 3; i++) { var m = K.matB(color || 0xff3b30, { transparent: true, opacity: 0.8, depthWrite: false }); mats.push(m); g.add(new T.Mesh(new T.TorusGeometry(1, 0.03, 6, 40), m)); }
+    g.visible = false;
     g.poner = function (t, pos, on, escala, rotY) {
       g.visible = !!on; if (!on) return;
       g.position.set(pos[0], pos[1], pos[2]); g.rotation.y = rotY || 0;
@@ -130,6 +131,7 @@
   function polvo(K, n, color) {
     var g = new K.T.Group(), m = K.mat(color || 0x9a4a22, { roughness: 1, metalness: 0 });
     for (var i = 0; i < n; i++) g.add(K.caja(0.012, 0.012, 0.012, m));
+    g.visible = false;
     g.caer = function (t, pos, on, alto, ancho) {
       g.visible = !!on; if (!on) return; g.position.set(pos[0], pos[1], pos[2]);
       g.children.forEach(function (c, i) {
@@ -266,7 +268,7 @@
     s.puas = K.add(puas(K, K.matB(0xff3b30)));
     s.polvo = K.add(polvo(K, 16));
     s.ondas = K.add(ondas(K));
-    s.chispas = K.add(K.chispas(14));
+    s.chispas = K.add(K.chispas(14)); s.chispas.visible = false;
     s.flechas = [K.add(K.flecha(0xf2b705, 0.014)), K.add(K.flecha(0xf2b705, 0.014))];
     s.regla = K.add(K.caja(0.02, 1, 0.02, K.matB(0xff3b30)));
     s.lupa = K.add(lupa(K, 0.17)); s.cableG = cableGrande(K, 0.3, 0.03); s.lupa.dentro.add(s.cableG); K.add(s.lupa.linea);
@@ -437,7 +439,7 @@
       g: [[0, 'Falla 1: las pesas se soltaron dentro del marco.'],
         [4, 'Al viajar golpean el marco: se escucha un traqueteo cuando se cruza con la cabina.'],
         [8.5, 'Falla 2: los cables se estiraron. Con la cabina arriba, el contrapeso casi toca su amortiguador.'],
-        [13.5, 'Arreglo: asegurar las pesas con su traba y acortar los cables. Lo hace el técnico, con todo asegurado.']],
+        [13.5, 'Arreglo: asegurar las pesas con su traba y acortar los cables. Con el equipo detenido.']],
       cams: [
         planos([[0, [2.7, 4.7, 2.6], [0.85, 4.15, 0]],
           [4, [3.4, 4.6, 6.6], [0.3, 3.6, 0], [3.5, 4.4, 6.4]],
@@ -446,7 +448,7 @@
         planos([[0, [2.5, 4.3, 2.3], [0.85, 3.9, 0]],
           [4, [2.6, 3.0, 3.2], [0.5, 2.6, 0]],
           [8.5, [2.1, 1.0, 2.0], [0.85, 0.6, 0]],
-          [13.5, [2.6, 1.7, 3.2], [0.85, 1.15, 0]]], 18)
+          [13.5, [3.0, 2.0, 3.9], [0.85, 1.45, 0]]], 18)
       ],
       mov: [[0, 0.3], [4, 0.3], [8.5, 2.6], [9.3, 2.6], [11.5, 2.0], [13, 2.0], [16, 2.45], [17, 2.45]],
       a0: function (t, s, K) {
@@ -488,7 +490,7 @@
       g: [[0, 'Falla 1: el rodamiento de la polea está seco o gastado.'],
         [4.5, 'Se escucha un chillido o un zumbido arriba, que sigue el ritmo del viaje.'],
         [9, 'Falla 2: la polea quedó chueca. Los cables rozan su borde y se gastan rápido.'],
-        [13.5, 'Arreglo: engrasar o cambiar el rodamiento y alinear la polea con la de la máquina. Con el equipo detenido.']],
+        [13.5, 'Arreglo: engrasar o cambiar el rodamiento y alinear la polea. Siempre con el equipo detenido.']],
       cams: [
         planos([[0, [-0.2, 5.0, 1.6], [0.6, 5.5, 0]],
           [4.5, [0.2, 5.25, 1.0], [0.62, 5.5, 0]],
@@ -566,7 +568,7 @@
     o = o || {};
     var M = K.M, T = K.T, g = new T.Group(), m = { g: g }, corte = o.corte !== false, k;
     m.mCarcasa = K.mat(0x2f6e58, { roughness: 0.5, metalness: 0.25, side: T.DoubleSide });
-    [-1, 1].forEach(function (l) { g.add(K.caja(1.5, 0.12, 0.1, M.hierro, -0.1, 0.06, l * 0.24)); });
+    [-1, 1].forEach(function (l) { g.add(K.caja(1.0, 0.12, 0.1, M.hierro, 0.1, 0.06, l * 0.24)); });
     g.add(K.caja(0.5, 0.16, 0.5, m.mCarcasa, 0, 0.2, 0));
     var geo = corte ? new T.CylinderGeometry(0.34, 0.34, 0.36, 40, 1, false, PI / 2, 1.5 * PI) : new T.CylinderGeometry(0.34, 0.34, 0.36, 40);
     m.carcasa = new T.Mesh(geo, m.mCarcasa); m.carcasa.rotation.z = PI / 2; m.carcasa.position.set(0, Y0, 0); g.add(m.carcasa);
@@ -591,7 +593,9 @@
       var ti = k * PI / 6 + PI / 12, im = K.caja(0.28, 0.026, 0.085, k % 2 ? mS : mN, 0, 0.212 * Math.sin(ti), 0.212 * Math.cos(ti)); im.rotation.x = PI / 2 - ti;
       m.rotor.add(im); m.imanes.push(im);
     }
-    m.rotor.add(K.cil(0.045, 1.25, M.acero, -0.2, 0, 0, 'x', 16));
+    var xf = o.sinEncoder ? 0.25 : 0.42;
+    m.rotor.add(K.cil(0.045, xf + 0.62, M.acero, (xf - 0.62) / 2, 0, 0, 'x', 16));
+    m.rodamiento = K.cil(0.09, 0.045, M.gris, 0.205, Y0, 0, 'x', 24); g.add(m.rodamiento);
     m.tambor = K.cil(0.2, 0.07, M.aceroOsc, -0.27, 0, 0, 'x', 32); m.rotor.add(m.tambor);
     m.rotor.add(K.caja(0.072, 0.05, 0.02, M.blanco, -0.27, 0.12, 0.2));
     m.freno = K.caja(0.12, 0.1, 0.32, M.gris, -0.27, Y0 + 0.25, 0); g.add(m.freno);
@@ -665,15 +669,15 @@
       K.add(K.caja(0.24, 0.08, 1.14, M.losa || M.piso, XP, -0.04, 0.93), K.caja(0.24, 0.08, 1.14, M.losa || M.piso, XP, -0.04, -0.93));
       K.add(K.caja(5.0, 3.0, 0.06, K.mat(0xa7b0b8, { roughness: 0.95, metalness: 0 }), 0.6, 1.46, -1.5));
       s.m = armarGearless(K, { corte: true }); K.add(s.m.g);
-      s.r = armarReductor(K); s.r.g.position.set(2.25, 0, 0.1); K.add(s.r.g);
+      s.r = armarReductor(K); s.r.g.position.set(2.75, 0, 0.1); K.add(s.r.g);
       s.ondas = K.add(ondas(K)); s.calor = K.add(ondas(K, 0xff7a2a));
       s.cams = [
         planos([[0, [-1.55, 1.45, 2.15], [-0.15, 0.5, 0], [-1.45, 1.4, 2.0]],
           [4.5, [0.42, 1.3, 1.2], [0.0, 0.62, 0]],
           [9, [-1.2, 1.35, 2.3], [-0.15, 0.5, 0]],
-          [13.5, [1.75, 1.45, 2.1], [2.35, 0.42, 0], null, null, 1.2]], 18),
+          [13.5, [2.25, 1.45, 2.1], [2.85, 0.42, 0], null, null, 1.2]], 18),
         planos([[0, [-0.6, 1.45, 2.1], [0.0, 0.55, 0], [-0.4, 1.4, 2.0]],
-          [9, [-1.35, 1.05, 1.75], [-0.2, 0.55, 0]],
+          [9, [1.15, 1.05, 1.5], [0.12, 0.58, 0]],
           [13.5, [-1.4, 1.5, 2.3], [-0.1, 0.5, 0]]], 18)
       ];
       return s;
@@ -700,7 +704,7 @@
           var est = v < 0.05 ? ['PARADA', ''] : t < 11 ? ['ARRANCA SUAVE', 'ac'] : t < 12 ? ['VIAJA', 'ok'] : ['FRENA SUAVE', 'ac'];
           K.tabla([['VELOCIDAD', est[0], est[1]], ['FUERZA', Math.round(Math.min(1, v / 2.4) * 100) + ' %', '']]);
           K.rotulo('Polea', [XP - 0.1, Y0 + 0.27, 0]);
-        } else { K.marcar([s.r.sinfin, s.r.corona], 'foco'); K.rotulo('Motor (rápido)', [2.75, 0.75, 0.1]); K.rotulo('Engranajes', [2.25, 0.5, 0.15], 'izq'); K.rotulo('Polea (lenta)', [1.98, 0.62, -0.4], 'izq'); }
+        } else { K.marcar([s.r.sinfin, s.r.corona], 'foco'); K.rotulo('Motor (rápido)', [3.25, 0.75, 0.1]); K.rotulo('Engranajes', [2.75, 0.5, 0.15], 'izq'); K.rotulo('Polea (lenta)', [2.48, 0.62, -0.4], 'izq'); }
       }
     },
     falla: {
@@ -717,17 +721,18 @@
         s.m.mCarcasa.emissive.setHex(0xff2a10); s.m.mCarcasa.emissiveIntensity = calor * 0.75;
         var tiembla = entre(t, 9, 13.5);
         s.m.g.position.set(tiembla ? Math.sin(t * 61) * 0.006 : 0, tiembla ? Math.cos(t * 53) * 0.005 : 0, 0);
-        s.ondas.poner(t, [-0.2, Y0, 0.08], tiembla, 0.2, -PI / 2.4);
+        s.ondas.poner(t, [0.24, Y0, 0], tiembla, 0.22, PI / 2);
         s.calor.poner(t * 0.7, [0, Y0 + 0.36, 0.05], calor > 0.4 && t < 9, 0.25);
         s.calor.rotation.x = -PI / 2;
         s.r.sinfin.rotation.x = 0;
-        marca(K, [s.m.polea, s.m.imanes, s.r.sinfin, s.r.corona], null);
+        marca(K, [s.m.polea, s.m.imanes, s.r.sinfin, s.r.corona, s.m.rodamiento], null);
+        if (tiembla) K.marcar(s.m.rodamiento, 'mal');
         if (t < 9) {
           var temp = Math.round(55 + calor * 70);
           K.tabla([['TEMPERATURA', temp + ' °C', temp > 105 ? 'mal' : temp > 80 ? 'ac' : 'ok'], ['PROTECCIÓN', t > 5 && t < 8.5 ? 'APAGÓ EL MOTOR' : 'VIGILANDO', t > 5 && t < 8.5 ? 'mal' : 'ok']]);
           if (t > 5) K.aviso('Motor recalentado: se apagó');
           K.rotulo('Motor caliente', [0.1, Y0 + 0.33, -0.15]);
-        } else if (t < 13.5) { K.rotulo('Rodamiento gastado', [-0.2, Y0 + 0.05, 0.05], 'izq'); K.aviso('Zumbido y vibración'); }
+        } else if (t < 13.5) { K.rotulo('Rodamiento gastado', [0.23, Y0 + 0.08, 0.04]); K.aviso('Zumbido y vibración'); }
         else { K.aviso('Máquina fresca y suave', false); K.tabla([['TEMPERATURA', '55 °C', 'ok'], ['RODAMIENTO', 'NUEVO', 'ok']]); K.marcar(s.m.polea, 'foco'); }
       }
     }
@@ -736,7 +741,7 @@
   // =====================================================================================
   // 3) Encoder: ruedita con ranuras, luz, sensor y los avisos que viajan al variador
   // =====================================================================================
-  var XE = 0.44, RE = 0.07, NRAN = 16;
+  var XE = 0.27, RE = 0.07, NRAN = 16;
   function armarVariador(K, x, y, z) {
     var M = K.M, v = {}, g = new K.T.Group(); g.position.set(x, y, z); v.g = g;
     g.add(K.caja(0.42, 0.62, 0.22, K.mat(0x30353a, { roughness: 0.6 }), 0, 0.31, 0));
@@ -750,6 +755,7 @@
   function pulsos(K, n, color, r) {
     var g = new K.T.Group(), m = K.matB(color);
     for (var i = 0; i < n; i++) g.add(K.esfera(r || 0.009, m));
+    g.visible = false;
     g.correr = function (curva, u, on, hueco) {
       g.visible = !!on; if (!on) return;
       g.children.forEach(function (c, i) {
@@ -772,30 +778,29 @@
       var mR = K.matB(0xe9edf0);
       for (var i = 0; i < NRAN; i++) { var a = i * TAU / NRAN, rr = K.caja(0.0075, 0.012, 0.007, mR, 0, Math.sin(a) * RE * 0.84, Math.cos(a) * RE * 0.84); rr.rotation.x = -a; s.disco.add(rr); }
       s.disco.add(K.cil(0.012, 0.03, M.acero, 0, 0, 0, 'x', 12));
-      K.add(K.cil(0.02, 0.06, M.acero, 0.4, Y0, 0, 'x', 12));
       K.add(K.cil(0.095, 0.12, K.mat(0xcdd3d8, { transparent: true, opacity: 0.22, depthWrite: false }), XE + 0.005, Y0, 0, 'x', 32));
       // horquilla arriba del disco: luz por fuera, sensor por dentro
       s.horq = K.add(K.grupo([K.caja(0.012, 0.035, 0.03, M.negro, 0.016, 0, 0), K.caja(0.012, 0.035, 0.03, M.negro, -0.016, 0, 0), K.caja(0.044, 0.012, 0.03, M.negro, 0, 0.022, 0)], XE, Y0 + RE * 0.84, 0));
       s.luz = K.add(K.esfera(0.006, K.matB(0xff5a3c), XE + 0.024, Y0 + RE * 0.84, 0));
       s.mRayo = K.matB(0xff3b30, { transparent: true, opacity: 0.9 });
-      s.rayoA = K.add(K.cable(0.0025, s.mRayo)); s.rayoB = K.add(K.cable(0.0025, s.mRayo));
+      s.rayoA = K.add(K.cable(0.004, s.mRayo)); s.rayoB = K.add(K.cable(0.004, s.mRayo));
       s.ledV = K.matB(0x3ccf7f); s.ledO = K.matB(0x24302a);
       s.led = K.add(K.esfera(0.007, s.ledV, XE, Y0 + RE * 0.84 + 0.034, 0));
       // cable delgado hasta el variador
       s.var = armarVariador(K, 1.25, 0, -0.35); K.add(s.var.g);
-      s.curva = new T.CatmullRomCurve3([[XE, Y0 + RE + 0.03, 0], [XE + 0.08, Y0 + 0.2, 0], [0.7, 0.45, 0.05], [0.95, 0.06, 0.0], [1.15, 0.05, -0.15], [1.25, 0.2, -0.22]].map(function (p) { return new T.Vector3(p[0], p[1], p[2]); }));
+      s.curva = new T.CatmullRomCurve3([[XE, Y0 + RE + 0.03, 0], [XE + 0.07, Y0 + 0.1, 0.02], [XE + 0.16, 0.45, 0.06], [0.75, 0.06, 0.08], [1.1, 0.05, -0.12], [1.25, 0.2, -0.22]].map(function (p) { return new T.Vector3(p[0], p[1], p[2]); }));
       s.cableE = K.add(new T.Mesh(new T.TubeGeometry(s.curva, 60, 0.006, 8, false), K.mat(0x8e979f, { roughness: 0.6 })));
       s.conector = K.add(K.caja(0.04, 0.03, 0.03, M.negro, 1.25, 0.2, -0.22));
       s.pulsos = K.add(pulsos(K, 12, 0x3ccf7f, 0.011));
       s.cams = [
-        planos([[0, [1.05, 0.95, 0.95], [0.38, 0.62, 0]],
-          [4, [0.66, 0.72, 0.26], [0.43, 0.65, 0]],
-          [8, [1.0, 1.2, 1.4], [0.85, 0.35, -0.1]],
+        planos([[0, [0.95, 0.95, 0.95], [0.24, 0.6, 0]],
+          [4, [0.5, 0.72, 0.27], [0.26, 0.65, 0]],
+          [8, [1.0, 1.2, 1.4], [0.8, 0.35, -0.1]],
           [12, [0.1, 1.35, 2.3], [0.4, 0.5, -0.1]]], 16),
-        planos([[0, [0.7, 0.74, 0.3], [0.43, 0.63, 0]],
+        planos([[0, [0.54, 0.74, 0.31], [0.26, 0.63, 0]],
           [4.5, [-0.2, 1.3, 2.1], [0.3, 0.5, 0]],
-          [9, [1.55, 0.6, 0.65], [1.22, 0.25, -0.2]],
-          [13.5, [1.05, 0.95, 0.95], [0.4, 0.6, 0]]], 18)
+          [9, [1.75, 0.75, 0.95], [1.25, 0.35, -0.2]],
+          [13.5, [0.95, 0.95, 0.95], [0.24, 0.6, 0]]], 18)
       ];
       return s;
     },
@@ -822,7 +827,7 @@
       dur: 18,
       subt: [[0, 'Falla 1: el encoder se aflojó en su eje. Su ruedita baila y se pierden destellos.'],
         [4.5, 'El variador se confunde: el motor da tirones y el ascensor se para con «error de encoder».'],
-        [9, 'Falla 2: el conector del cable se soltó o el cable se pelo. Tampoco llegan los avisos.'],
+        [9, 'Falla 2: el conector del cable se soltó o el cable se peló. Tampoco llegan los avisos.'],
         [13.5, 'Arreglo: ajustar el encoder a su eje y revisar el conector y el cable, con el ascensor detenido.']],
       anim: function (t, s, K) {
         var tir = entre(t, 4.5, 9) ? Math.pow(Math.max(0, Math.sin(t * 5)), 6) * 2.2 : 0;
@@ -867,37 +872,37 @@
       K.add(K.caja(5.0, 0.08, 3.0, M.losa || M.piso, 0, -0.04, 0));
       K.add(K.caja(5.0, 2.6, 0.06, K.mat(0xa7b0b8, { roughness: 0.95, metalness: 0 }), 0, 1.26, -1.0));
       s.m = armarGearless(K, { corte: false }); s.m.g.position.set(0.7, 0, 0); K.add(s.m.g);
-      // tablero con la puerta abierta y el variador adentro
-      var mGab = K.mat(0xcfd5da, { roughness: 0.6 });
-      K.add(K.caja(0.7, 1.6, 0.04, mGab, -1.4, 0.8, -0.93), K.caja(0.04, 1.6, 0.4, mGab, -1.75, 0.8, -0.75), K.caja(0.04, 1.6, 0.4, mGab, -1.05, 0.8, -0.75), K.caja(0.7, 0.04, 0.4, mGab, -1.4, 1.6, -0.75), K.caja(0.7, 0.04, 0.4, mGab, -1.4, 0.02, -0.75));
-      var puerta = K.caja(0.7, 1.6, 0.03, mGab, 0.35, 0, 0); var gp = K.grupo([puerta], -1.75, 0.8, -0.55); gp.rotation.y = -1.9; K.add(gp);
+      // tablero abierto con el variador adentro
+      var mGab = K.mat(0x7d8a95, { roughness: 0.6, metalness: 0.2 });
+      K.add(K.caja(0.72, 1.6, 0.04, mGab, -1.4, 0.8, -0.93), K.caja(0.04, 1.6, 0.4, mGab, -1.76, 0.8, -0.75), K.caja(0.04, 1.6, 0.4, mGab, -1.04, 0.8, -0.75), K.caja(0.72, 0.04, 0.4, mGab, -1.4, 1.6, -0.75), K.caja(0.72, 0.04, 0.4, mGab, -1.4, 0.02, -0.75));
+      var gp = K.grupo([K.caja(0.72, 1.6, 0.03, mGab, -0.36, 0, 0)], -1.04, 0.8, -0.55); gp.rotation.y = -1.75; K.add(gp);
       s.var = armarVariador(K, -1.4, 0.75, -0.8); K.add(s.var.g);
-      // borne del motor: caja con tapa en la punta de la máquina
-      s.caja = K.add(K.caja(0.16, 0.12, 0.16, s.m.mCarcasa, 0.72, Y0 + 0.36, -0.08));
-      s.tapa = K.add(K.caja(0.17, 0.015, 0.17, M.aceroOsc, 0.72, Y0 + 0.43, -0.08));
-      s.bornes = [-0.045, 0, 0.045].map(function (dz) { return K.add(K.cil(0.012, 0.03, M.cobre, 0.72, Y0 + 0.43, -0.08 + dz)); });
-      // filo de metal (un ángulo) por donde pasa el cable grueso
-      s.filo = K.add(K.caja(0.06, 0.05, 0.5, M.aceroOsc, -0.2, 0.025, 0.25));
+      // caja de bornes al frente del motor, con tapa que se abre hacia abajo
+      s.caja = K.add(K.caja(0.2, 0.16, 0.08, s.m.mCarcasa, 0.7, 0.52, 0.38));
+      s.tapa = K.add(K.grupo([K.caja(0.21, 0.17, 0.012, M.aceroOsc, 0, 0.085, 0)], 0.7, 0.435, 0.426));
+      s.bornes = [-0.055, 0, 0.055].map(function (dx) { return K.add(K.cil(0.016, 0.03, M.cobre, 0.7 + dx, 0.53, 0.43, 'z', 6)); });
+      // filo de metal (un ángulo de fierro) por donde pasa el cable grueso
+      s.filo = K.add(K.grupo([K.caja(0.05, 0.005, 0.5, M.aceroOsc, 0, 0.05, 0), K.caja(0.005, 0.05, 0.5, M.aceroOsc, 0.0225, 0.025, 0)], -0.2, 0, 0.3));
       // recorridos: el grueso por adelante, los delgados por atrás (separados)
-      s.cF = curva(K, [[-1.25, 0.75, -0.72], [-1.15, 0.1, -0.6], [-0.9, 0.04, 0.2], [-0.2, 0.065, 0.3], [0.3, 0.04, 0.42], [0.92, 0.05, 0.42], [1.0, 0.4, 0.2], [0.9, Y0 + 0.36, -0.06], [0.8, Y0 + 0.36, -0.08]]);
+      s.cF = curva(K, [[-1.25, 0.75, -0.72], [-1.15, 0.1, -0.6], [-0.9, 0.04, 0.2], [-0.2, 0.072, 0.32], [0.3, 0.04, 0.48], [0.6, 0.04, 0.5], [0.7, 0.2, 0.47], [0.7, 0.42, 0.41]]);
       s.cE = curva(K, [[-1.5, 0.75, -0.72], [-1.5, 0.06, -0.62], [-0.6, 0.03, -0.52], [0.9, 0.03, -0.52], [1.25, 0.05, -0.3], [1.25, Y0, 0], [1.21, Y0, 0]]);
       s.cB = curva(K, [[-1.3, 0.75, -0.72], [-1.3, 0.05, -0.65], [-0.6, 0.06, -0.6], [0.43, 0.06, -0.6], [0.43, Y0 + 0.25, -0.3], [0.43, Y0 + 0.25, -0.16]]);
       s.mF = K.mat(0xd9622b, { roughness: 0.55 });
       s.tF = K.add(new T.Mesh(new T.TubeGeometry(s.cF, 90, 0.02, 10, false), s.mF));
       s.tE = K.add(new T.Mesh(new T.TubeGeometry(s.cE, 80, 0.007, 8, false), K.mat(0x8e979f)));
       s.tB = K.add(new T.Mesh(new T.TubeGeometry(s.cB, 80, 0.007, 8, false), K.mat(0x2e5f90)));
-      s.cobre = K.add(K.cil(0.021, 0.07, M.cobre, -0.2, 0.065, 0.3, 'x', 10)); s.cobre.rotation.set(0, -0.15, PI / 2);
+      s.cobre = K.add(K.cil(0.0225, 0.09, K.mat(0xd98a3a, { metalness: 0.7, roughness: 0.25, emissive: 0x4a2000 }), -0.2, 0.074, 0.32, 'x', 12)); s.cobre.rotation.set(0, -0.42, PI / 2);
       s.pF = K.add(pulsos(K, 14, 0xffc62b, 0.024)); s.pE = K.add(pulsos(K, 12, 0x3ccf7f, 0.011)); s.pB = K.add(pulsos(K, 10, 0x5aa8ff, 0.011));
-      s.chispas = K.add(K.chispas(16)); s.humo = K.add(ondas(K, 0xff7a2a));
+      s.chispas = K.add(K.chispas(16)); s.chispas.visible = false; s.humo = K.add(ondas(K, 0xff7a2a));
       s.cams = [
-        planos([[0, [0.2, 2.0, 3.4], [-0.2, 0.45, 0]],
+        planos([[0, [0.1, 1.75, 2.9], [-0.25, 0.5, -0.1]],
           [4, [-0.6, 0.85, 1.75], [-0.1, 0.2, 0.25], [0.2, 0.9, 1.7]],
           [8, [2.0, 1.2, 1.3], [0.95, 0.5, -0.2]],
           [12, [-0.3, 2.9, 2.2], [-0.2, 0.15, -0.1]]], 16),
-        planos([[0, [0.15, 0.45, 0.95], [-0.2, 0.08, 0.3]],
+        planos([[0, [0.1, 0.42, 0.95], [-0.2, 0.08, 0.32]],
           [4.5, [-0.4, 1.6, 2.7], [-0.4, 0.4, -0.1]],
-          [9, [1.35, 1.3, 0.55], [0.72, Y0 + 0.42, -0.08]],
-          [13.5, [0.2, 2.0, 3.4], [-0.2, 0.45, 0]]], 18)
+          [9, [1.0, 0.75, 1.25], [0.7, 0.5, 0.4]],
+          [13.5, [0.1, 1.75, 2.9], [-0.25, 0.5, -0.1]]], 18)
       ];
       return s;
     },
@@ -913,9 +918,9 @@
         gearlessGira(s.m, a); bobinasPone(s.m, a, 0, 0);
         s.pF.correr(s.cF, t * 0.18, true); s.pE.correr(s.cE, -t * 0.22, t >= 8); s.pB.correr(s.cB, t * 0.2, t >= 8);
         s.var.escribir('OK'); s.cobre.visible = false; s.chispas.visible = false; s.humo.visible = false;
-        s.tapa.position.y = Y0 + 0.43; s.tapa.rotation.z = 0;
+        s.tapa.rotation.x = 0;
         marca(K, [s.tF, s.tE, s.tB, s.bornes, s.caja], null);
-        if (t < 4) { K.rotulo('Tablero', [-1.4, 1.45, -0.6], 'izq'); K.rotulo('Motor', [0.7, Y0 + 0.3, 0.3]); }
+        if (t < 4) { K.rotulo('Tablero', [-1.4, 1.3, -0.6]); K.rotulo('Motor', [0.7, Y0 + 0.3, 0.3]); K.rotulo('Caja de bornes', [0.78, 0.52, 0.43]); }
         else if (t < 8) { K.marcar(s.tF, K.parpadeo(t, 1) ? 'foco' : null); K.rotulo('Cable de fuerza', [-0.5, 0.06, 0.28], 'izq'); }
         else if (t < 12) { K.rotulo('Encoder', [1.25, Y0 + 0.02, 0], 'izq'); K.rotulo('Freno', [0.43, Y0 + 0.27, -0.18]); K.marcar([s.tE, s.tB], K.parpadeo(t, 1) ? 'foco' : null); }
         else { K.rotulo('Fuerza', [-0.5, 0.06, 0.28]); K.rotulo('Avisos', [-0.6, 0.05, -0.56], 'izq'); }
@@ -925,23 +930,22 @@
     falla: {
       dur: 18,
       subt: [[0, 'Falla 1: el forro del cable grueso se peló contra un filo de metal.'],
-        [4.5, 'El cobre toca el metal: el variador se apaga y marca «fuga a tierra». El motor se para.'],
+        [4.5, 'El cobre toca el metal: el variador se apaga, marca «fuga a tierra» y el motor se para.'],
         [9, 'Falla 2: un borne flojo en la caja del motor calienta con cada arranque y se quema.'],
-        [13.5, 'Arreglo: cortar la energía y esperar unos minutos (el variador guarda carga). Cambiar el cable y ajustar los bornes.']],
+        [13.5, 'Arreglo: cortar la energía y esperar unos minutos (el variador guarda carga). Cambiar el cable y ajustar bornes.']],
       anim: function (t, s, K) {
         var para = entre(t, 5, 9), a = -K.integ(function (x) { return x < 5 ? 0.9 : x < 9 ? kf(x, [[5, 0.9], [5.6, 0]]) : x < 13.5 ? 0.9 : 0.6; }, t);
         gearlessGira(s.m, a); bobinasPone(s.m, a, 0, 0);
         var falla1 = t < 9, falla2 = entre(t, 9, 13.5);
         s.cobre.visible = falla1;
-        s.chispas.emitir(t, [-0.2, 0.09, 0.3], falla1 && K.parpadeo(t, 1.3), 0.12);
+        s.chispas.emitir(t, [-0.2, 0.08, 0.32], falla1 && (t % 1.6) < 1.0, 0.12);
         s.pF.correr(s.cF, t * 0.18, !para); s.pE.correr(s.cE, -t * 0.22, !para); s.pB.correr(s.cB, t * 0.2, !para);
-        var abierta = t >= 9;
-        s.tapa.position.y = abierta ? Y0 + 0.5 : Y0 + 0.43; s.tapa.rotation.z = abierta ? 0.5 : 0;
-        s.humo.poner(t, [0.72, Y0 + 0.5, -0.08], falla2, 0.08); s.humo.rotation.x = -PI / 2;
+        s.tapa.rotation.x = t >= 9 ? PI * 0.62 * ph(t, 9, 9.8) : 0;
+        s.humo.poner(t, [0.7, 0.53, 0.46], falla2, 0.07);
         s.var.escribir(t > 5 && t < 9 ? 'FUGA' : falla2 && t > 11.5 ? 'FALLA' : 'OK', (t > 5 && t < 9) || (falla2 && t > 11.5));
         marca(K, [s.tF, s.tE, s.tB, s.bornes, s.caja], null);
-        if (falla1) { K.marcar(s.tF, K.parpadeo(t, 1.5) ? 'mal' : null); K.rotulo('Forro pelado', [-0.2, 0.1, 0.3]); if (t > 4.5) { K.aviso('Fuga a tierra: motor parado'); K.rotulo('Variador', [-1.4, 1.3, -0.69], 'izq'); } }
-        else if (falla2) { K.marcar(s.bornes[1], 'mal'); K.rotulo('Borne flojo', [0.72, Y0 + 0.45, -0.08]); K.tabla([['BORNE', 'CALIENTE', 'mal']]); if (t > 11.5) K.aviso('Borne quemado'); }
+        if (falla1) { K.marcar(s.tF, K.parpadeo(t, 1.5) ? 'mal' : null); K.rotulo('Forro pelado: se ve el cobre', [-0.2, 0.1, 0.32]); if (t > 4.5) { K.aviso('Fuga a tierra: motor parado'); K.rotulo('Variador', [-1.4, 1.3, -0.69], 'izq'); } }
+        else if (falla2) { K.marcar(s.bornes[1], 'mal'); K.rotulo('Borne flojo', [0.7, 0.55, 0.45]); K.tabla([['BORNE', 'CALIENTE', 'mal']]); if (t > 11.5) K.aviso('Borne quemado'); }
         else { K.aviso('Cable nuevo y bornes ajustados', false); K.marcar(s.tF, 'foco'); }
       }
     }
@@ -965,8 +969,8 @@
     s.placa = K.add(K.caja(0.66, 0.025, 0.16, M.aceroOsc, 0, 0, 0));
     K.add(K.caja(3.2, 3.4, 0.05, K.mat(0xa7b0b8, { roughness: 0.95, metalness: 0 }), 0, 0.4, -0.75));
     s.marcas = K.add(new T.Group());
-    for (var i = 0; i < 10; i++) s.marcas.add(K.caja(0.5, 0.035, 0.02, M.aceroOsc, -0.75, -1.5 + i * 0.4, -0.72), K.caja(0.06, 0.4, 0.04, M.acero, 0.75, -1.5 + i * 0.4, -0.7));
-    var vidrio = K.mat(0xcfd6dc, { transparent: true, opacity: 0.32, depthWrite: false, metalness: 0.3, roughness: 0.3 });
+    for (var i = 0; i < 10; i++) s.marcas.add(K.caja(0.16, 0.03, 0.03, M.aceroOsc, 0.82, -1.5 + i * 0.4, -0.71), K.caja(0.04, 0.4, 0.05, M.acero, 0.82, -1.5 + i * 0.4, -0.67));
+    var vidrio = K.mat(0x9fb0bf, { transparent: true, opacity: 0.38, depthWrite: false, metalness: 0.3, roughness: 0.3 });
     s.mCable = K.mat(0x4b525a, { metalness: 0.55, roughness: 0.4 });
     s.t = XA.map(function (x) {
       var a = { x: x, mov: new T.Group() }; K.add(a.mov); a.mov.position.x = x;
@@ -1020,7 +1024,7 @@
       var s = armarAmarres(K);
       s.cams = [
         planos([[0, [0.55, 0.42, 0.95], [0, 0.03, 0]],
-          [4, [0.12, 0.42, 0.36], [-0.05, 0.33, 0]],
+          [4, [0.14, 0.28, 0.4], [-0.05, 0.2, 0]],
           [8.5, [0.32, -0.02, 0.62], [0, -0.1, 0]],
           [13, [0.25, 0.02, 0.62], [0.06, -0.12, 0]]], 17),
         planos([[0, [0.45, 0.3, 0.85], [0, -0.02, 0]],
@@ -1048,10 +1052,10 @@
         if (enLlave) { var a2 = s.t[2]; s.llave.position.set(a2.x, a2.mov.position.y, 0); s.llave.rotation.y = -0.5 + ((ajuste * 9) % 1.2); }
         s.linea.visible = t >= 13; s.linea.position.y = -0.0125 - LR + 0.008 - 0.012;
         s.flecha.visible = entre(t, 4, 8.5);
-        if (s.flecha.visible) { var y1 = s.t[1].mov.position.y + 0.55; s.flecha.apuntar([XA[1] + 0.045, y1, 0], [XA[1] + 0.045, y1 + 0.12, 0]); }
+        if (s.flecha.visible) { var y1 = s.t[1].mov.position.y + 0.43; s.flecha.apuntar([XA[1] - 0.035, y1, 0.02], [XA[1] - 0.035, y1 + 0.1, 0.02]); }
         s.ondas.visible = false;
         if (t < 4) { K.rotulo('Cable', [XA[0] + 0.012, 0.75, 0], 'izq'); K.rotulo('Amarre', [XA[3], 0.1, 0]); }
-        else if (t < 8.5) { K.marcar(s.t[1].cuna, 'foco'); K.rotulo('Cuña', [XA[1], 0.36, 0.02], 'izq'); K.rotulo('Jala', [XA[1] + 0.045, s.t[1].mov.position.y + 0.62, 0]); }
+        else if (t < 8.5) { K.marcar(s.t[1].cuna, 'foco'); K.rotulo('Cuña', [XA[1], s.t[1].mov.position.y + 0.36, 0.02], 'izq'); K.rotulo('El cable jala', [XA[1] - 0.035, s.t[1].mov.position.y + 0.53, 0.02], 'izq'); }
         else if (t < 13) { K.marcar(s.t.map(function (a) { return a.resorte; }), tiron !== 0 ? 'foco' : null); K.rotulo('Resorte', [XA[0], -0.08, 0.03], 'izq'); K.rotulo('Tuercas', [XA[3], s.t[3].mov.position.y, 0.02]); K.tabla([['CABINA', viaje > 0.01 ? 'ARRANCÓ' : 'QUIETA', viaje > 0.01 ? 'ac' : ''], ['RESORTES', tiron !== 0 ? 'AGUANTAN EL TIRÓN' : 'CARGADOS', tiron !== 0 ? 'ac' : 'ok']]); }
         else { K.marcar(s.t[2].tuercas, 'foco'); K.rotulo(ajuste < 1 ? 'Se ajusta la tuerca' : 'Todos iguales', [XA[2], s.t[2].mov.position.y - 0.02, 0.03]); }
       }
@@ -1120,10 +1124,12 @@
     var M = K.M, T = K.T, s = { K: K }, i;
     K.add(K.caja(3.0, 0.06, 2.0, M.losa || M.piso, 0.1, -0.03, -0.05));
     K.add(K.caja(3.0, 5.6, 0.06, K.mat(0xa7b0b8, { roughness: 0.95, metalness: 0 }), 0.1, 2.8, -0.95));
-    // cabina (sin cables arriba: cuelga de las cintas que pasan por debajo)
+    // cabina transparente (para ver las cintas detrás); no tiene cables arriba: cuelga de las cintas de abajo
     s.cab = K.add(new T.Group());
-    s.cab.add(K.caja(1.2, 2.2, 1.4, M.inox, 0, 1.1, 0));
-    s.cab.add(K.caja(0.44, 2.0, 0.02, M.panel, -0.225, 1.02, 0.71), K.caja(0.44, 2.0, 0.02, M.panel, 0.225, 1.02, 0.71));
+    var mVid = K.mat(0xc9d2da, { transparent: true, opacity: 0.38, depthWrite: false, metalness: 0.3, roughness: 0.35 });
+    s.cab.add(K.caja(1.2, 2.2, 1.4, mVid, 0, 1.1, 0));
+    [[-0.6, 0.7], [0.6, 0.7], [-0.6, -0.7], [0.6, -0.7]].forEach(function (p) { s.cab.add(K.caja(0.03, 2.2, 0.03, M.aceroOsc, p[0], 1.1, p[1])); });
+    s.cab.add(K.caja(1.22, 0.03, 1.42, M.aceroOsc, 0, 2.2, 0));
     s.cab.add(K.caja(1.36, 0.08, 0.3, M.aceroOsc, 0, -0.05, 0));
     s.poleas = [-1, 1].map(function (l) {
       var p = poleaCanales(K, F.RC, 0.15, 3, M.acero, M.hierro); p.position.set(l * F.XC, -0.12, 0); s.cab.add(p);
@@ -1143,16 +1149,15 @@
     [-1, 1].forEach(function (zz) { s.cw.add(K.caja(0.2, 0.3, 0.02, M.aceroOsc, 0, -0.1, zz * 0.1)); });
     s.poleaCw = poleaCanales(K, F.RW, 0.15, 3, M.acero, M.hierro); s.cw.add(s.poleaCw);
     // amarres fijos arriba: a la izquierda con el monitor; a la derecha, otro amarre
-    [-F.XC - F.RC, F.XW + F.RW].forEach(function (x) { K.add(K.caja(0.16, 0.06, 0.34, M.hierro, x, 5.0, 0)); });
-    K.add(K.caja(0.06, 0.6, 0.06, M.hierro, -F.XC - F.RC - 0.11, 4.95, -0.2));
+    [-F.XC - F.RC, F.XW + F.RW].forEach(function (x) { K.add(K.caja(0.16, 0.06, 1.0, M.hierro, x, 5.0, -0.45)); });
     s.amarre = F.ZB.map(function (z) {
       var a = { z: z };
       a.grapa = K.add(K.caja(0.05, 0.11, 0.036, M.aceroOsc, -F.XC - F.RC, F.YH + 0.055, z));
       a.varilla = K.add(K.cil(0.005, 0.32, M.acero, -F.XC - F.RC, 5.0, z, null, 8));
       a.resorte = K.add(K.resorte(0.014, 1, 5, 0.0035, M.cobre)); a.resorte.position.set(-F.XC - F.RC, 5.03, z);
       a.tuerca = K.add(K.cil(0.012, 0.012, M.acero, -F.XC - F.RC, 5.12, z, null, 6));
-      a.cola = K.add(cintaRecta(K, F.ANCHO, F.GR, M.cinta)); a.cola.pon([-F.XC - F.RC - 0.02, F.YH + 0.1, z], [-F.XC - F.RC - 0.11, F.YH + 0.2, z]);
-      a.clip = K.add(K.caja(0.03, 0.02, 0.038, K.mat(0xd03a2c), -F.XC - F.RC - 0.09, F.YH + 0.18, z)); a.clip.rotation.z = 0.83;
+      a.cola = K.add(cintaRecta(K, F.ANCHO, F.GR, M.cinta)); a.cola.pon([-F.XC - F.RC - 0.026, F.YH + 0.09, z], [-F.XC - F.RC - 0.17, F.YH + 0.05, z]);
+      a.clip = K.add(K.caja(0.03, 0.022, 0.04, K.mat(0xd03a2c), -F.XC - F.RC - 0.14, F.YH + 0.058, z)); a.clip.rotation.z = 0.27;
       return a;
     });
     [-F.XC - F.RC + 0.0, F.XW + F.RW].forEach(function () {});
@@ -1162,7 +1167,7 @@
     s.mLedV = K.matB(0x3ccf7f); s.mLedR = K.matB(0xff3b30); s.mLedO = K.matB(0x2a3036);
     s.ledM = [K.add(K.esfera(0.011, s.mLedV, -1.06, 5.02, 0.028)), K.add(K.esfera(0.011, s.mLedO, -1.02, 5.02, 0.028)), K.add(K.esfera(0.011, s.mLedO, -0.98, 5.02, 0.028))];
     s.cartelM = K.cartel('MONITOR', 0.14, 0.03, '#30353a', '#cdd3d8'); s.cartelM.position.set(-1.02, 4.97, 0.027); K.add(s.cartelM);
-    s.alambres = F.ZB.map(function (z) { return K.add(K.tubo([[-0.94, 4.98, 0.01], [-0.88, 5.06, z * 0.6], [-F.XC - F.RC - 0.09, F.YH + 0.19, z]], 0.003, K.mat(0xd9622b))); });
+    s.alambres = F.ZB.map(function (z) { return K.add(K.tubo([[-0.96, 4.95, 0.01], [-0.9, 4.9, z * 0.6], [-F.XC - F.RC - 0.14, F.YH + 0.07, z]], 0.003, K.mat(0xd9622b))); });
     // interruptor de cinta floja: barra sobre las tuercas y su micro
     s.barra = K.add(K.caja(0.02, 0.008, 0.15, M.amarillo, -F.XC - F.RC, 5.135, 0));
     s.micro = K.add(K.caja(0.04, 0.035, 0.03, M.negro, -F.XC - F.RC, 5.15, 0.1));
@@ -1191,7 +1196,7 @@
       for (var q = 0; q < 2; q++) { var e = K.esfera(0.006, mCorr, 0, y, 0.004); tira.add(e); s.corr.push({ o: e, h: i, k: q }); }
     }
     s.corte = K.caja(0.012, 0.012, 0.012, K.matB(0xff3b30), 0.02, -0.0375 + 2 * 0.015, 0.003); tira.add(s.corte);
-    s.ondas = K.add(ondas(K)); s.polvo = K.add(polvo(K, 12, 0x3a3a3a)); s.chispas = K.add(K.chispas(12));
+    s.ondas = K.add(ondas(K)); s.polvo = K.add(polvo(K, 12, 0x3a3a3a)); s.chispas = K.add(K.chispas(12)); s.chispas.visible = false;
     s.q = [0, 0, 0, 0, 0, 0];
     s.marcables = [s.cab, s.cw, s.cintas, s.polea, s.monitor, s.barra, s.micro, s.marcas];
     return s;
@@ -1247,18 +1252,18 @@
       f: [[0, 'Debajo de la cabina van dos poleas. Las cintas pasan por debajo, como un columpio.'],
         [4, 'Las cintas bajan de un amarre fijo arriba, pasan bajo la cabina y suben a la máquina.'],
         [8.5, 'Cuando la máquina jala, las poleas giran y la cabina sube.'],
-        [13, 'Por cada metro que sube la cabina pasan dos metros de cinta. Así la máquina carga la mitad.']],
+        [13, 'Si la cabina sube un metro, pasan dos metros de cinta. Así la máquina carga la mitad.']],
       g: [[0, 'Falla 1: el rodamiento de una polea se gastó. Zumba debajo del piso al viajar.'],
         [4.5, 'El zumbido sube con la velocidad y se siente en los pies.'],
-        [9, 'Falla 2: la cinta se corrió de lado y roza el borde de la polea. Chirría y bota polvillo.'],
+        [9, 'Falla 2: la cinta se corrió de lado y roza el borde. Chirría y bota polvillo.'],
         [13.5, 'Arreglo: cambiar el rodamiento y alinear la polea y la cinta. Con la cabina asegurada.']],
       mov: [[0, 0.6], [8.5, 0.6], [12.5, 1.6], [13.5, 1.6], [16.5, 2.0], [17, 2.0]],
       mov2: [[0, 0.7], [0.6, 0.7], [8.5, 1.5], [9, 1.5], [13.2, 1.0], [18, 1.0]],
       cams: [
-        planos([[0, [1.55, 0.1, 1.9], [0.0, 0.45, 0]],
-          [4, [3.2, 3.3, 5.6], [0.1, 2.5, 0]],
-          [8.5, [1.5, 0.15, 1.9], [0.0, 0.5, 0]],
-          [13, [3.2, 3.3, 5.6], [0.1, 2.6, 0]]], 17),
+        planos([[0, [1.15, 0.18, 1.35], [0.0, 0.45, 0]],
+          [4, [3.1, 3.0, 7.4], [0.1, 2.65, 0], [3.4, 3.0, 7.2]],
+          [8.5, [1.3, 0.2, 1.6], [0.0, 0.5, 0]],
+          [13, [3.1, 3.0, 7.4], [0.1, 2.75, 0]]], 17),
         planos([[0, [1.1, 0.25, 0.75], [0.55, 0.58, 0]],
           [9, [-1.0, 0.3, 0.75], [-0.6, 0.6, 0]],
           [13.5, [1.5, 0.15, 1.9], [0.0, 0.5, 0]]], 18)
@@ -1273,7 +1278,7 @@
         if (t < 4) { K.marcar(s.poleas, K.parpadeo(t, 1) ? 'foco' : null); K.rotulo('Poleas bajo la cabina', [F.XC, yc - 0.12, 0.08]); K.rotulo('Cintas', [0, yc - 0.19, 0.05], 'izq'); }
         else if (t < 8.5) { K.marcar(s.cintas, K.parpadeo(t, 1) ? 'foco' : null); K.rotulo('Amarre fijo', [-F.XC - F.RC, F.YH + 0.05, 0], 'izq'); K.rotulo('Máquina', [F.XS, F.YS + 0.12, -0.2]); K.rotulo('Cabina', [-0.3, yc + 1.4, 0.7], 'izq'); }
         else if (t < 13) { K.marcar(s.poleas, 'foco'); K.rotulo('Gira', [F.XC, yc - 0.12, 0.08]); K.tabla([['MÁQUINA', 'JALA', 'ac'], ['POLEAS', 'GIRAN', 'ac'], ['CABINA', yc < 1.59 ? 'SUBE' : 'QUIETA', yc < 1.59 ? 'ac' : '']]); }
-        else { var d = Math.max(0, yc - 1.6); K.tabla([['CABINA SUBE', Math.round(d * 100) + ' cm', 'ac'], ['CINTA EN LA MÁQUINA', Math.round(d * 200) + ' cm', 'ac'], ['FUERZA DE LA MÁQUINA', 'LA MITAD', 'ok']]); K.rotulo('Máquina', [F.XS, F.YS + 0.12, -0.2]); }
+        else { var d = Math.max(0, yc - 1.6); K.tabla([['CABINA SUBE', Math.round(d * 100) + ' cm', 'ac'], ['CINTA EN LA MÁQUINA', Math.round(d * 200) + ' cm', 'ac'], ['FUERZA DE LA MÁQUINA', 'LA MITAD', 'ok']]); K.rotulo('Máquina', [F.XS, F.YS + 0.12, -0.2]); K.rotulo('Cintas', [-F.XC - F.RC, 3.9, 0], 'izq'); }
       },
       a1: function (t, s, K) {
         var yc = kf(t, GF.poleas_cabina.mov2), mueve = Math.abs(kf(t + 0.05, GF.poleas_cabina.mov2) - yc) > 0.0005;
@@ -1300,7 +1305,7 @@
       cams: [
         planos([[0, [-0.25, 5.15, 1.05], [-0.85, 4.95, 0]],
           [4.5, [-0.35, 4.75, 1.2], [-0.95, 4.6, 0.1]],
-          [9, [0.6, 4.4, 2.4], [-0.6, 4.4, 0]],
+          [9, [0.05, 4.75, 1.75], [-0.8, 4.65, 0]],
           [13, [-0.45, 5.3, 0.6], [-0.69, 5.1, 0.02]]], 17),
         planos([[0, [-0.35, 4.75, 1.2], [-0.95, 4.6, 0.1]],
           [4.5, [-0.25, 5.1, 1.05], [-0.9, 4.95, 0]],
@@ -1311,15 +1316,15 @@
         var yc = kf(t, GF.monitor_fajas.mov);
         fajasPone(s, K, { t: t, yc: yc });
         ponerLupa(s, K, 0, t, [-1.0, 4.55, 0.25], [-F.XC - F.RC, 4.55, 0.05], entre(t, 4.8, 13));
-        if (t < 4.5) { K.marcar(s.monitor, K.parpadeo(t, 1) ? 'foco' : null); K.rotulo('Monitor', [-1.02, 5.06, 0.03], 'izq'); K.rotulo('Puntas de las cintas', [-F.XC - F.RC - 0.09, F.YH + 0.18, 0.05]); }
+        if (t < 4.5) { K.marcar(s.monitor, K.parpadeo(t, 1) ? 'foco' : null); K.rotulo('Monitor', [-1.02, 5.06, 0.03], 'izq'); K.rotulo('Puntas de las cintas', [-F.XC - F.RC - 0.14, F.YH + 0.058, 0.05]); }
         else if (t < 13) { K.rotulo('Hilos de acero', [-1.0, 4.4, 0.25], 'izq'); K.tabla([['MONITOR', 'MIDIENDO', 'ac'], ['HILOS', 'SANOS', 'ok']]); }
         else { K.marcar([s.barra, s.micro], 'foco'); K.rotulo('Interruptor de cinta floja', [-F.XC - F.RC, 5.16, 0.1]); K.tabla([['CINTAS', 'TENSAS', 'ok'], ['INTERRUPTOR', 'CERRADO', 'ok']]); }
       },
       a1: function (t, s, K) {
         var f1 = t < 9, f2 = entre(t, 9, 13.5), yc = f1 ? kf(t, [[0, 0.9], [4.5, 1.3]]) : f2 ? 1.3 : kf(t, [[13.5, 1.3], [17, 0.8]]);
         fajasPone(s, K, { t: t, yc: yc, hiloRoto: f1, flojo: f2 && t > 9.6 ? 1 : null });
-        ponerLupa(s, K, 1, t, [-1.0, 4.55, 0.25], [-F.XC - F.RC, 4.55, 0.05], t < 9);
-        if (f1) { K.rotulo('Hilo cortado', [-1.0, 4.4, 0.25], 'izq'); if (t > 4.5) { K.marcar(s.monitor, 'mal'); K.aviso('Fuera de servicio: revisar cintas'); K.tabla([['MONITOR', 'ALARMA', 'mal'], ['ASCENSOR', 'DETENIDO', 'mal']]); } }
+        ponerLupa(s, K, 1, t, [-1.0, 4.55, 0.25], [-F.XC - F.RC, 4.55, 0.05], t < 4.9);
+        if (f1) { if (t < 4.9) K.rotulo('Hilo cortado', [-1.0, 4.4, 0.25], 'izq'); if (t > 4.5) { K.marcar(s.monitor, 'mal'); K.aviso('Fuera de servicio: revisar cintas'); K.tabla([['MONITOR', 'ALARMA', 'mal'], ['ASCENSOR', 'DETENIDO', 'mal']]); } }
         else if (f2) { K.marcar([s.barra, s.micro], K.parpadeo(t, 1.2) ? 'mal' : null); K.rotulo('Cinta floja', [-F.XC - F.RC, 5.12, 0.0], 'izq'); if (t > 9.6) { K.aviso('El ascensor no se mueve'); K.tabla([['INTERRUPTOR', 'ABIERTO', 'mal']]); } }
         else { K.aviso('Cintas nuevas, monitor en verde', false); K.marcar(s.cintas, 'foco'); }
       }
@@ -1375,25 +1380,25 @@
       s.cw.add(K.caja(0.08, 0.06, 0.08, M.hierro, 0, -0.03, 0));
       for (i = 0; i < 4; i++) s.cw.add(K.cil(0.008, 3.0, M.hierro, 0, 3.0, -0.075 + i * 0.05, null, 8));
       [-1, 1].forEach(function (l) { var g = K.riel(5.6, M.acero); g.position.set(CD.XB, 0, l * 0.5); if (l > 0) g.rotation.y = PI; K.add(g); });
-      [-0.3, 0.3].forEach(function (x) { K.add(K.cil(0.07, 0.12, M.pu, x, 0.06, 0)); });
-      K.add(K.cil(0.06, 0.33, M.pu, CD.XB, 0.2, 0.3));
-      // guía de la cadena en el foso: dos rodillos a cada lado de la U
-      s.guia = K.add(K.grupo([K.caja(0.7, 0.04, 0.04, M.aceroOsc, 0, 0, -0.12), K.cil(0.025, 0.12, M.acero, -0.29, 0.0, -0.06, 'z'), K.cil(0.025, 0.12, M.acero, 0.29, 0.0, -0.06, 'z')], (CD.XA + CD.XB) / 2, CD.YU + 0.25, 0));
-      // eslabones (comparten geometría)
-      var geo = new T.TorusGeometry(0.021, 0.0085, 6, 14), mG = K.mat(0x1e2125, { roughness: 0.85, metalness: 0 }), mF = K.mat(0x9aa3ab, { metalness: 0.6, roughness: 0.35 });
+      [-0.3, 0.3].forEach(function (x) { K.add(K.cil(0.07, 0.12, M.pu, x, 0.06, -0.38)); });
+      K.add(K.cil(0.06, 0.33, M.pu, CD.XB, 0.2, -0.3));
+      // eslabones forrados (gruesos y negros) y pelados (delgados, de fierro); comparten geometría
+      s.geoG = new T.TorusGeometry(0.02, 0.0115, 8, 14); s.geoF = new T.TorusGeometry(0.02, 0.0055, 6, 14);
+      var mG = K.mat(0x16181b, { roughness: 0.7, metalness: 0 }), mF = K.mat(0x9aa3ab, { metalness: 0.6, roughness: 0.35 });
       s.mG = mG; s.mF = mF; s.links = [];
-      for (i = 0; i < CD.N; i++) { var l = new T.Mesh(geo, mG); l.scale.set(1.6, 1, 1); K.add(l); s.links.push(l); }
+      for (i = 0; i < CD.N; i++) { var l = new T.Mesh(s.geoG, mG); l.scale.set(1.5, 1, 1); K.add(l); s.links.push(l); }
+      K.add(new T.Mesh(s.geoF, mF)).visible = false;
       s.cadena = s.links;
       s.mtx = new T.Matrix4(); s.vx = new T.Vector3(); s.vy = new T.Vector3(); s.vz = new T.Vector3();
       s.ondas = K.add(ondas(K)); s.polvo = K.add(polvo(K, 12, 0x7a6a58)); s.q = [0, 0, 0, 0, 0, 0];
       s.cams = [
-        planos([[0, [2.3, 1.7, 3.4], [0.5, 1.15, 0]],
-          [4.5, [1.6, 0.75, 1.55], [0.6, 0.45, 0]],
-          [9, [3.0, 2.8, 5.6], [0.4, 2.0, 0]],
-          [13, [3.0, 2.8, 5.6], [0.4, 2.0, 0], [3.2, 2.6, 5.8]]], 17),
-        planos([[0, [1.6, 0.6, 1.5], [0.6, 0.25, 0]],
-          [9, [1.9, 1.1, 1.9], [0.6, 0.7, 0]],
-          [13.5, [2.3, 1.7, 3.4], [0.5, 1.15, 0]]], 18)
+        planos([[0, [-0.9, 1.5, 2.6], [0.45, 0.8, 0]],
+          [4.5, [-0.3, 0.75, 1.7], [0.58, 0.4, 0]],
+          [9, [3.3, 2.9, 6.6], [0.25, 2.3, 0], null, null, 1.2],
+          [13, [3.3, 2.9, 6.6], [0.25, 2.3, 0], [3.5, 2.8, 6.8]]], 17),
+        planos([[0, [-0.3, 0.55, 1.6], [0.58, 0.2, 0]],
+          [9, [-0.6, 1.3, 2.0], [0.5, 0.9, 0]],
+          [13.5, [-0.9, 1.5, 2.6], [0.45, 0.8, 0]]], 18)
       ];
       return s;
     },
@@ -1408,11 +1413,15 @@
         var yc = kf(t, [[0, 1.0], [4.5, 1.0], [8.5, 2.2], [9.5, 2.2], [12.5, 1.0], [13.5, 1.0], [16.5, 2.8], [17, 2.8]]);
         cadenaPone(s, K, { t: t, yc: yc });
         marca(K, [s.links], null);
-        if (t < 4.5) { if (K.parpadeo(t, 1)) K.marcar(s.links, 'foco'); K.rotulo('Cadena', [CD.XA, (yc - 0.1 + CD.YU) / 2, 0.03], 'izq'); K.rotulo('Contrapeso', [CD.XB, CD.SUMA - yc + 0.8, 0.45]); }
+        s.ondas.visible = false; s.polvo.visible = false;
+        if (t < 4.5) { if (K.parpadeo(t, 1)) K.marcar(s.links, 'foco'); K.rotulo('Cadena', [CD.XA, (yc - 0.1 + CD.YU) / 2, 0.03], 'izq'); K.rotulo('Contrapeso', [CD.XB, CD.SUMA - yc + 0.8, 0.45]); K.rotulo('Cabina', [-0.3, yc + 0.6, 0.7], 'izq'); }
         else if (t < 9) K.rotulo('La U rueda', [(CD.XA + CD.XB) / 2, CD.YU - CD.R, 0.03]);
         var abajo = yc < 1.9;
-        if (t >= 9) K.tabla([['CABINA', abajo ? 'ABAJO' : 'ARRIBA', ''], ['PESO DE CABLES', abajo ? 'LADO CABINA' : 'LADO CONTRAPESO', 'ac'], ['PESO DE CADENA', abajo ? 'LADO CONTRAPESO' : 'LADO CABINA', 'ok']]);
-        if (t >= 13) K.aviso('El motor siente el mismo peso', false);
+        if (t >= 9) {
+          K.tabla([['CABINA', abajo ? 'ABAJO' : 'ARRIBA', ''], ['PESO DE CABLES', abajo ? 'LADO CABINA' : 'LADO CONTRAPESO', 'ac'], ['PESO DE CADENA', abajo ? 'LADO CONTRAPESO' : 'LADO CABINA', 'ok']]);
+          K.rotulo('Cables', abajo ? [0, Math.min(3.95, yc + 2.9), 0.08] : [CD.XB, Math.min(3.95, CD.SUMA - yc + 2.0), 0.08], abajo ? 'izq' : 'der');
+          K.rotulo('Cadena', abajo ? [CD.XB, (CD.SUMA - yc + CD.YU) / 2, 0.03] : [CD.XA, (yc + CD.YU) / 2, 0.03], abajo ? 'der' : 'izq');
+        }
       }
     },
     falla: {
@@ -1420,7 +1429,7 @@
       subt: [[0, 'Falla 1: la cadena quedó muy larga y se arrastra por el piso del foso.'],
         [4.5, 'Se escucha un ruido de arrastre y el forro se gasta.'],
         [9, 'Falla 2: el forro se rompió. La cadena suena como fierro y se balancea contra el muro.'],
-        [13.5, 'Arreglo: acortar la cadena desde su amarre, cambiar el forro roto y revisar su guía en el foso.']],
+        [13.5, 'Arreglo: acortar la cadena desde su amarre, cambiar el forro roto y ver que cuelgue libre.']],
       anim: function (t, s, K) {
         var yc = kf(t, [[0, 1.0], [1, 1.0], [8, 2.0], [9, 2.0], [13, 1.4], [18, 1.4]]), mueve = Math.abs(kf(t + 0.05, [[0, 1.0], [1, 1.0], [8, 2.0], [9, 2.0], [13, 1.4], [18, 1.4]]) - yc) > 0.0005;
         var f1 = t < 9, f2 = entre(t, 9, 13.5);
@@ -1429,7 +1438,7 @@
         s.polvo.caer(t, [(CD.XA + CD.XB) / 2, 0.06, 0.1], f1 && mueve, 0.04, 0.5);
         s.polvo.children.forEach(function (c) { c.position.y = -c.position.y * 2; });
         s.ondas.poner(t, [(CD.XA + CD.XB) / 2, f1 ? 0.1 : 1.0, 0.15], (f1 && mueve && t > 4.5) || (f2 && mueve), 0.2);
-        if (f1) { K.marcar(s.links.slice(28, 48), K.parpadeo(t, 1.2) ? 'mal' : null); K.rotulo('Toca el piso', [(CD.XA + CD.XB) / 2, 0.05, 0.03]); if (t > 4.5) K.aviso('Ruido de arrastre'); }
+        if (f1) { K.marcar(s.enPiso, K.parpadeo(t, 1.2) ? 'mal' : null); K.rotulo('Toca el piso', [(CD.XA + CD.XB) / 2, 0.05, 0.03]); if (t > 4.5) K.aviso('Ruido de arrastre'); }
         else if (f2) { K.rotulo('Forro roto', [CD.XA, 1.0, 0.05], 'izq'); K.aviso('Suena como fierro'); }
         else { K.marcar(s.links, 'foco'); K.aviso('Cadena a su medida, forro nuevo', false); }
       }
@@ -1438,11 +1447,12 @@
   // pone cabina, contrapeso y cada eslabón en su camino (extra = cuánto más larga está la cadena)
   function cadenaPone(s, K, o) {
     var yc = o.yc, ycw = CD.SUMA - yc, cm = caminoCadena(yc, ycw, o.extra || 0), q = s.q;
+    s.enPiso = [];
     s.cab.position.set(0, yc, 0); s.cw.position.set(CD.XB, ycw, 0);
     s.links.forEach(function (l, i) {
       var sm = i * CD.PASO + 0.02; enCamino(cm, Math.min(sm, cm.L), q);
       var x = q[0], y = q[1], tx = q[2], ty = q[3];
-      if (y < 0.03) { y = 0.03; if (q[4] === 1) { tx = Math.sign(tx || 1); ty = 0; } }
+      if (y < 0.03) { y = 0.03; s.enPiso.push(l); if (q[4] === 1) { tx = Math.sign(tx || 1); ty = 0; } }
       var f = Math.sin(PI * Math.min(1, sm / cm.L));
       var z = o.balanceo ? Math.sin(o.t * 3.1) * o.balanceo * f : 0;
       l.position.set(x, y, z); l.visible = sm <= cm.L;
@@ -1450,7 +1460,7 @@
       if (i % 2) s.vz.set(0, 0, 1); else s.vz.set(-s.vx.y, s.vx.x, 0);
       s.vy.crossVectors(s.vz, s.vx); s.mtx.makeBasis(s.vx, s.vy, s.vz); l.quaternion.setFromRotationMatrix(s.mtx);
       var roto = o.rotos && (i % 9 === 3 || i % 9 === 4) && i > 6 && i < 40;
-      l.material = roto ? s.mF : s.mG; l.userData._m0 = l.material; delete l.userData._marca;
+      l.material = roto ? s.mF : s.mG; l.geometry = roto ? s.geoF : s.geoG; l.userData._m0 = l.material; delete l.userData._marca;
     });
   }
 })();
