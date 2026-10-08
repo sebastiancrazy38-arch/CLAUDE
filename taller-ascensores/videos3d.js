@@ -330,6 +330,7 @@
       v.project(I.cam);
       if (v.z > 1 || Math.abs(v.x) > 1.02 || Math.abs(v.y) > 1.02) return;
       var x = (v.x * 0.5 + 0.5) * w, y = (-v.y * 0.5 + 0.5) * h, izq = r.lado === 'izq' || (r.lado !== 'der' && x > w * 0.72);
+      if (izq && x < w * 0.3) izq = false; else if (!izq && x > w * 0.8) izq = true;   // que no se corte en el borde
       html += '<span class="v3-rot' + (izq ? ' izq' : '') + '" style="left:' + x.toFixed(1) + 'px;top:' + y.toFixed(1) + 'px">' + esc(r.t) + '</span>';
     });
     if (K._tabla) html += '<div class="v3-tabla">' + K._tabla.map(function (f) { return '<div><span>' + esc(f[0]) + '</span><b class="' + (f[2] || '') + '">' + esc(f[1]) + '</b></div>'; }).join('') + '</div>';
