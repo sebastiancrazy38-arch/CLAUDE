@@ -111,7 +111,7 @@
     for (var i = 0; i <= n; i++) { var an = K.cil(r + 0.011, esp, m, 0, 0, -ancho / 2 + i * paso, 'z', 40); rueda.add(an); g.anillos.push(an); }
     rueda.add(K.cil(r * 0.84, 0.008, borde, 0, 0, ancho / 2 + 0.004, 'z', 32));
     rueda.add(K.caja(r * 0.74, r * 0.14, 0.014, K.M.blanco, r * 0.46, 0, ancho / 2 + 0.01));
-    rueda.add(K.cil(r * 0.2, ancho + 0.05, borde, 0, 0, 0, 'z', 20));
+    g.cubo = K.cil(r * 0.2, ancho + 0.05, borde, 0, 0, 0, 'z', 20); rueda.add(g.cubo);
     g.rueda = rueda; return g;
   }
   // ondas de sonido (anillos que crecen y se apagan)
@@ -248,7 +248,7 @@
     K.add(K.cil(0.17, 0.12, M.aceroOsc, 0.3, 6.2, -0.54, 'z', 24));
     s.polea = K.add(poleaCanales(K, TR.R1, 0.2, 4, M.acero, M.hierro)); s.polea.position.set(TR.C1[0], TR.C1[1], 0);
     s.desvio = K.add(poleaCanales(K, TR.r2, 0.2, 4, M.acero, M.hierro)); s.desvio.position.set(TR.C2[0], TR.C2[1], 0);
-    s.soporteD = [-1, 1].map(function (l) { return K.add(K.caja(0.05, 0.42, 0.03, M.aceroOsc, TR.C2[0], 5.62, l * 0.14)); });
+    s.soporteD = [K.add(K.caja(0.06, 0.42, 0.03, M.aceroOsc, TR.C2[0], 5.62, -0.14))];
     // cables: tramo de cabina (en pedacitos, por si se afloja), arcos en las poleas, tramo inclinado y tramo del contrapeso
     s.cables = new T.Group(); K.add(s.cables);
     var a = angTan(TR.C1, TR.R1, TR.C2, TR.r2);
@@ -514,7 +514,8 @@
         var tilt = t >= 9 && t < 13.5 ? 0.12 * ph(t, 9, 10) : 0;
         tracPone(s, K, { t: t, yc: yc, ycw: TR.SUMA - yc, u: yc - TR.P1, tiltD: tilt });
         var malR = t < 9, malT = tilt > 0;
-        K.marcar(s.desvio.rueda, malR || malT ? (K.parpadeo(t, 2) ? 'mal' : null) : t >= 13.5 ? 'foco' : null);
+        K.marcar(s.desvio.rueda, malT ? (K.parpadeo(t, 1.2) ? 'mal' : null) : t >= 13.5 ? 'foco' : null);
+        if (malR) K.marcar(s.desvio.cubo, 'mal');
         K.marcar(s.cables, null); K.marcar(s.polea.rueda, null);
         s.flechas.forEach(function (f) { f.visible = false; }); s.polvo.visible = false; s.regla.visible = false;
         var moviendo = Math.abs(kf(t + 0.05, VIAJE) - yc) > 0.0005;
