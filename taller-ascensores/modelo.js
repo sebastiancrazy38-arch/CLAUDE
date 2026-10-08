@@ -815,13 +815,14 @@
       cab.position.y = cy; cp.position.y = wy;
       for (var j = 0; j < dyn.length; j++) dyn[j](cy, wy);
     }
-    function puertas(ap, piso) {
+    // apI: apertura de la hoja izquierda cuando no acompaña a la derecha (simulación de falla); si no se da, van juntas
+    function puertas(ap, piso, apI) {
       estado.ap = ap; estado.piso = piso;
-      var d = 0.2 + 0.4 * ap;
-      hojasCab[0].position.x = -d; hojasCab[1].position.x = d;
-      for (var j = 0; j < NP; j++) { var a = j === piso ? d : 0.2; hojasPiso[j][0].position.x = cx - a; hojasPiso[j][1].position.x = cx + a; }
-      rayos.scale.x = Math.max(0.001, 2 * d - 0.42);
-      rayos.userData.abierto = ap > 0.04;
+      var d = 0.2 + 0.4 * ap, dI = apI == null ? d : 0.2 + 0.4 * apI;
+      hojasCab[0].position.x = -dI; hojasCab[1].position.x = d;
+      for (var j = 0; j < NP; j++) { var a = j === piso ? d : 0.2, aI = j === piso ? dI : 0.2; hojasPiso[j][0].position.x = cx - aI; hojasPiso[j][1].position.x = cx + a; }
+      rayos.scale.x = Math.max(0.001, d + dI - 0.42); rayos.position.x = (d - dI) / 2;
+      rayos.userData.abierto = Math.max(ap, apI || 0) > 0.04;
     }
     actualizar(0); puertas(0, 0);
 

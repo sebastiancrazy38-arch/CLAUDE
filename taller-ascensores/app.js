@@ -20,7 +20,8 @@
   const B = () => ASC.base(S.tipo), EQ = () => ASC.equipos[S.tipo];
 
   const S = { tipo: 'otis', modo: 'explorar', sel: null, hover: null, pick: null, piso: 0, nivel: 'esencial', siluetas: true, rayos: true,
-    rueda: 19, arm: {}, ficha: false, filtro: '', fz: 'todas', reto: null, moviendo: false, msg: null, zona: 'todo', marca: 0 };
+    rueda: 19, arm: {}, ficha: false, filtro: '', fz: 'todas', reto: null, moviendo: false, msg: null, zona: 'todo', marca: 0,
+    sim: null, rq: '', rm: 'todas', rc: 'todas', rmas: 0 };
 
   function leer() {
     try {
@@ -51,7 +52,7 @@
   // ---------- escena ----------
   let renderer, scene, camera, controls, modelo = null, ok3D = false, sucio = true, mini = null, miniat = {}, ultimoP = 0;
   const tweens = [], escena = $('#escena'), lienzo = $('#lienzo'), puntos = $('#puntos');
-  const hSel = new Map(), hHov = new Map();
+  const hSel = new Map(), hHov = new Map(), hMal = new Map();
   let MAT_F = null, ray = null, rotulo = null, hot = {}, tMarcha = 0, enc = null;
   const LIBRE = 0.6;   // hasta esta fracción de la vista completa la cámara puede mirar a cualquier parte del ascensor
 
@@ -112,12 +113,12 @@
   }
 
   function realce(m, st) {
-    const mapa = st === 'sel' ? hSel : hHov;
+    const mapa = st === 'sel' ? hSel : st === 'falla' ? hMal : hHov;
     let c = mapa.get(m);
     if (!c) {
       c = m.clone();
-      const col = st === 'sel' ? 0xf2b705 : 0x6fb6ff;
-      if (c.emissive) { c.emissive.setHex(col); c.emissiveIntensity = st === 'sel' ? 0.6 : 0.32; }
+      const col = st === 'sel' ? 0xf2b705 : st === 'falla' ? 0xff2a14 : 0x6fb6ff;
+      if (c.emissive) { c.emissive.setHex(col); c.emissiveIntensity = st === 'sel' ? 0.6 : st === 'falla' ? 0.95 : 0.32; }
       else if (c.color && !c.map) c.color.lerp(new T.Color(col), 0.5);
       mapa.set(m, c);
     }
@@ -130,6 +131,7 @@
       const p = modelo.partes[id];
       let st = 'normal';
       if (!visible(id)) st = (S.siluetas && esMeta(id) && disponible(id)) ? 'fantasma' : 'oculta';
+      else if (S.sim && S.sim.on && S.sim.ids.indexOf(id) >= 0) st = 'falla';
       else if (id === S.sel) st = 'sel';
       else if (id === S.hover) st = 'hover';
       if (p.st === st) return;
@@ -255,6 +257,226 @@
     });
   }
 
+  // ---------- simular la falla de una pieza en el modelo ----------
+  // Cada tipo de falla es un guion: pasos que se van marcando en el cartel y lo que hace la cabina en cada uno.
+  const EFECTO = {
+    cortina_luminosa: 'cortina',
+    cable_sincronismo: 'puerta', cabezal_piso: 'puerta', roldanas_puerta: 'puerta', pesa_cierre: 'puerta', guiadores_puerta: 'puerta', pisadera: 'puerta', puerta_piso: 'puerta', puerta_cabina: 'puerta', operador_puertas: 'puerta',
+    cerradura: 'contacto', patin: 'contacto', contacto_puerta_cabina: 'contacto',
+    stop_foso: 'serie', caja_inspeccion: 'serie', finales_carrera: 'serie', contacto_paracaidas: 'serie', cable_flojo: 'serie', polea_tensora: 'serie', cable_limitador: 'serie', monitor_fajas: 'serie',
+    paracaidas: 'paracaidas', limitador: 'limitador', micro_freno: 'freno', freno: 'frenoPatina',
+    cables_traccion: 'patina', polea_traccion: 'patina', amarres: 'patina', contrapeso: 'patina', poleas_cabina: 'patina', polea_desvio: 'patina', cadena_compensacion: 'patina',
+    maquina: 'motor', encoder: 'motor', variador: 'motor', cables_motor: 'motor',
+    tablero_control: 'electronica', caja_techo: 'electronica', interruptor_principal: 'electronica', cableado_hueco: 'electronica', cable_viajero: 'electronica', botonera_cabina: 'electronica',
+    botonera_piso: 'boton', pesacargas: 'pesacargas', posicionamiento: 'posicion',
+    piston: 'hidraulico', central_hidraulica: 'hidraulico', bloque_valvulas: 'hidraulico', recoge_aceite: 'hidraulico', polea_piston: 'hidraulico',
+    manguera: 'manguera', valvula_rotura: 'manguera', rescate: 'rescate', amortiguadores: 'amortiguador',
+    guias_cabina: 'guiado', guias_contrapeso: 'guiado', fijaciones: 'guiado', rozaderas: 'guiado', rodaderas: 'guiado', aceiteras: 'guiado', bastidor: 'guiado'
+  };
+  const minus = s => s.charAt(0).toLowerCase() + s.slice(1);
+  function pasosSim(id, tipo) {
+    const n = nom(id), c = ASC.partes[id] || {}, f = (c.fallas || [])[0] || {};
+    const P = {
+      cortina: ['La cabina llega al piso y abre la puerta.', 'Un rayo de la cortina queda cortado por suciedad (el rayo amarillo que parpadea).', 'La puerta intenta cerrar y reabre, una y otra vez.', 'El ascensor no sale del piso. Se limpian las regletas y se revisa su cable.'],
+      puerta: id === 'operador_puertas'
+        ? ['La puerta abre.', 'Al cerrar, el operador pierde fuerza o salta la correa: las hojas se frenan a medio camino.', 'Vuelve a intentarlo y se queda zumbando.', 'Sin puerta cerrada el ascensor no viaja.']
+        : ['La puerta de piso abre junto con la de cabina.', id === 'cable_sincronismo' ? 'Al cerrar, la hoja izquierda se atrasa: el cable de sincronismo está flojo.' : 'Al cerrar, la hoja izquierda se traba: ' + minus(n) + ' en mal estado.', 'Queda una rendija y el contacto de esa hoja no cierra.', 'El tablero no deja salir la cabina: «serie de puertas abierta».'],
+      contacto: ['La puerta cierra completa.', 'Pero ' + minus(n) + ' no confirma el cierre (contacto sucio, quemado o desajustado).', 'Sin esa confirmación la cabina no arranca y la puerta vuelve a abrir.', 'Nunca se puentea un contacto de puerta: se limpia, se ajusta o se cambia.'],
+      serie: ['El ascensor viaja con pasajeros.', 'En pleno viaje se abre: ' + minus(n) + '.', 'Se corta la serie de seguridades: caen los contactores y el freno. La cabina queda entre pisos.', 'Nadie sale hasta que el técnico encuentra el contacto abierto midiendo la serie punto por punto.'],
+      paracaidas: ['La cabina baja desde el último piso.', 'Algo falla y la cabina se acelera: sobrevelocidad.', 'El limitador traba su cable y el paracaídas muerde las guías.', 'La cabina queda clavada entre pisos. El técnico la libera subiéndola y revisa cuñas y guías.'],
+      limitador: ['La cabina baja a velocidad normal.', 'El limitador, sucio o desajustado, dispara sin sobrevelocidad.', 'Su cable jala el paracaídas: la cabina se clava en las guías.', 'Pasajeros atrapados por una actuación en falso. El limitador se cambia, no se reajusta en obra.'],
+      freno: ['Se pide viaje al piso 3.', 'El tablero da energía a la bobina del freno…', '…pero un microswitch no confirma que el freno abrió.', 'Error de freno: el ascensor queda bloqueado en el piso.'],
+      frenoPatina: ['La cabina llega al piso 3 y el freno cierra.', 'Los forros están gastados o con aceite: el freno patina.', 'La cabina se pasa del nivel y queda un escalón.', 'Con el freno así el ascensor se saca de servicio.'],
+      patina: ['La cabina viaja al piso 3.', id === 'contrapeso' ? 'Con el contrapeso mal balanceado, la tracción no alcanza.' : 'Los cables patinan en el canal gastado de la polea.', 'La cabina para por debajo del nivel: queda un escalón.', 'El tablero detecta el error de posición y saca el equipo de servicio.'],
+      motor: ['La cabina arranca hacia el piso 3.', 'El motor vibra y da tirones: ' + minus(n) + ' falla y el variador pierde el control.', 'El variador corta por error y cae el freno.', 'La cabina queda entre pisos con pasajeros.'],
+      electronica: ['Se pide el ascensor desde el piso 3.', minus(n).replace(/^./, x => x.toUpperCase()) + ' falla: el tablero no recibe la llamada o no puede mandar.', 'La cabina se queda quieta y el indicador se apaga.', 'Antes de cambiar una tarjeta se mide la fuente y se revisan fusibles, conectores y el bus.'],
+      boton: ['Alguien pulsa el botón del piso 3.', 'La tarjeta de ese piso no responde: la llamada no se registra.', 'El botón no se enciende y la cabina no va.', 'Los demás pisos funcionan: la falla está en esa botonera o en su tarjeta.'],
+      pesacargas: ['Suben pasajeros a la cabina.', 'El pesacargas descalibrado marca sobrecarga con poca gente.', 'Suena el zumbador y la puerta no cierra.', 'El ascensor no sale hasta que se calibre el pesacargas.'],
+      posicion: ['La cabina viaja al piso 2.', 'Una pantalla o imán corrido: el sensor lee mal la posición.', 'La cabina para desnivelada: queda un escalón.', 'El tablero hace un viaje de corrección al piso 1 para volver a contar.'],
+      hidraulico: ['La cabina está parada en el piso 2.', 'Los sellos del pistón dejan pasar aceite: la cabina baja sola, despacio.', 'El tablero detecta el desnivel y prende la bomba para renivelar.', 'Cada vez renivela más seguido: hay que cambiar los sellos.'],
+      manguera: ['La cabina baja desde el piso 3.', 'La manguera revienta y el aceite se escapa.', 'La válvula paracaídas cierra de golpe: la cabina se detiene y no cae.', 'Queda fuera de servicio hasta reparar la manguera.'],
+      rescate: ['La cabina viaja con pasajeros.', 'Se corta la luz del edificio: la cabina se detiene entre pisos.', 'El rescate automático debería llevarla al piso más cercano…', '…pero sus baterías están agotadas: los pasajeros quedan atrapados hasta que llega el técnico.'],
+      amortiguador: ['La cabina baja al piso 1.', 'Falla la parada y la cabina se pasa del nivel hacia el foso.', 'Golpea el amortiguador, que está duro y agrietado.', 'El golpe llega casi entero a la cabina: daños y pasajeros golpeados.'],
+      guiado: ['La cabina viaja entre pisos.', minus(n).replace(/^./, x => x.toUpperCase()) + ' en mal estado: la cabina vibra y golpea de lado a lado.', 'Los pasajeros sienten el sacudón y se escucha el golpeteo.', 'Se revisa el desgaste, la lubricación y la alineación de las guías.'],
+      senal: [f.sintoma || ('Falla de ' + minus(n) + '.'), f.causa ? 'Causa: ' + f.causa : 'La pieza se marca en rojo en el modelo.', f.revisar ? 'Se revisa: ' + minus(f.revisar) : 'Se revisa en el mantenimiento.']
+    };
+    return P[tipo] || P.senal;
+  }
+  let RAYO_MAL = null;
+  function terminarSim(sinPintar) {
+    const s = S.sim; if (!s) return;
+    s.timers.forEach(clearTimeout); clearInterval(s.blink);
+    cancelar('cabina'); cancelar('puertas'); cancelar('sim');
+    S.sim = null;
+    if (ok3D && modelo) {
+      modelo.rayos.children.forEach(r => { if (r._m0) { r.material = r._m0; r.scale.set(1, 1, 1); r.visible = true; } });
+      modelo.cab.position.x = s.cx0;
+      const p = Math.max(0, Math.min(MD.NP - 1, Math.round(modelo.estado.cy / MD.FH)));
+      S.piso = p; modelo.actualizar(p * MD.FH); modelo.puertas(0, p);
+      ASC.pintarDisplay(String(p + 1)); $('#visor7').textContent = String(p + 1); ultimoP = p;
+    }
+    S.moviendo = false;
+    $('#sim').hidden = true; escena.classList.remove('simulando');
+    if (!sinPintar) { aplicar(); pintarBotonera(); }
+  }
+  function simularFalla(id) {
+    if (!ok3D || !modelo || !modelo.partes[id]) return;
+    terminarSim(true);
+    if (S.modo !== 'explorar') cambiarModo('explorar');
+    const tipo = EFECTO[id] || 'senal', pasos = pasosSim(id, tipo);
+    const ids = tipo === 'paracaidas' || tipo === 'limitador' ? [id, 'paracaidas', 'limitador', 'cable_limitador'].filter((x, i, a) => a.indexOf(x) === i && modelo.partes[x]) : [id];
+    tweens.length = 0; clearTimeout(tMarcha);
+    S.sim = { id, tipo, pasos, paso: -1, timers: [], on: true, ids, cx0: modelo.cab.position.x };
+    S.sim.blink = setInterval(() => { if (!S.sim) return; S.sim.on = !S.sim.on; aplicar(); }, 420);
+    S.moviendo = true; S.hover = null;
+    pintarBotonera(); pintarSim();
+    guion(tipo, id);
+  }
+  function pintarSim() {
+    const s = S.sim, el = $('#sim'); escena.classList.toggle('simulando', !!s); if (!s) { el.hidden = true; return; }
+    el.hidden = false;
+    el.innerHTML = `<p class="sim-t">Simulación de falla</p><h3>${esc(nom(s.id))}</h3>
+      <ol>${s.pasos.map((p, i) => `<li class="${i < s.paso ? 'ya' : i === s.paso ? 'ahora' : ''}">${esc(p)}</li>`).join('')}</ol>
+      <div class="acciones"><button type="button" class="btn oro chico" data-sim="repetir">Repetir</button><button type="button" class="btn sec chico" data-sim="fin">Terminar</button></div>`;
+  }
+  // utilidades del guion
+  function en(ms, fn) { const s = S.sim; if (!s) return; s.timers.push(setTimeout(() => { if (S.sim === s) fn(); }, ms)); }
+  function pasoSim(i) { if (!S.sim) return; S.sim.paso = i; pintarSim(); }
+  function display(t) { ASC.pintarDisplay(t); $('#visor7').textContent = t.trim() || '·'; sucio = true; }
+  function mover(y1, ms, fin, curva) {   // mueve la cabina; curva(k) opcional para acelerar o vibrar
+    const y0 = modelo.estado.cy;
+    tw(ms, k => {
+      const y = curva ? curva(k, y0, y1) : y0 + (y1 - y0) * k;
+      modelo.actualizar(y);
+      const p = Math.max(0, Math.min(MD.NP - 1, Math.round(y / MD.FH)));
+      if (p !== ultimoP && /^\d$/.test($('#visor7').textContent)) { ultimoP = p; display(String(p + 1)); }
+    }, fin, 'cabina');
+  }
+  function hojas(a0, a1, ms, fin, i0, i1) {   // abre o cierra; i0/i1 = hoja izquierda si va distinta
+    tw(ms, k => { modelo.puertas(a0 + (a1 - a0) * k, S.piso, i0 == null ? null : i0 + (i1 - i0) * k); verRayos(); }, fin, 'puertas');
+  }
+  function sacudir(ms) { const y = modelo.estado.cy; tw(ms, k => modelo.actualizar(y + Math.sin(k * 40) * 0.03 * (1 - k)), null, 'sim'); }
+  function vistaPuerta() {
+    const c = new T.Vector3(modelo.cx, MD.FH * S.piso + 1.1, 1.0);
+    mirar(c, distPara(1.45), dirDe(modelo.espejo ? 360 - 18 : 18, 84));
+  }
+  function guion(tipo, id) {
+    const FH = MD.FH, top = (MD.NP - 1) * FH;
+    const enPiso = p => { S.piso = p; modelo.actualizar(p * FH); modelo.puertas(0, p); display(String(p + 1)); ultimoP = p; };
+    switch (tipo) {
+      case 'cortina':
+        enPiso(0); S.rayos = true; enfocar('cortina_luminosa'); pasoSim(0); hojas(0, 1, 900);
+        en(1300, () => {
+          pasoSim(1); RAYO_MAL = RAYO_MAL || new T.MeshBasicMaterial({ color: 0xffd400 });
+          const r = modelo.rayos.children[5]; r._m0 = r._m0 || r.material; r.material = RAYO_MAL; r.scale.set(1, 4, 4);
+          S.sim.timers.push(setInterval(() => { r.visible = !r.visible; sucio = true; }, 300));
+        });
+        [0, 1, 2].forEach(i => { en(2600 + i * 2100, () => { pasoSim(2); hojas(1, 0.5, 900); }); en(3600 + i * 2100, () => hojas(0.5, 1, 600)); });
+        en(9100, () => pasoSim(3));
+        break;
+      case 'puerta': {
+        enPiso(0); vistaPuerta(); pasoSim(0); hojas(0, 1, 1000);
+        const op = id === 'operador_puertas';
+        en(2200, () => { pasoSim(1); if (op) hojas(1, 0.35, 1400, null, 1, 0.35); else hojas(1, 0, 1400, null, 1, 0.28); });
+        en(4200, () => pasoSim(2));
+        en(5200, () => { if (op) { hojas(0.35, 0.6, 500, () => hojas(0.6, 0.38, 700), 0.35, 0.6); } else { hojas(0, 0.2, 500, () => hojas(0.2, 0, 700, null, 0.4, 0.28), 0.28, 0.4); } });
+        en(7000, () => { pasoSim(3); display('PU'); });
+        break;
+      }
+      case 'contacto':
+        enPiso(0); vistaPuerta(); pasoSim(0); modelo.puertas(1, 0); hojas(1, 0, 1300);
+        en(1800, () => pasoSim(1));
+        en(3600, () => { pasoSim(2); display('PU'); hojas(0, 1, 900); });
+        en(5600, () => pasoSim(3));
+        break;
+      case 'serie': case 'electronica': case 'boton': case 'rescate': {
+        enPiso(0); vista('todo'); pasoSim(0);
+        if (tipo === 'boton' || tipo === 'electronica') {
+          en(1600, () => { pasoSim(1); if (tipo === 'electronica') display(' '); });
+          en(3600, () => pasoSim(2)); en(5600, () => pasoSim(3));
+          break;
+        }
+        mover(top, 4200);
+        en(1900, () => { pasoSim(1); cancelar('cabina'); sacudir(500); if (tipo === 'rescate') display(' '); else display('--'); });
+        en(3400, () => pasoSim(2));
+        en(5600, () => pasoSim(3));
+        break;
+      }
+      case 'paracaidas': case 'limitador':
+        enPiso(MD.NP - 1); vista('todo'); pasoSim(0);
+        if (tipo === 'paracaidas') {
+          mover(top - 1.6, 1900);
+          en(1900, () => { pasoSim(1); mover(top - 3.3, 650, null, (k, a, b) => a + (b - a) * k * k); });
+          en(2550, () => { pasoSim(2); display('--'); sacudir(600); });
+        } else {
+          mover(top - 2.4, 2600);
+          en(1700, () => { pasoSim(1); });
+          en(2600, () => { pasoSim(2); display('--'); sacudir(600); });
+        }
+        en(4800, () => pasoSim(3));
+        break;
+      case 'freno':
+        enPiso(0); vista('todo'); pasoSim(0);
+        en(1400, () => pasoSim(1));
+        en(2600, () => { pasoSim(2); sacudir(400); });
+        en(3800, () => { pasoSim(3); display('Er'); });
+        break;
+      case 'frenoPatina':
+        enPiso(0); vista('todo'); pasoSim(0); mover(top, 4000);
+        en(4000, () => { pasoSim(1); mover(top + 0.09, 1800); });
+        en(5800, () => pasoSim(2)); en(7400, () => { pasoSim(3); display('Er'); });
+        break;
+      case 'patina':
+        enPiso(0); vista('todo'); pasoSim(0); mover(top - 0.08, 4200);
+        en(1800, () => pasoSim(1)); en(4400, () => pasoSim(2)); en(6000, () => { pasoSim(3); display('Er'); });
+        break;
+      case 'motor':
+        enPiso(0); vista('todo'); pasoSim(0);
+        mover(2.2, 3000, null, (k, a, b) => a + (b - a) * k + Math.sin(k * 46) * 0.05 * k);
+        en(1200, () => pasoSim(1)); en(3000, () => { pasoSim(2); display('Er'); sacudir(500); }); en(4800, () => pasoSim(3));
+        break;
+      case 'pesacargas':
+        enPiso(0); enfocar('cabina'); pasoSim(0); hojas(0, 1, 900);
+        en(2000, () => { pasoSim(1); display('SC'); }); en(3800, () => pasoSim(2)); en(5600, () => pasoSim(3));
+        break;
+      case 'posicion':
+        enPiso(0); vista('todo'); pasoSim(0); mover(FH + 0.1, 3200);
+        en(1600, () => pasoSim(1)); en(3400, () => pasoSim(2));
+        en(5000, () => { pasoSim(3); display('?'); mover(0, 3000); });
+        en(8200, () => display('1'));
+        break;
+      case 'hidraulico':
+        enPiso(1); vista('todo'); pasoSim(0);
+        en(1200, () => { pasoSim(1); mover(FH - 0.12, 3200); });
+        en(4600, () => { pasoSim(2); mover(FH, 700); });
+        en(5800, () => { pasoSim(3); mover(FH - 0.1, 2600, () => mover(FH, 600)); });
+        break;
+      case 'manguera':
+        enPiso(MD.NP - 1); vista('todo'); pasoSim(0); mover(FH * 0.5, 3600);
+        en(1500, () => pasoSim(1));
+        en(2200, () => { pasoSim(2); cancelar('cabina'); sacudir(500); display('--'); });
+        en(4400, () => pasoSim(3));
+        break;
+      case 'amortiguador':
+        enPiso(1); vista('foso'); pasoSim(0); mover(0, 2200);
+        en(2200, () => { pasoSim(1); mover(-0.32, 900, null, (k, a, b) => a + (b - a) * k * k); });
+        en(3100, () => { pasoSim(2); sacudir(700); display('--'); });
+        en(4600, () => pasoSim(3));
+        break;
+      case 'guiado': {
+        enPiso(0); vista('todo'); pasoSim(0);
+        const x0 = S.sim.cx0;
+        mover(top, 5200);
+        tw(5200, k => { modelo.cab.position.x = x0 + Math.sin(k * 70) * 0.025 * Math.sin(k * Math.PI); }, null, 'sim');
+        en(1200, () => pasoSim(1)); en(3000, () => pasoSim(2)); en(5400, () => pasoSim(3));
+        break;
+      }
+      default:
+        enPiso(0); enfocar(id); pasoSim(0);
+        en(2200, () => pasoSim(1)); en(4400, () => pasoSim(2));
+    }
+  }
+
   // ---------- piezas en miniatura y visor de la ficha ----------
   function iniMini() {
     const c = document.createElement('canvas');
@@ -345,7 +567,7 @@
     ray.setFromCamera(new T.Vector2(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1), camera);
     const hits = ray.intersectObject(modelo.raiz, true);
     for (const h of hits) {
-      if (h.object.material === ASC.mat.rayo) continue;
+      if (h.object.parent === modelo.rayos) continue;
       let vis = true, id = null;
       for (let a = h.object; a; a = a.parent) { if (!a.visible) { vis = false; break; } if (!id && a.userData.parte) id = a.userData.parte; }
       if (!vis) continue;
@@ -377,6 +599,7 @@
 
   // ---------- cambios de tipo y de modo ----------
   function cambiarTipo(t, primera) {
+    terminarSim(true);
     S.tipo = t; S.sel = S.hover = S.pick = null; S.ficha = false; S.piso = 0; S.reto = null; S.msg = null; S.moviendo = false; ultimoP = 0;
     if (S.fz !== 'todas' && !delTipo().some(c => c.z === S.fz)) S.fz = 'todas';
     tweens.length = 0; clearTimeout(tMarcha);
@@ -391,6 +614,7 @@
     pintarZonas(); pintarPlaca(); aplicar(); pintarPanel(); pintarPuntos(); pintarBotonera(); guardar();
   }
   function cambiarModo(m) {
+    terminarSim(true);
     S.modo = m; S.sel = S.hover = S.pick = null; S.ficha = false; S.msg = null; S.reto = null;
     clearTimeout(tMarcha);
     $$('#seg-modo button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.modo === m)));
@@ -429,7 +653,7 @@
       <div class="chips" id="fz"><button type="button" data-fz="todas" aria-pressed="${S.fz === 'todas'}">Todas</button>${zs.map(z => `<button type="button" data-fz="${z}" aria-pressed="${S.fz === z}">${esc(ASC.zonas[z])}</button>`).join('')}</div>
       <div id="lista"></div></div>`;
   }
-  const sinTilde = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const sinTilde = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   function pintarLista() {
     const L = $('#lista'); if (!L) return;
     const f = sinTilde(S.filtro.trim());
@@ -437,7 +661,7 @@
       if (S.fz !== 'todas' && c.z !== S.fz) return false;
       if (!f) return true;
       const p = ASC.partes[c.id] || {};
-      return sinTilde([c.n, p.nombre, (p.alias || []).join(' '), p.ingles, p.resumen].join(' ')).indexOf(f) >= 0;
+      return sinTilde([c.n, p.nombre, (p.alias || []).join(' '), p.ingles, p.resumen].concat(repsDe(c.id).map(r => r.n + ' ' + (r.cod || ''))).join(' ')).indexOf(f) >= 0;
     };
     let h = '';
     ZONAS.forEach(z => {
@@ -465,6 +689,8 @@
         ${(c.alias && c.alias.length) || c.ingles ? `<p class="alias">${c.alias && c.alias.length ? 'También le dicen: ' + esc(c.alias.join(', ')) : ''}${c.alias && c.alias.length && c.ingles ? ' · ' : ''}${c.ingles ? 'En inglés: <span lang="en">' + esc(c.ingles) + '</span>' : ''}</p>` : ''}</header>
       <div class="visor" id="visor"><span>Arrastra para girar la pieza</span></div>
       ${c.resumen ? `<p class="resumen">${esc(c.resumen)}</p>` : `<p class="resumen">${esc(k.m)}</p>`}
+      ${ASC.video ? `<section class="video-sec"><h4>Video: cómo funciona y cómo falla</h4><div id="video-ficha"></div></section>` : ''}
+      ${ok3D && S.modo === 'explorar' ? `<div class="acciones"><button type="button" class="btn oro chico" data-accion="simular">Simular la falla en el ascensor</button></div>` : ''}
       ${propia ? `<section class="aqui"><h4>En el ${esc(e.nombre)}</h4><p>${esc(propia)}</p></section>` : ''}
       ${c.queHace ? `<section><h4>Qué hace</h4><p>${esc(c.queHace)}</p></section>` : ''}
       ${c.dondeVa || aqui ? `<section><h4>Dónde va</h4>${c.dondeVa ? `<p>${esc(c.dondeVa)}</p>` : ''}${aqui ? `<p class="aqui"><b>En este ascensor:</b> ${esc(aqui)}</p>` : ''}</section>` : ''}
@@ -472,6 +698,7 @@
       ${c.fallas && c.fallas.length ? `<section><h4>Qué puede fallar</h4><ul class="fallas">${c.fallas.map(f => `<li><b>${esc(f.sintoma)}</b>${f.causa ? `<span><em>Causa</em> ${esc(f.causa)}</span>` : ''}${f.revisar ? `<span><em>Se revisa</em> ${esc(f.revisar)}</span>` : ''}</li>`).join('')}</ul></section>` : ''}
       ${c.seguridad ? `<section class="segur"><h4>Seguridad</h4><p>${esc(c.seguridad)}</p></section>` : ''}
       ${mar.length ? `<section><h4>${propia ? 'En las otras marcas' : 'En cada marca'}</h4><dl class="xmarca">${mar.map(m => `<dt>${m[1]}</dt><dd>${esc(c.marcas[m[0]])}</dd>`).join('')}</dl></section>` : ''}
+      ${repsDe(id).length ? `<section><h4>Repuestos de esta pieza</h4><div class="chips">${repsDe(id).map(r => `<button type="button" data-rep="${r.id}"><b>${esc(nomMarca(r.m))}</b> · ${esc(r.n)}</button>`).join('')}</div></section>` : ''}
       ${c.dato ? `<p class="dato">${esc(c.dato)}</p>` : ''}
       <div class="acciones">${ok3D ? '<button type="button" class="btn sec chico" data-accion="ubicar">Verla en el modelo</button>' : ''}</div>
     </div>`;
@@ -581,13 +808,15 @@
   function pintarPanel() {
     const P = $('#panel');
     if (mini) { mini.visible = false; if (mini.c.parentNode) mini.c.parentNode.removeChild(mini.c); }
-    if (S.ficha && S.sel) { P.innerHTML = htmlFicha(S.sel); P.scrollTop = 0; montarVisor(); return; }
+    if (S.ficha && S.sel) { P.innerHTML = htmlFicha(S.sel); P.scrollTop = 0; montarVisor(); const v = $('#video-ficha'); if (v && ASC.video) ASC.video.montar(v, S.sel); return; }
     P.innerHTML = S.modo === 'explorar' ? htmlExplorar() : S.modo === 'armar' ? htmlArmar() : htmlReto();
     if (S.modo === 'explorar') pintarLista();
   }
 
   // ---------- manual ----------
   function pintarManual() {
+    if (ASC.repuestos && ASC.repuestos.length) { $('#repuestos').hidden = false; pintarFiltrosRep(); pintarRepuestos(); }
+    pintarElectronica();
     const tipos = ASC.tipoIds.filter(t => ASC.tipos[t]);
     if (tipos.length) {
       $('#tipos').hidden = false;
@@ -625,6 +854,98 @@
     }
   }
   const enlace = (u, t) => (u && /^https?:\/\//.test(u)) ? ` <a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>` : '';
+
+  // ---------- repuestos ----------
+  const REP_PAG = 24;
+  function repsDe(id) { return (ASC.repuestos || []).filter(r => r.p === id); }
+  function nomMarca(m) { const x = (ASC.marcasRep || []).find(b => b.id === m); return x ? x.nombre : m; }
+  function filtrarRep() {
+    const q = sinTilde(S.rq.trim()).split(/\s+/).filter(Boolean);
+    const lista = (ASC.repuestos || []).filter(r => {
+      if (S.rm !== 'todas' && r.m !== S.rm) return false;
+      if (S.rc !== 'todas' && r.c !== S.rc) return false;
+      if (!q.length) return true;
+      const p = ASC.partes[r.p] || {};
+      const txt = sinTilde([r.n, r.cod, r.mod, r.que, r.falla, r.cambio, nomMarca(r.m), ASC.categoriasRep[r.c], nomG(r.p), (p.alias || []).join(' ')].join(' '));
+      return q.every(w => txt.indexOf(w) >= 0);
+    });
+    // primero los que lo tienen en el nombre o en el código
+    if (q.length) { const pesa = r => q.every(w => sinTilde(r.n + ' ' + (r.cod || '')).indexOf(w) >= 0) ? 0 : 1; lista.sort((a, b) => pesa(a) - pesa(b)); }
+    return lista;
+  }
+  function htmlRep(r) {
+    const hayVideo = ASC.video && ASC.cat[r.p];
+    return `<article class="rep" data-rid="${r.id}">
+      <div class="rep-cab">
+        ${hayVideo ? `<button type="button" class="rep-min" data-video="${r.p}" aria-label="Video de ${esc(nomG(r.p))}"><canvas width="192" height="108" data-min="${r.p}"></canvas><span aria-hidden="true">▶</span></button>` : ''}
+        <div><p class="rep-marca m-${r.m}">${esc(nomMarca(r.m))} · ${esc(ASC.categoriasRep[r.c] || '')}</p><h3>${esc(r.n)}</h3></div>
+      </div>
+      ${r.cod ? `<p class="cod" title="Referencia vista en catálogos de repuestos: confirma con la etiqueta de la pieza">${esc(r.cod)}</p>` : ''}
+      <p>${esc(r.que)}</p>
+      ${r.mod ? `<p class="mod"><b>Dónde va:</b> ${esc(r.mod)}</p>` : ''}
+      <details><summary>Cómo falla y qué cuidar al cambiarlo</summary><p><b>Cómo falla:</b> ${esc(r.falla)}</p><p><b>Al cambiarlo:</b> ${esc(r.cambio)}</p></details>
+      <div class="acciones">
+        ${hayVideo ? `<button type="button" class="btn sec chico" data-video="${r.p}">Ver video</button>` : ''}
+        ${ok3D && ASC.cat[r.p] ? `<button type="button" class="btn sec chico" data-abrir="${r.p}">Ver en el 3D</button><button type="button" class="btn oro chico" data-simular="${r.p}">Simular falla</button>` : ''}
+        ${enlace(r.f, 'Fuente')}
+      </div></article>`;
+  }
+  function pintarRepuestos() {
+    const L = $('#lista-rep'); if (!L) return;
+    const lista = filtrarRep(), n = Math.min(lista.length, REP_PAG + S.rmas);
+    $('#rep-cuenta').textContent = lista.length === 1 ? '1 repuesto' : lista.length + ' repuestos';
+    L.innerHTML = lista.length ? lista.slice(0, n).map(htmlRep).join('') : '<p class="entrada">Ningún repuesto coincide. Prueba con el nombre de la pieza (freno, cortina, tarjeta) o quita el filtro de marca.</p>';
+    $('#rep-mas').hidden = n >= lista.length;
+    $('#rep-mas').textContent = 'Mostrar ' + Math.min(REP_PAG, lista.length - n) + ' más';
+    miniVideos(L);
+  }
+  // miniatura de cada video: un cuadro dibujado, sin animar
+  function miniVideos(raiz) {
+    if (!ASC.video) return;
+    const pend = $$('canvas[data-min]', raiz);
+    const dibujar = cv => { try { ASC.video.cuadro(cv, cv.dataset.min, 0, 4.2, raiz); } catch (e) { /* sin miniatura */ } cv.removeAttribute('data-min'); };
+    if (!window.IntersectionObserver) { pend.forEach(dibujar); return; }
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); dibujar(e.target); } }), { rootMargin: '200px' });
+    pend.forEach(cv => io.observe(cv));
+  }
+  function verRepuesto(rid) {
+    const r = (ASC.repuestos || []).find(x => x.id === rid); if (!r) return;
+    S.rq = r.cod || r.n; S.rm = 'todas'; S.rc = 'todas'; S.rmas = 0;
+    $('#buscar-rep').value = S.rq; pintarFiltrosRep(); pintarRepuestos();
+    const c = $(`.rep[data-rid="${rid}"]`, $('#lista-rep'));
+    if (c) { c.classList.add('resalta'); const d = $('details', c); if (d) d.open = true; c.scrollIntoView({ behavior: reducido ? 'auto' : 'smooth', block: 'center' }); }
+  }
+  function pintarFiltrosRep() {
+    $('#rep-marcas').innerHTML = `<button type="button" data-rm="todas" aria-pressed="${S.rm === 'todas'}">Todas las marcas</button>` + (ASC.marcasRep || []).map(m => `<button type="button" data-rm="${m.id}" aria-pressed="${S.rm === m.id}">${esc(m.nombre)}</button>`).join('');
+    $('#rep-cats').innerHTML = `<button type="button" data-rc="todas" aria-pressed="${S.rc === 'todas'}">Todo</button>` + Object.keys(ASC.categoriasRep || {}).map(c => `<button type="button" data-rc="${c}" aria-pressed="${S.rc === c}">${esc(ASC.categoriasRep[c])}</button>`).join('');
+  }
+  function abrirVideo(id) {
+    const d = $('#dlg-video'); if (!d || !ASC.video || !ASC.cat[id]) return;
+    $('#dlg-tit').textContent = nomG(id);
+    $('#dlg-ir').dataset.abrir = id;
+    ASC.video.montar($('#dlg-cuerpo'), id, { auto: true });
+    if (d.showModal) { if (!d.open) d.showModal(); } else d.setAttribute('open', '');
+  }
+  function cerrarVideo() {
+    const d = $('#dlg-video'); if (!d) return;
+    if (ASC.video) ASC.video.detener();
+    $('#dlg-cuerpo').innerHTML = '';
+    if (d.open) { if (d.close) d.close(); else d.removeAttribute('open'); }
+  }
+
+  // ---------- electrónica ----------
+  function pintarElectronica() {
+    const E = ASC.electronica; if (!E) return;
+    $('#electronica').hidden = false;
+    const vid = p => ASC.video && ASC.cat[p] ? `<button type="button" data-video="${p}">Video</button>` : '';
+    $('#elec-bloques').innerHTML = E.bloques.map((b, i) => `<div><dt>${i + 1}. ${esc(b.n)}</dt><dd>${esc(b.d)}</dd>${ASC.cat[b.p] ? `<dd class="chips"><button type="button" data-abrir="${b.p}">${esc(nomG(b.p))}</button>${vid(b.p)}</dd>` : ''}</div>`).join('');
+    $('#elec-fallas').innerHTML = E.fallas.map(f => `<div><div><b>${esc(f.s)}</b><p><em>Causa probable:</em> ${esc(f.c)}</p></div><div><p><em>Qué medir:</em> ${esc(f.m)}</p>${ASC.cat[f.p] ? `<div class="chips" style="margin-top:6px"><button type="button" data-abrir="${f.p}">${esc(nomG(f.p))}</button>${vid(f.p)}</div>` : ''}</div></div>`).join('');
+    const pasos = a => a.map(p => `<li><h3>${esc(p.t)}</h3><p>${esc(p.d)}</p></li>`).join('');
+    $('#elec-tarjeta').innerHTML = pasos(E.cambioTarjeta);
+    $('#elec-piso').innerHTML = pasos(E.cambioPiso);
+    $('#elec-medir').innerHTML = E.medir.map(h => `<div><dt>${esc(h.n)}</dt><dd>${esc(h.d)}</dd></div>`).join('');
+    $('#elec-ruta').innerHTML = E.ruta.map(r => `<div><b>${esc(r.t)}</b>${esc(r.d)}</div>`).join('');
+  }
   function pintarMarca() {
     const m = ASC.marcas[S.marca]; if (!m) return;
     const ul = a => (a && a.length) ? '<ul>' + a.map(x => `<li>${esc(x)}</li>`).join('') + '</ul>' : '';
@@ -683,6 +1004,8 @@
       else if (d.accion === 'volver') { S.ficha = false; if (S.modo !== 'reto') S.sel = null; aplicar(); pintarPanel(); pintarPuntos(); }
       else if (d.accion === 'ubicar') { enfocar(S.sel); if (window.matchMedia('(max-width: 900px)').matches) escena.scrollIntoView({ behavior: reducido ? 'auto' : 'smooth', block: 'start' }); }
       else if (d.accion === 'reiniciar') reiniciar();
+      else if (d.accion === 'simular') { simularFalla(S.sel); if (window.matchMedia('(max-width: 900px)').matches) escena.scrollIntoView({ behavior: reducido ? 'auto' : 'smooth', block: 'start' }); }
+      else if (d.rep) verRepuesto(d.rep);
       else if (d.accion === 'marcha') { vista('todo'); irAPiso(MD.NP - 1, () => { tMarcha = setTimeout(() => irAPiso(0), 1200); }); }
       else if (d.accion === 'reto') nuevoReto();
       else if (d.accion === 'sig') { const R = S.reto; R.resp = null; R.i++; if (R.i >= R.q.length) { R.fin = true; S.sel = null; aplicar(); pintarPanel(); } else prepararPregunta(); }
@@ -691,13 +1014,24 @@
     P.addEventListener('change', e => { if (e.target.id === 'chk-sil') { S.siluetas = e.target.checked; guardar(); aplicar(); } });
 
     document.addEventListener('click', e => {
-      const a = e.target.closest('[data-abrir]'); if (a) { abrirParte(a.dataset.abrir); return; }
+      const v = e.target.closest('[data-video]'); if (v) { abrirVideo(v.dataset.video); return; }
+      const si = e.target.closest('[data-simular]'); if (si) { cerrarVideo(); abrirParte(si.dataset.simular); simularFalla(si.dataset.simular); return; }
+      const a = e.target.closest('[data-abrir]'); if (a) { cerrarVideo(); abrirParte(a.dataset.abrir); return; }
+      const fm = e.target.closest('[data-rm]'); if (fm) { S.rm = fm.dataset.rm; S.rmas = 0; pintarFiltrosRep(); pintarRepuestos(); return; }
+      const fc = e.target.closest('[data-rc]'); if (fc) { S.rc = fc.dataset.rc; S.rmas = 0; pintarFiltrosRep(); pintarRepuestos(); return; }
+      const sug = e.target.closest('[data-rq]'); if (sug) { S.rq = sug.dataset.rq; S.rmas = 0; $('#buscar-rep').value = S.rq; pintarRepuestos(); return; }
+      if (e.target.closest('#rep-mas')) { S.rmas += REP_PAG; pintarRepuestos(); return; }
+      if (e.target.closest('[data-cerrar]')) { cerrarVideo(); return; }
+      const sm = e.target.closest('[data-sim]'); if (sm) { if (sm.dataset.sim === 'repetir' && S.sim) simularFalla(S.sim.id); else terminarSim(); return; }
       const t = e.target.closest('[data-ir-tipo]');
       if (t) { if (t.dataset.irTipo !== S.tipo) cambiarTipo(t.dataset.irTipo); $('#taller').scrollIntoView({ behavior: reducido ? 'auto' : 'smooth', block: 'start' }); return; }
       const m = e.target.closest('[data-marca]');
       if (m) { S.marca = Number(m.dataset.marca); $$('#seg-marca button').forEach(x => x.setAttribute('aria-pressed', String(Number(x.dataset.marca) === S.marca))); pintarMarca(); }
     });
     const bs = $('#buscar-sintoma'); if (bs) bs.addEventListener('input', () => pintarSintomas(bs.value));
+    const br = $('#buscar-rep'); if (br) br.addEventListener('input', () => { S.rq = br.value; S.rmas = 0; pintarRepuestos(); });
+    const dv = $('#dlg-video');
+    if (dv) { dv.addEventListener('close', cerrarVideo); dv.addEventListener('click', e => { if (e.target === dv) cerrarVideo(); }); }
 
     if (!ok3D) return;
     const sens = $('#sens');
@@ -733,7 +1067,7 @@
         ray.setFromCamera(new T.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1), camera);
         let P = controls.target.clone();
         for (const h of ray.intersectObject(modelo.raiz, true)) {
-          let vis = h.object.material !== ASC.mat.rayo && h.object.material !== ASC.mat.toque;
+          let vis = h.object.parent !== modelo.rayos && h.object.material !== ASC.mat.toque;
           for (let a = h.object; a && vis; a = a.parent) if (!a.visible) vis = false;
           if (vis) { P = h.point; break; }
         }
