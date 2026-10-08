@@ -78,7 +78,7 @@
   }
   // escalera suave: la puerta avanza a tirones (se queda, salta, se queda...)
   function tirones(a, n) { var q = a * n, f = Math.floor(q); return (f + Math.pow(Math.min(1, Math.max(0, (q - f - 0.5) / 0.5)), 0.6)) / n; }
-  function estado(a, da) { return a > 0.98 ? ['ABIERTA', 'ac'] : a < 0.01 ? ['CERRADA', 'ok'] : da > 0 ? ['ABRIENDO', 'ac'] : da < 0 ? ['CERRANDO', 'ac'] : ['A MEDIAS', 'mal']; }
+  function estado(a, da) { return a > 0.98 ? ['ABIERTA', 'ac'] : a < 0.01 ? ['CERRADA', 'ok'] : da > 0 ? ['ABRIENDO', 'ac'] : da < 0 ? ['CERRANDO', 'ac'] : ['QUIETA', '']; }
 
   // ---------- la puerta de piso completa ----------
   // op.vista: 'hueco' (cámara dentro del hueco) o 'pasillo'; op.cabina: cabina detrás; op.patin: patín de la cabina;
@@ -593,7 +593,7 @@
         K.marcar(hR.ruedas[1], t < 9 ? (K.parpadeo(t, 2) ? 'mal' : null) : t > 15 ? 'foco' : null);
         K.marcar([c0, c1], gasta ? (K.parpadeo(t, 2) ? 'mal' : null) : t > 15 ? 'foco' : null);
         K.marcar(hR.ruedas[0], t > 15 ? 'foco' : null);
-        if (t < 9) { K.rotulo('Lado plano', [xr + 0.11, YR + 0.05, ZH], 'izq'); if (t > 4) K.aviso('Suena tac, tac, tac'); K.tabla([['RUEDA', 'GASTADA', 'mal'], ['HOJA', golpe > 0.35 ? 'SALTA' : 'CORRE', golpe > 0.35 ? 'mal' : '']]); }
+        if (t < 9) { K.rotulo('Lado plano', [xr + 0.11, YR + 0.05, ZH]); if (t > 4) K.aviso('Suena tac, tac, tac'); K.tabla([['RUEDA', 'GASTADA', 'mal'], ['HOJA', golpe > 0.35 ? 'SALTA' : 'CORRE', golpe > 0.35 ? 'mal' : '']]); }
         else if (t < 14.5) {
           K.rotulo('Contrarrueda gastada', [xr - 0.11, YR - 0.05 + lift, ZH], 'der');
           if (lift > 0.02) { K.aviso('¡La hoja se puede salir del riel!'); K.rotulo('Rueda fuera del riel', [xr + 0.11, YR + 0.05 + lift, ZH], 'izq'); }
@@ -781,7 +781,7 @@
       cam: [[0, [0.3, 0.75, 0.95], [0, 0.0, -0.12]], [4.5, [0.25, 0.48, 0.6], [0.05, 0.0, -0.07]], [8.6, [0.25, 0.48, 0.6], [0.05, 0.0, -0.07]], [9.4, [0.32, 0.5, 0.55], [0.05, -0.01, -0.12]], [13.4, [0.32, 0.5, 0.55], [0.05, -0.01, -0.12]], [14.2, [0.34, 0.4, 0.42], [0.1, -0.04, -0.09]], [18, [0.34, 0.4, 0.42], [0.1, -0.06, -0.1]]],
       anim: function (t, s, K) {
         K.marcar(s.marcables, null);
-        var fa = function (x) { return K.kf(x, [[0, 1], [4.6, 1], [6.6, 0.3], [7.6, 0.3], [9, 1]]); }, a = fa(t);
+        var fa = function (x) { return K.kf(x, [[0, 1], [4.6, 1], [7, 0.3], [9, 1]]); }, a = fa(t);
         pone(s, K, { a: a, cy: 0 });
         s.piedra.visible = false; s.brocha.visible = false; s.pers.visible = false;
         var zm = K.kf(t, [[14.4, -0.02], [15.3, -0.115]]), ym = t < 15.3 ? 0.002 : 0.002 - 1.4 * Math.pow(t - 15.3, 2);
