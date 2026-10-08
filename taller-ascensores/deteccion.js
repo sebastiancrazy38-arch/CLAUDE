@@ -23,7 +23,7 @@
   // ---------- comparar códigos: «Err 30», «ERR30», «E30» y «30» son el mismo número ----------
   const PREF = /^(ERR|ER|E|F|FL|A|AL|ALM|ALARM|FAULT|FALLA|EV|EVT|EVENT|CODE|COD|C|N|NO)(?=\d)/;
   function claves(c) {
-    const k = sinTilde(c).toUpperCase().replace(/[\s\-_.:#/]/g, '');
+    const k = sinTilde(c).toUpperCase().replace(/[\s\-_.:#/=]/g, '');
     const num = k.replace(PREF, '').replace(/^0+(?=\d)/, '');
     return { k, num };
   }
@@ -125,7 +125,8 @@
       return;
     }
     const r = buscarCodigo(D.q, filtroActual());
-    $('#det-cuenta').textContent = r.length ? (r.length === 1 ? '1 resultado' : r.length + ' resultados') : 'Sin resultados';
+    const varios = new Set(r.map(c => c.equipo)).size > 1 && D.eq === 'todos';
+    $('#det-cuenta').textContent = r.length ? (r.length === 1 ? '1 resultado' : r.length + ' resultados') + (varios ? ' en varios equipos: elige la marca o el equipo para ver solo el tuyo' : '') : 'Sin resultados';
     R.innerHTML = r.length ? r.slice(0, 30).map(htmlCodigo).join('') + (r.length > 30 ? `<p class="entrada">Hay ${r.length - 30} más: elige la marca o el equipo para afinar.</p>` : '')
       : `<div class="aviso"><b>No encontré ese código.</b><p>Revisa que esté bien escrito, elige la marca y el equipo, o usa «Responder preguntas»: te guía por síntomas y sirve para cualquier marca.</p></div>`;
   }
@@ -157,7 +158,8 @@
     const R = $('#det-tres'); if (!R) return;
     const vistos = new Set(), res = [];
     fichas(D.texto).forEach(f => buscarCodigo(f, filtroActual()).filter(c => coincide(c, f) >= 2).forEach(c => { const k = c.equipo + '|' + c.codigo; if (!vistos.has(k)) { vistos.add(k); res.push(c); } }));
-    $('#det-tcuenta').textContent = D.texto.trim() ? (res.length ? res.length + ' códigos reconocidos' : 'No reconocí ningún código. Elige el equipo para afinar la búsqueda.') : '';
+    const varios = new Set(res.map(c => c.equipo)).size > 1 && D.eq === 'todos';
+    $('#det-tcuenta').textContent = D.texto.trim() ? (res.length ? res.length + ' códigos reconocidos' + (varios ? ' en varios equipos: elige tu equipo arriba para ver solo los suyos.' : '') : 'No reconocí ningún código. Elige el equipo para afinar la búsqueda.') : '';
     R.innerHTML = res.slice(0, 40).map(htmlCodigo).join('');
   }
 

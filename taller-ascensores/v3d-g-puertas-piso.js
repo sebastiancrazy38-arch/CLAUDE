@@ -227,9 +227,9 @@
       K.add(K.caja(3.4, 0.04, 2.4, m.hall, 0, -0.02, 1.36));
       K.add(K.caja(1.95, 6, 0.05, m.oscuro, 0, -0.05, -1.75));
       K.add(K.caja(0.05, 6, 1.75, m.oscuro, -0.95, -0.05, -0.88)); K.add(K.caja(0.05, 6, 1.75, m.oscuro, 0.95, -0.05, -0.88));
-      K.add(K.caja(0.09, 0.2, 0.014, M.inox, -1.0, 1.1, 0.167));
-      K.add(K.cil(0.02, 0.012, M.grisClaro, -1.0, 1.1, 0.176, 'z', 18));
-      s.botonLuz = K.add(K.cil(0.021, 0.013, s.amarB = K.matB(0xffc62b), -1.0, 1.1, 0.177, 'z', 18));
+      K.add(K.caja(0.09, 0.2, 0.014, M.inox, -1.2, 1.1, 0.167));
+      K.add(K.cil(0.02, 0.012, M.grisClaro, -1.2, 1.1, 0.176, 'z', 18));
+      s.botonLuz = K.add(K.cil(0.021, 0.013, s.amarB = K.matB(0xffc62b), -1.2, 1.1, 0.177, 'z', 18));
       s.indicador = K.add(K.cartel('3', 0.16, 0.08, '#1b262f', '#ff5a3c')); s.indicador.position.set(0, 2.28, 0.163); s.pisoTxt = '3';
     }
     // franja roja que marca la rendija cuando las hojas no se juntan
@@ -314,7 +314,7 @@
         piso(s, cy < -1.6 ? '2' : cy > 1.6 ? '4' : '3');
         s.botonLuz.visible = K.entre(t, 1.3, 5);
         // la persona llama, espera, entra y se va con la cabina
-        var px = K.kf(t, [[9.6, -0.76], [10.6, 0]]), pz = K.kf(t, [[9.9, 0.8], [12.1, -0.75]]);
+        var px = K.kf(t, [[9.4, -0.96], [10.6, 0]]), pz = K.kf(t, [[9.9, 0.8], [12.1, -0.75]]);
         s.pers.position.set(px, pz < -0.2 ? cy : 0, pz); s.pers.rotation.y = PI; s.pers.visible = cy < 1.2;
         s.pers.caminar(t, K.entre(t, 9.6, 12.1) ? 1 : 0);
         s.pers.brazoD.rotation.x = -K.kf(t, [[0.8, 0], [1.2, 1.25], [1.8, 1.25], [2.2, 0]]);
@@ -571,7 +571,7 @@
         [4, 'En cada vuelta el lado plano golpea el riel: la hoja salta y suena tac, tac.'],
         [9, 'Falla 2: la contrarrueda está gastada o floja. Si empujan la hoja, se levanta y se puede salir del riel.'],
         [14.5, 'Arreglo: cambiar la rueda dañada y regular la contrarrueda casi pegada al riel.']],
-      cam: [[0, [0.52, 2.3, -0.5], [0.33, 2.2, -0.06]], [3.6, [0.55, 2.3, -0.52], [0.36, 2.2, -0.06]], [4.6, [0.72, 2.3, -0.75], [0.42, 2.15, -0.06]], [8.6, [0.6, 2.3, -0.75], [0.3, 2.15, -0.06]], [9.4, [0.45, 2.13, -0.72], [0.23, 2.12, -0.06]], [14.2, [0.45, 2.13, -0.72], [0.23, 2.12, -0.06]], [15, [0.75, 2.3, -0.78], [0.45, 2.15, -0.06]], [19, [0.75, 2.3, -0.78], [0.45, 2.15, -0.06]]],
+      cam: [[0, [0.52, 2.3, -0.5], [0.33, 2.2, -0.06]], [3.6, [0.55, 2.3, -0.52], [0.36, 2.2, -0.06]], [4.6, [0.72, 2.3, -0.75], [0.42, 2.15, -0.06]], [8.6, [0.6, 2.3, -0.75], [0.3, 2.15, -0.06]], [9.4, [0.45, 2.16, -0.75], [0.23, 2.15, -0.06]], [14.2, [0.45, 2.16, -0.75], [0.23, 2.15, -0.06]], [15, [0.75, 2.3, -0.78], [0.45, 2.15, -0.06]], [19, [0.75, 2.3, -0.78], [0.45, 2.15, -0.06]]],
       anim: function (t, s, K) {
         K.marcar(s.marcables, null);
         var a, yR = 0, hR = s.hojas[1], c0 = hR.contra[0], c1 = hR.contra[1];
@@ -671,7 +671,7 @@
         else if (t < 9.5) { K.rotulo('Pesa en el fondo', [XW, wy, ZH], 'izq'); if (t > 7.5) K.rotulo('Queda abierta', [0, 1.25, ZH - 0.02]); }
         else if (t < 14.5) { K.rotulo('Queda abierta', [0, 1.1, ZH - 0.02]); K.aviso('¡Puerta abierta! No acercarse'); }
         else { K.rotulo('Cordón nuevo', [XW, YW - 0.12, ZH], 'izq'); if (t > 17) K.aviso('Cierra sola otra vez', false); }
-        K.tabla([['CORDÓN', roto ? 'ROTO' : t >= 14.5 ? 'NUEVO' : 'GASTADO', roto ? 'mal' : t >= 14.5 ? 'ok' : 'ac'], ['PUERTA', a < 0.01 ? 'CERRADA' : t > 7.4 && t < 14.5 ? 'ENTREABIERTA' : 'ABIERTA', a < 0.01 ? 'ok' : t > 7.4 ? 'mal' : ''], ['ASCENSOR', t > 9.5 && t < 14.5 ? 'PARADO' : t >= 14.5 ? 'EN PRUEBA' : 'EN EL PISO', t > 9.5 && t < 14.5 ? 'mal' : '']]);
+        K.tabla([['CORDÓN', roto ? 'ROTO' : t >= 14.5 ? 'NUEVO' : 'GASTADO', roto ? 'mal' : t >= 14.5 ? 'ok' : 'ac'], ['PUERTA', a < 0.01 ? 'CERRADA' : t >= 14.5 ? 'CIERRA SOLA' : t > 7.4 ? 'ENTREABIERTA' : 'ABIERTA', a < 0.01 || t >= 14.5 ? 'ok' : t > 7.4 ? 'mal' : ''], ['ASCENSOR', t > 9.5 && t < 14.5 ? 'PARADO' : t >= 14.5 ? 'EN PRUEBA' : 'EN EL PISO', t > 9.5 && t < 14.5 ? 'mal' : '']]);
       }
     }
   });
@@ -694,10 +694,10 @@
     funciona: {
       dur: 17,
       subt: [[0, 'Debajo de cada hoja van dos tacos de plástico: los guiadores.'],
-        [4, 'Van metidos en la ranura de la pisadera. Aquí la cortamos para ver adentro: el taco corre por la ranura como un tren en su riel.'],
+        [4, 'Van metidos en la ranura del piso. Aquí la cortamos para ver: el taco corre adentro, como un tren en su riel.'],
         [9, 'Si alguien empuja la hoja desde el pasillo, el taco topa con la ranura y la hoja no se va al hueco.'],
         [13.5, 'La hoja cuelga de arriba; abajo, los guiadores solo la mantienen en su carril.']],
-      cam: [[0, [0.85, 0.5, -0.8], [0.22, 0.03, -0.06]], [3.8, [0.85, 0.5, -0.8], [0.25, 0.03, -0.06]], [5.6, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]], [13.2, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]], [14.6, [1.6, 1.45, -2.6], [0.25, 1.0, 0]], [17, [1.6, 1.45, -2.6], [0.25, 1.0, 0]]],
+      cam: [[0, [0.85, 0.5, -0.8], [0.22, 0.03, -0.06]], [3.8, [0.85, 0.5, -0.8], [0.25, 0.03, -0.06]], [5.6, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]], [13.2, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]], [14.6, [2.0, 1.3, -3.6], [0.25, 1.1, 0]], [17, [2.0, 1.3, -3.6], [0.25, 1.1, 0]]],
       anim: function (t, s, K) {
         K.marcar(s.marcables, null);
         var fa = function (x) { return K.kf(x, [[0, 0], [5.8, 0], [7.1, 0.18], [7.6, 0.18], [8.9, 0], [14, 0], [15.4, 0.6], [17, 0.6]]); }, a = fa(t);
@@ -711,10 +711,10 @@
         K.marcar(s.labioA, emp > 0.5 ? 'foco' : null);
         s.flecha2.visible = false;
         s.flecha.visible = emp > 0.05;
-        if (s.flecha.visible) s.flecha.apuntar([xg, 0.07, 0.0], [xg, 0.07, -0.046]);
+        if (s.flecha.visible) s.flecha.apuntar([xg, 0.045, 0.0], [xg, 0.045, -0.046]);
         if (t < 4) { K.rotulo('Guiador', [xr - 0.15, 0.0, ZH - 0.015], 'izq'); K.rotulo('Guiador', [xg, 0.0, ZH - 0.015]); }
         else if (t < 9) { if (t > 5) { K.rotulo('Ranura', [0.47, -0.012, -0.06], 'izq'); K.rotulo('Taco', [xg, -0.004, -0.06]); K.rotulo('Hoja', [xg, 0.06, -0.06]); } }
-        else if (t < 13.5) { K.rotulo('Empujan desde el pasillo', [xg, 0.07, -0.01], 'izq'); if (emp > 0.5) K.rotulo('El taco topa: no pasa', [xg, -0.004, -0.068]); }
+        else if (t < 13.5) { K.rotulo('Empujan desde el pasillo', [xg, 0.045, -0.01], 'izq'); if (emp > 0.5) K.rotulo('El taco topa: no pasa', [xg, -0.004, -0.068]); }
         else { K.rotulo('Cuelga del carro', [xr, 2.15, ZP]); K.rotulo('Guiadores', [xr + 0.15, 0.0, ZH]); }
         K.tabla([['TACOS', 'BIEN', 'ok'], ['HOJA', emp > 0.5 ? 'NO SE MUEVE' : a > 0.01 && a < 0.99 && Math.abs(fa(t + 0.05) - fa(t - 0.05)) > 0.001 ? 'CORRE' : 'FIRME', 'ok']]);
       }
@@ -778,14 +778,14 @@
         [4.5, 'Tiene una ranura: por ahí corren los tacos que guían las hojas de la puerta por abajo.'],
         [9, 'Cuando la cabina para bien, las dos quedan al mismo nivel, con una rendija de unos 3 cm.'],
         [13.5, 'Si algo se te cae por esa rendija, no lo saques: cae al fondo del hueco y lo recupera el técnico.']],
-      cam: [[0, [0.3, 0.75, 0.95], [0, 0.0, -0.12]], [4.5, [0.25, 0.48, 0.6], [0.05, 0.0, -0.07]], [8.6, [0.25, 0.48, 0.6], [0.05, 0.0, -0.07]], [9.4, [0.32, 0.5, 0.55], [0.05, -0.01, -0.12]], [13.4, [0.32, 0.5, 0.55], [0.05, -0.01, -0.12]], [14.2, [0.3, 0.42, 0.42], [0.1, -0.12, -0.115]], [18, [0.3, 0.42, 0.42], [0.1, -0.15, -0.115]]],
+      cam: [[0, [0.3, 0.75, 0.95], [0, 0.0, -0.12]], [4.5, [0.25, 0.48, 0.6], [0.05, 0.0, -0.07]], [8.6, [0.25, 0.48, 0.6], [0.05, 0.0, -0.07]], [9.4, [0.32, 0.5, 0.55], [0.05, -0.01, -0.12]], [13.4, [0.32, 0.5, 0.55], [0.05, -0.01, -0.12]], [14.2, [0.34, 0.4, 0.42], [0.1, -0.04, -0.09]], [18, [0.34, 0.4, 0.42], [0.1, -0.06, -0.1]]],
       anim: function (t, s, K) {
         K.marcar(s.marcables, null);
         var fa = function (x) { return K.kf(x, [[0, 1], [4.6, 1], [6.6, 0.3], [7.6, 0.3], [9, 1]]); }, a = fa(t);
         pone(s, K, { a: a, cy: 0 });
         s.piedra.visible = false; s.brocha.visible = false; s.pers.visible = false;
-        var ym = t < 15.2 ? 0.25 : 0.25 - 1.6 * Math.pow(t - 15.2, 2);
-        s.moneda.visible = t > 14 && ym > -1.5; s.moneda.position.set(0.12, ym, -0.115); s.moneda.rotation.set(t * 6, 0, t * 3); K.marcar(s.moneda, 'foco');
+        var zm = K.kf(t, [[14.4, -0.02], [15.3, -0.115]]), ym = t < 15.3 ? 0.002 : 0.002 - 1.4 * Math.pow(t - 15.3, 2);
+        s.moneda.visible = t > 13.6 && ym > -1.5; s.moneda.position.set(0.12, ym, zm); s.moneda.rotation.set(t > 15.3 ? (t - 15.3) * 7 : 0, 0, 0); K.marcar(s.moneda, 'foco');
         K.marcar(s.pisadera.concat(s.pisCab), t < 4.5 ? (K.parpadeo(t, 1) ? 'foco' : null) : null);
         K.marcar([s.labioA, s.labioB], K.entre(t, 4.5, 9) ? 'foco' : null);
         var mide = K.entre(t, 9.3, 13.5);
@@ -794,7 +794,7 @@
         if (t < 4.5) { K.rotulo('Pisadera del piso', [0.25, 0.0, -0.03]); K.rotulo('Pisadera de la cabina', [-0.25, 0.0, -0.17], 'izq'); }
         else if (t < 9) K.rotulo('Ranura', [-0.1, -0.005, -0.06], 'izq');
         else if (t < 13.5) { K.rotulo('Rendija de 3 cm', [0.24, 0.0, -0.115]); K.rotulo('Mismo nivel', [-0.2, 0.0, -0.13], 'izq'); }
-        else if (s.moneda.visible) K.rotulo('Moneda', s.moneda.position.clone(), 'izq');
+        else if (s.moneda.visible) K.rotulo(t < 15.3 ? 'Moneda' : 'Cae al fondo del hueco', s.moneda.position.clone(), 'izq');
         K.tabla([['CABINA', 'A NIVEL', 'ok'], ['PUERTA', estado(a, fa(t + 0.05) - fa(t - 0.05))[0], 'ok']]);
       }
     },
