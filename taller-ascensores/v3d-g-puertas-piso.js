@@ -82,7 +82,7 @@
 
   // ---------- la puerta de piso completa ----------
   // op.vista: 'hueco' (cámara dentro del hueco) o 'pasillo'; op.cabina: cabina detrás; op.patin: patín de la cabina;
-  // op.pesa: pesa de cierre; op.cuentas: marcas que corren con el cable; op.pasta: riel sucio; op.vidrio: pisadera transparente
+  // op.pesa: pesa de cierre; op.cuentas: marcas que corren con el cable; op.pasta: riel sucio; op.corte: pisadera cortada en esa x
   function armar(K, op) {
     var M = K.M, T = K.T, s = { op: op };
     var hueco = op.vista === 'hueco';
@@ -93,11 +93,11 @@
       carro: K.mat(lin(0xa3aeb8), { metalness: 0.3, roughness: 0.45 }),
       rendija: K.matB(0xff3b30, { transparent: true, opacity: 0.75 }),
       alu: K.mat(0xb7bec5, { metalness: 0.55, roughness: 0.35 }),
-      vidrio: K.mat(0xaab4bd, { transparent: true, opacity: 0.3, depthWrite: false, metalness: 0.2 }),
       nylon: K.mat(0xf3f0e8, { roughness: 0.45, metalness: 0 }),
       cable: K.mat(0xe6ebef, { metalness: 0.6, roughness: 0.25 }),
       cordon: K.mat(lin(0x17a398), { roughness: 0.6, metalness: 0 }),
-      taco: K.mat(0x2f6fb8, { roughness: 0.55, metalness: 0 }),
+      taco: K.mat(lin(0x1f6fd1), { roughness: 0.5, metalness: 0 }),
+      fondo: K.mat(lin(0x23282d), { roughness: 0.9, metalness: 0 }),
       pesa: K.mat(0x4b5259, { roughness: 0.6, metalness: 0.35 }),
       oscuro: K.mat(0x22272c, { roughness: 1, metalness: 0 }),
       pasta: K.mat(0x15110d, { roughness: 1, metalness: 0 }),
@@ -106,19 +106,26 @@
     if (hueco) { var l = new T.DirectionalLight(0xffffff, 0.6); l.position.set(-1.5, 4.5, -5); K.add(l); }
     // muro del frente con el vano (cara del hueco en z = 0, cara del pasillo en z = 0.16)
     K.add(K.caja(1.3, 3.45, 0.16, m.muro, -1.05, 1.225, 0.08)); K.add(K.caja(1.3, 3.45, 0.16, m.muro, 1.05, 1.225, 0.08));
-    K.add(K.caja(0.8, 0.91, 0.16, m.muro, 0, 2.495, 0.08)); K.add(K.caja(0.8, 0.5, 0.16, m.muro, 0, -0.25, 0.08));
+    K.add(K.caja(0.8, 0.91, 0.16, m.muro, 0, 2.495, 0.08)); K.add(K.caja(0.8, 0.5, 0.16, m.hall, 0, -0.25, 0.08));
     // marco de acero del lado del pasillo
     K.add(K.caja(0.07, 2.1, 0.03, M.inox, -0.435, 1.05, 0.175)); K.add(K.caja(0.07, 2.1, 0.03, M.inox, 0.435, 1.05, 0.175));
     K.add(K.caja(0.94, 0.07, 0.03, M.inox, 0, 2.075, 0.175));
     K.add(K.caja(0.012, 2.04, 0.16, M.inox, -0.396, 1.02, 0.08)); K.add(K.caja(0.012, 2.04, 0.16, M.inox, 0.396, 1.02, 0.08));
 
-    // pisadera de piso: dos labios de aluminio y la ranura entre ellos (bajo las hojas)
-    s.pisadera = [K.add(K.caja(1.72, 0.008, 0.10, M.aceroOsc, 0, -0.022, -0.05))];
-    s.labioA = K.add(K.caja(1.72, 0.018, 0.032, op.vidrio ? m.vidrio : m.alu, 0, -0.009, -0.084));
-    s.labioB = K.add(K.caja(1.72, 0.018, 0.052, m.alu, 0, -0.009, -0.026));
+    // pisadera de piso: dos labios de aluminio y la ranura entre ellos (bajo las hojas).
+    // op.corte: la pisadera termina cortada en esa x, con la cara del corte pintada, para ver la ranura por dentro
+    var x1 = op.corte || 0.86, lp = x1 + 0.86, cxp = (x1 - 0.86) / 2;
+    s.pisadera = [K.add(K.caja(lp, 0.008, 0.10, m.fondo, cxp, -0.022, -0.05))];
+    s.labioA = K.add(K.caja(lp, 0.018, 0.032, m.alu, cxp, -0.009, -0.084));
+    s.labioB = K.add(K.caja(lp, 0.018, 0.052, m.alu, cxp, -0.009, -0.026));
     s.pisadera.push(s.labioA, s.labioB);
-    [-0.042, -0.026, -0.010].forEach(function (z) { s.pisadera.push(K.add(K.caja(1.72, 0.002, 0.004, M.aceroOsc, 0, 0.0005, z))); });
-    K.add(K.caja(1.72, 0.1, 0.006, M.aceroOsc, 0, -0.076, -0.097));
+    [-0.042, -0.026, -0.010].forEach(function (z) { s.pisadera.push(K.add(K.caja(lp, 0.002, 0.004, M.aceroOsc, cxp, 0.0005, z))); });
+    K.add(K.caja(lp, 0.1, 0.006, m.fondo, cxp, -0.076, -0.097));
+    if (op.corte) {
+      var tapa = K.mat(lin(0xf08a24), { roughness: 0.6, metalness: 0 });
+      s.corte = [K.add(K.caja(0.002, 0.018, 0.032, tapa, x1 + 0.001, -0.009, -0.084)), K.add(K.caja(0.002, 0.018, 0.052, tapa, x1 + 0.001, -0.009, -0.026)),
+        K.add(K.caja(0.002, 0.008, 0.1, tapa, x1 + 0.001, -0.022, -0.05))];
+    }
 
     // cabezal: plancha en el muro y el riel, sujeto solo en sus puntas
     s.placa = K.add(K.caja(2.1, 0.42, 0.012, m.cabezal, 0, 2.25, -0.006));
@@ -132,7 +139,7 @@
       h.panel = K.caja(HW, 2.0, 0.025, M.inox, 0, -1.0, 0); piv.add(h.panel);
       piv.add(K.caja(0.01, 2.0, 0.027, M.goma, -lado * (HW / 2 - 0.005), -1.0, 0));
       h.guias = [-0.15, 0.15].map(function (x) {
-        var lengua = K.caja(0.05, 0.024, 0.01, m.taco, x, -2.008, 0), placa = K.caja(0.06, 0.03, 0.004, M.acero, x, -1.985, -0.0145);
+        var lengua = K.caja(0.05, 0.024, 0.01, m.taco, x, -2.008, 0), placa = K.caja(0.06, 0.03, 0.004, M.hierro, x, -1.985, -0.0145);
         piv.add(lengua, placa); return { lengua: lengua, placa: placa, x: x };
       });
       h.carro = K.caja(0.36, 0.32, 0.008, m.carro, 0, 2.14, ZP); g.add(h.carro);
@@ -212,6 +219,7 @@
       c.add(K.caja(0.4, 2.3, 0.03, M.inox, -0.6, 1.15, -0.215), K.caja(0.4, 2.3, 0.03, M.inox, 0.6, 1.15, -0.215), K.caja(0.8, 0.28, 0.03, M.inox, 0, 2.16, -0.215));
       c.add(K.caja(1.5, 0.04, 0.04, M.cromo, 0, 0.95, -1.46));
       s.pisCab = [K.caja(1.0, 0.025, 0.08, m.alu, 0, -0.0125, -0.17), K.caja(1.0, 0.003, 0.012, M.negro, 0, 0.0005, -0.185)];
+      c.add(K.caja(1.0, 0.7, 0.006, m.fondo, 0, -0.375, -0.133));   // guardapiés bajo la pisadera de la cabina
       s.pisCab.forEach(function (o) { c.add(o); });
     }
     if (!hueco) {
@@ -297,7 +305,7 @@
         [4.5, 'No tiene motor. Cuando llega la cabina, su puerta la engancha y las dos se abren juntas.'],
         [9.5, 'La persona entra, las dos puertas se cierran juntas y recién ahí la cabina se va.'],
         [14, 'Sin la cabina detrás, la puerta queda cerrada y trabada: desde el pasillo no se abre.']],
-      cam: [[0, [1.5, 1.6, 3.7], [0, 1.1, 0]], [4.5, [0.8, 1.45, 3.1], [0, 1.0, -0.3]], [9.5, [1.9, 1.7, 2.8], [0, 1.0, -0.35]], [13.6, [2.3, 1.6, 2.5], [0, 1.0, 0]], [18, [2.4, 1.6, 2.6], [0, 1.05, 0]]],
+      cam: [[0, [1.5, 1.6, 3.7], [0, 1.1, 0]], [4.5, [1.0, 1.5, 3.4], [0.05, 1.0, -0.3]], [9.5, [1.9, 1.7, 2.8], [0, 1.0, -0.35]], [13.6, [2.3, 1.6, 2.5], [0, 1.0, 0]], [18, [2.4, 1.6, 2.6], [0, 1.05, 0]]],
       anim: function (t, s, K) {
         K.marcar(s.marcables, null);
         var cy = K.kf(t, [[0, -3.2], [1.6, -3.2], [4.6, 0], [14.6, 0], [16.8, 3.2]]);
@@ -344,7 +352,7 @@
           if (K.entre(t, 2.1, 4.5)) K.rotulo('Tacos rotos', [0.2, 0.02, -0.06]);
           if (t > 5.2) {
             var e = K.kf(t, [[5.2, 0], [6.3, 1], [8.3, 1], [9.3, 0]]);
-            s.flecha.visible = true; s.flecha.apuntar([0.45, 0.62, 0.55], [0.22, 0.32, 0.03 - 0.25 * e]);
+            s.flecha.visible = true; s.flecha.apuntar([0.36, 0.5, 0.38], [0.22, 0.3, 0.02 - 0.25 * e]);
             if (K.entre(t, 6, 9)) { K.aviso('¡Peligro de caída al hueco!'); K.rotulo('Hueco abierto', [0.25, 0.03, -0.15]); }
           }
           K.tabla([['TACOS GUÍA', t > 2.1 ? 'ROTOS' : 'BIEN', t > 2.1 ? 'mal' : 'ok'], ['HOJA', swR > 0.05 ? 'CEDE HACIA EL HUECO' : t > 2.1 ? 'SUELTA ABAJO' : 'FIRME', t > 2.1 ? 'mal' : 'ok']]);
@@ -405,7 +413,7 @@
         if (t < 4.5) { K.rotulo('Cabezal', [0.62, 2.43, -0.012]); if (t > 2.6) K.rotulo('Patín de la cabina', [xr - 0.15, 1.8, -0.1], 'izq'); }
         else if (t < 9) { K.rotulo('Riel', [xr + 0.32, YR, ZH]); K.rotulo('Rueda', [xr + 0.11, YR + 0.05, ZH], 'izq'); K.rotulo('Carro', [xr - 0.05, 2.06, ZP]); }
         else if (t < 13.5) { K.rotulo('Cable', [0.05, YCS + RP, ZC]); K.rotulo('Poleíta', [XP, YCS, ZC]); }
-        else { K.rotulo('Pesa de cierre', [XW, s.pesa.position.y, ZH], 'der'); K.rotulo('Cordón', [-0.45, YW + RW, ZH]); }
+        else { K.rotulo('Pesa de cierre', [XW, s.pesa.position.y, ZH], 'izq'); K.rotulo('Cordón', [-0.45, YW + RW, ZH]); }
         var st = estado(a, fa(t + 0.05) - fa(t - 0.05));
         K.tabla([['PUERTA', st[0], st[1]], ['PESA', a > 0.02 ? (fa(t + 0.05) > fa(t - 0.05) ? 'SUBE' : fa(t + 0.05) < fa(t - 0.05) ? 'BAJA, CIERRA' : 'ARRIBA') : 'ABAJO', '']]);
       }
@@ -532,7 +540,7 @@
       var w = s.hojas[1].ruedas[1];
       s.plano = K.caja(0.026, 0.006, 0.022, s.rojo, 0, RR - 0.002, 0); w.add(s.plano);   // lado plano de la rueda (arriba al empezar)
       s.tac = K.add(K.cartel('TAC', 0.08, 0.035, '#d8321f', '#ffffff'));
-      s.flecha = K.add(K.flecha(0xf2b705, 0.012));
+      s.flecha = K.add(K.flecha(0xf2b705, 0.006));
       return s;
     },
     funciona: {
@@ -541,7 +549,7 @@
         [4, 'Al abrir la puerta, las ruedas giran sobre el riel y la hoja corre suave y sin ruido.'],
         [8.5, 'Debajo del riel van ruedas más chicas: las contrarruedas.'],
         [12.5, 'Si alguien empuja la hoja hacia arriba, la contrarrueda topa el riel y la hoja no se sale.']],
-      cam: [[0, [0.45, 2.32, -0.62], [0.21, 2.15, -0.06]], [4.2, [0.6, 2.32, -0.66], [0.38, 2.15, -0.06]], [8, [0.85, 2.3, -0.66], [0.61, 2.15, -0.06]], [9, [0.88, 2.04, -0.46], [0.66, 2.15, -0.06]], [17.5, [0.82, 2.06, -0.5], [0.62, 2.15, -0.06]]],
+      cam: [[0, [0.45, 2.32, -0.62], [0.21, 2.15, -0.06]], [4.2, [0.6, 2.32, -0.66], [0.38, 2.15, -0.06]], [8, [0.85, 2.3, -0.66], [0.61, 2.15, -0.06]], [9, [0.95, 2.06, -0.62], [0.64, 2.1, -0.06]], [17.5, [0.9, 2.08, -0.62], [0.62, 2.1, -0.06]]],
       anim: function (t, s, K) {
         K.marcar(s.marcables, null);
         var a = K.kf(t, [[0, 0], [4.5, 0], [7.8, 1]]), lift = K.kf(t, [[13, 0], [13.6, 0.003], [15.6, 0.003], [16.2, 0]]);
@@ -551,9 +559,9 @@
         K.marcar(hR.ruedas, t < 8.5 ? (t < 4 ? (K.parpadeo(t, 1) ? 'foco' : null) : 'foco') : null);
         K.marcar(hR.contra, t >= 8.5 ? (lift > 0.002 ? 'foco' : K.parpadeo(t, 1) ? 'foco' : null) : null);
         s.flecha.visible = K.entre(t, 12.6, 16.2);
-        if (s.flecha.visible) s.flecha.apuntar([xr, 1.92 + lift, ZH - 0.05], [xr, 2.04 + lift, ZH - 0.05]);
-        if (t < 8.5) { K.rotulo('Roldana', [xr - 0.11, YR + 0.045, ZH], 'izq'); K.rotulo('Roldana', [xr + 0.11, YR + 0.045, ZH]); K.rotulo('Riel', [xr + 0.29, YR, ZH]); }
-        else { K.rotulo('Contrarrueda', [xr + 0.11, YR - 0.03, ZH]); K.rotulo('Riel', [xr - 0.28, YR, ZH], 'izq'); if (lift > 0.002) K.rotulo('Topa el riel', [xr - 0.11, YR - 0.016, ZH], 'izq'); }
+        if (s.flecha.visible) s.flecha.apuntar([xr, 1.9 + lift, ZH - 0.05], [xr, 2.0 + lift, ZH - 0.05]);
+        if (t < 8.5) { K.rotulo('Roldana', [xr - 0.11, YR + 0.045, ZH], 'der'); K.rotulo('Roldana', [xr + 0.11, YR + 0.045, ZH], 'izq'); K.rotulo('Riel', [xr + 0.29, YR, ZH], 'izq'); }
+        else { K.rotulo('Contrarrueda', [xr + 0.11, YR - 0.03, ZH], 'izq'); K.rotulo('Riel', [xr - 0.28, YR, ZH], 'der'); if (lift > 0.002) K.rotulo('Topa el riel', [xr - 0.11, YR - 0.016, ZH], 'der'); }
         K.tabla([['RUEDAS', a > 0.01 && a < 0.99 ? 'GIRAN' : 'QUIETAS', a > 0.01 && a < 0.99 ? 'ac' : ''], ['HOJA', lift > 0.002 ? 'NO SE SALE' : 'COLGADA', 'ok']]);
       }
     },
@@ -563,7 +571,7 @@
         [4, 'En cada vuelta el lado plano golpea el riel: la hoja salta y suena tac, tac.'],
         [9, 'Falla 2: la contrarrueda está gastada o floja. Si empujan la hoja, se levanta y se puede salir del riel.'],
         [14.5, 'Arreglo: cambiar la rueda dañada y regular la contrarrueda casi pegada al riel.']],
-      cam: [[0, [0.52, 2.3, -0.5], [0.33, 2.2, -0.06]], [3.6, [0.55, 2.3, -0.52], [0.36, 2.2, -0.06]], [4.6, [0.72, 2.3, -0.75], [0.42, 2.15, -0.06]], [8.6, [0.6, 2.3, -0.75], [0.3, 2.15, -0.06]], [9.4, [0.47, 2.06, -0.55], [0.23, 2.17, -0.06]], [14.2, [0.47, 2.06, -0.55], [0.23, 2.17, -0.06]], [15, [0.75, 2.3, -0.78], [0.45, 2.15, -0.06]], [19, [0.75, 2.3, -0.78], [0.45, 2.15, -0.06]]],
+      cam: [[0, [0.52, 2.3, -0.5], [0.33, 2.2, -0.06]], [3.6, [0.55, 2.3, -0.52], [0.36, 2.2, -0.06]], [4.6, [0.72, 2.3, -0.75], [0.42, 2.15, -0.06]], [8.6, [0.6, 2.3, -0.75], [0.3, 2.15, -0.06]], [9.4, [0.45, 2.13, -0.72], [0.23, 2.12, -0.06]], [14.2, [0.45, 2.13, -0.72], [0.23, 2.12, -0.06]], [15, [0.75, 2.3, -0.78], [0.45, 2.15, -0.06]], [19, [0.75, 2.3, -0.78], [0.45, 2.15, -0.06]]],
       anim: function (t, s, K) {
         K.marcar(s.marcables, null);
         var a, yR = 0, hR = s.hojas[1], c0 = hR.contra[0], c1 = hR.contra[1];
@@ -573,7 +581,7 @@
         // lado plano: cuando apunta hacia abajo la hoja cae un poco y suena
         var dR = CORRE * a, ang = PI / 2 - dR / RR, c = Math.cos(ang + PI / 2), golpe = t < 9 ? Math.pow(Math.max(0, c), 10) : 0;
         yR = -0.007 * golpe;
-        var gasta = K.entre(t, 9, 14.5), lift = gasta ? K.kf(t, [[10.5, 0], [11.5, 0.03], [13.3, 0.03], [14.1, 0]]) : 0;
+        var gasta = K.entre(t, 9, 14.5), lift = gasta ? K.kf(t, [[10.5, 0], [11.5, 0.045], [13.3, 0.045], [14.1, 0]]) : 0;
         pone(s, K, { a: a, yR: yR + lift });
         var esc = gasta ? 0.55 : 1;
         [c0, c1].forEach(function (c) { c.scale.set(esc, esc, 1); c.position.y = YR - 0.015 - 0.013 * esc - (gasta ? 0.03 : 0.003); });
@@ -581,16 +589,16 @@
         var xr = hojaX(s, 1);
         s.tac.visible = t < 9 && golpe > 0.35; s.tac.position.set(xr + 0.11, YR + 0.11, ZH - 0.04); s.tac.rotation.y = PI;
         s.flecha.visible = gasta && t > 10.3 && t < 14.1;
-        if (s.flecha.visible) s.flecha.apuntar([xr, 1.9 + lift, ZH - 0.05], [xr, 2.03 + lift, ZH - 0.05]);
+        if (s.flecha.visible) s.flecha.apuntar([xr, 1.89 + lift, ZH - 0.05], [xr, 2.0 + lift, ZH - 0.05]);
         K.marcar(hR.ruedas[1], t < 9 ? (K.parpadeo(t, 2) ? 'mal' : null) : t > 15 ? 'foco' : null);
         K.marcar([c0, c1], gasta ? (K.parpadeo(t, 2) ? 'mal' : null) : t > 15 ? 'foco' : null);
         K.marcar(hR.ruedas[0], t > 15 ? 'foco' : null);
-        if (t < 9) { K.rotulo('Lado plano', [xr + 0.11, YR + 0.05, ZH]); if (t > 4) K.aviso('Suena tac, tac, tac'); K.tabla([['RUEDA', 'GASTADA', 'mal'], ['HOJA', golpe > 0.35 ? 'SALTA' : 'CORRE', golpe > 0.35 ? 'mal' : '']]); }
+        if (t < 9) { K.rotulo('Lado plano', [xr + 0.11, YR + 0.05, ZH], 'izq'); if (t > 4) K.aviso('Suena tac, tac, tac'); K.tabla([['RUEDA', 'GASTADA', 'mal'], ['HOJA', golpe > 0.35 ? 'SALTA' : 'CORRE', golpe > 0.35 ? 'mal' : '']]); }
         else if (t < 14.5) {
-          K.rotulo('Contrarrueda gastada', [xr + 0.11, YR - 0.05 + lift, ZH]);
-          if (lift > 0.02) { K.aviso('¡La hoja se puede salir del riel!'); K.rotulo('Rueda fuera del riel', [xr - 0.11, YR + 0.05 + lift, ZH], 'izq'); }
+          K.rotulo('Contrarrueda gastada', [xr - 0.11, YR - 0.05 + lift, ZH], 'der');
+          if (lift > 0.02) { K.aviso('¡La hoja se puede salir del riel!'); K.rotulo('Rueda fuera del riel', [xr + 0.11, YR + 0.05 + lift, ZH], 'izq'); }
           K.tabla([['CONTRARRUEDA', 'GASTADA', 'mal'], ['HOJA', lift > 0.02 ? 'SE LEVANTA' : 'COLGADA', lift > 0.02 ? 'mal' : '']]);
-        } else { K.rotulo('Rueda nueva', [xr + 0.11, YR + 0.05, ZH]); K.rotulo('Contrarrueda regulada', [xr - 0.11, YR - 0.03, ZH], 'izq'); if (t > 16) K.aviso('Corre suave y sin ruido', false); K.tabla([['RUEDAS', 'NUEVAS', 'ok'], ['HOJA', 'SUAVE', 'ok']]); }
+        } else { K.rotulo('Rueda nueva', [xr + 0.11, YR + 0.05, ZH], 'izq'); K.rotulo('Contrarrueda regulada', [xr - 0.11, YR - 0.03, ZH], 'der'); if (t > 16) K.aviso('Corre suave y sin ruido', false); K.tabla([['RUEDAS', 'NUEVAS', 'ok'], ['HOJA', 'SUAVE', 'ok']]); }
       }
     }
   });
@@ -611,7 +619,7 @@
         [4, 'El cordón pasa por una poleíta y va amarrado al carro de una hoja. Al abrir la puerta, la pesa sube.'],
         [9, 'Al cerrar, la pesa baja y jala la puerta hasta que queda bien cerrada.'],
         [13.5, 'Prueba del técnico: abre la puerta con su llave y la suelta. La pesa la cierra sola.']],
-      cam: [[0, [-0.45, 2.05, -1.25], [-0.85, 1.85, -0.05]], [3.8, [-0.45, 2.05, -1.3], [-0.8, 1.9, -0.05]], [5, [0.05, 2.3, -2.1], [-0.25, 2.0, 0]], [13, [0.05, 2.3, -2.1], [-0.25, 1.95, 0]], [14, [-0.05, 2.1, -2.35], [-0.25, 1.8, 0]], [18, [-0.05, 2.1, -2.35], [-0.25, 1.8, 0]]],
+      cam: [[0, [-0.5, 2.0, -1.3], [-0.9, 1.78, -0.05]], [3.8, [-0.45, 2.05, -1.3], [-0.8, 1.88, -0.05]], [5, [0.05, 2.3, -2.1], [-0.25, 2.0, 0]], [13, [0.05, 2.3, -2.1], [-0.25, 1.95, 0]], [14, [-0.05, 2.1, -2.35], [-0.25, 1.8, 0]], [18, [-0.05, 2.1, -2.35], [-0.25, 1.8, 0]]],
       anim: function (t, s, K) {
         K.marcar(s.marcables, null);
         var cy = K.kf(t, [[0, 0], [12.6, 0], [13.6, -1.8]]);
@@ -625,10 +633,10 @@
         if (s.flechas[0].visible) s.flechas[0].apuntar([XW - 0.08, wy, ZH], [XW - 0.08, wy + (da > 0 ? 0.18 : -0.18), ZH]);
         s.flechas[1].visible = K.entre(t, 14.6, 15.6);
         if (s.flechas[1].visible) s.flechas[1].apuntar([xr - 0.15, 1.2, ZH - 0.05], [xr + 0.1, 1.2, ZH - 0.05]);
-        if (t < 4) { K.rotulo('Pesa', [XW, wy, ZH], 'der'); K.rotulo('Tubo', [XW + 0.035, 1.45, -0.05], 'der'); }
-        else if (t < 9) { K.rotulo('Cordón', [-0.45, YW + RW, ZH]); K.rotulo('Poleíta', [XW + RW, YW, ZH], 'izq'); K.rotulo('Pesa', [XW, wy, ZH], 'der'); }
-        else if (t < 13.5) K.rotulo(da < 0 ? 'La pesa baja y cierra' : 'Pesa', [XW, wy, ZH], 'der');
-        else { if (K.entre(t, 14.6, 15.6)) K.rotulo('El técnico abre', [xr - 0.1, 1.2, ZH - 0.05], 'izq'); if (t > 16) K.rotulo('La suelta: cierra sola', [XW, wy, ZH], 'der'); }
+        if (t < 4) { K.rotulo('Pesa', [XW, wy, ZH], 'izq'); K.rotulo('Tubo', [XW - 0.035, 2.05, -0.05], 'izq'); }
+        else if (t < 9) { K.rotulo('Cordón', [-0.45, YW + RW, ZH]); K.rotulo('Poleíta', [XW + RW, YW, ZH], 'izq'); K.rotulo('Pesa', [XW, wy, ZH], 'izq'); }
+        else if (t < 13.5) K.rotulo(da < 0 ? 'La pesa baja y cierra' : 'Pesa', [XW, wy, ZH], 'izq');
+        else { if (K.entre(t, 14.6, 15.6)) K.rotulo('El técnico abre', [xr - 0.1, 1.2, ZH - 0.05], 'izq'); if (t > 16) K.rotulo('La suelta: cierra sola', [XW, wy, ZH], 'izq'); }
         var st = estado(a, da);
         K.tabla([['PUERTA', st[0], st[1]], ['PESA', da > 0.001 ? 'SUBE' : da < -0.001 ? 'BAJA' : a > 0.5 ? 'ARRIBA' : 'ABAJO', da < -0.001 ? 'ac' : ''], ['CABINA', cy < -0.02 ? 'SE FUE' : 'EN EL PISO', '']]);
       }
@@ -651,7 +659,7 @@
           o.cordonRoto = roto;
           if (roto) { var k = Math.min(1, Math.pow((t - 1.5) / 0.55, 2)); o.wy = W0 + CORRE - (W0 + CORRE - wFondo) * k; }
         } else { a = aC = K.kf(t, [[14.5, 0.13], [15.4, 0.13], [17, 0]]); cy = -1.8; }
-        o.a = a; o.aC = aC; o.cy = cy;
+        o.a = a; o.aC = aC; o.cy = cy; o.rendija = t > 7.4 && t < 14.5;
         pone(s, K, o);
         s.flechas[0].visible = s.flechas[1].visible = false;
         var wy = s.pesa.position.y;
@@ -659,50 +667,56 @@
         K.marcar(s.pesa, roto ? 'mal' : t > 15 ? 'foco' : null);
         K.marcar([s.hojas[0].panel, s.hojas[1].panel], t > 8 && t < 14.5 ? (K.parpadeo(t, 2) ? 'mal' : null) : null);
         if (t > 15.4 && t < 17) { s.flechas[0].visible = true; s.flechas[0].apuntar([XW - 0.08, wy, ZH], [XW - 0.08, wy - 0.16, ZH]); }
-        if (t < 4.5) { K.rotulo(t > 1.5 ? 'Cordón roto' : 'Cordón gastado', [XW, YW - 0.08, ZH], 'der'); if (t > 2) K.rotulo('Pesa en el fondo', [XW, wy, ZH], 'der'); }
-        else if (t < 9.5) { K.rotulo('Pesa en el fondo', [XW, wy, ZH], 'der'); if (t > 7.5) K.rotulo('Queda abierta', [0, 1.25, ZH - 0.02]); }
+        if (t < 4.5) { K.rotulo(t > 1.5 ? 'Cordón roto' : 'Cordón gastado', [XW, YW - 0.08, ZH], 'izq'); if (t > 2) K.rotulo('Pesa en el fondo', [XW, wy, ZH], 'izq'); }
+        else if (t < 9.5) { K.rotulo('Pesa en el fondo', [XW, wy, ZH], 'izq'); if (t > 7.5) K.rotulo('Queda abierta', [0, 1.25, ZH - 0.02]); }
         else if (t < 14.5) { K.rotulo('Queda abierta', [0, 1.1, ZH - 0.02]); K.aviso('¡Puerta abierta! No acercarse'); }
-        else { K.rotulo('Cordón nuevo', [XW, YW - 0.12, ZH], 'der'); if (t > 17) K.aviso('Cierra sola otra vez', false); }
+        else { K.rotulo('Cordón nuevo', [XW, YW - 0.12, ZH], 'izq'); if (t > 17) K.aviso('Cierra sola otra vez', false); }
         K.tabla([['CORDÓN', roto ? 'ROTO' : t >= 14.5 ? 'NUEVO' : 'GASTADO', roto ? 'mal' : t >= 14.5 ? 'ok' : 'ac'], ['PUERTA', a < 0.01 ? 'CERRADA' : t > 7.4 && t < 14.5 ? 'ENTREABIERTA' : 'ABIERTA', a < 0.01 ? 'ok' : t > 7.4 ? 'mal' : ''], ['ASCENSOR', t > 9.5 && t < 14.5 ? 'PARADO' : t >= 14.5 ? 'EN PRUEBA' : 'EN EL PISO', t > 9.5 && t < 14.5 ? 'mal' : '']]);
       }
     }
   });
 
   // =====================================================================================
-  // 6) GUIADORES — tacos bajo la hoja, dentro de la ranura de la pisadera
+  // 6) GUIADORES — tacos bajo la hoja, dentro de la ranura de la pisadera (con la pisadera cortada para ver adentro)
   // =====================================================================================
+  var XG = 0.36;    // taco de afuera de la hoja derecha, con la puerta cerrada
   V3.escena('guiadores', ['guiadores_puerta'], {
-    fov: 34, poster: 6,
+    fov: 34, poster: 2,
     construir: function (K) {
-      var s = armar(K, { vista: 'hueco', vidrio: true });
-      s.flecha = K.add(K.flecha(0xf2b705, 0.016));
-      s.trozos = [K.add(K.caja(0.02, 0.01, 0.012, s.m.taco, 0.1, 0.005, -0.088)), K.add(K.caja(0.016, 0.008, 0.01, s.m.taco, 0.17, 0.004, -0.09))];
-      s.trozos[1].rotation.y = 0.7; s.marcables = s.marcables.concat(s.trozos);
+      var s = armar(K, { vista: 'hueco', corte: 0.47 });
+      s.flecha = K.add(K.flecha(0xf2b705, 0.004));
+      s.flecha2 = K.add(K.flecha(0xff3b30, 0.016));
+      s.trozos = [K.add(K.caja(0.02, 0.01, 0.012, s.m.taco, 0.4, 0.005, -0.086)), K.add(K.caja(0.016, 0.008, 0.01, s.m.taco, 0.44, 0.004, -0.09))];
+      s.trozos[1].rotation.y = 0.7; s.marcables = s.marcables.concat(s.trozos, s.corte);
+      s.hojas[1].guias.forEach(function (g) { s.marcables.push(g.placa); });
       return s;
     },
     funciona: {
       dur: 17,
       subt: [[0, 'Debajo de cada hoja van dos tacos de plástico: los guiadores.'],
-        [4, 'Van metidos en la ranura de la pisadera y corren por ella como un tren en su riel.'],
-        [9, 'Si alguien empuja la hoja desde el pasillo, el taco topa la ranura y la hoja no se va al hueco.'],
+        [4, 'Van metidos en la ranura de la pisadera. Aquí la cortamos para ver adentro: el taco corre por la ranura como un tren en su riel.'],
+        [9, 'Si alguien empuja la hoja desde el pasillo, el taco topa con la ranura y la hoja no se va al hueco.'],
         [13.5, 'La hoja cuelga de arriba; abajo, los guiadores solo la mantienen en su carril.']],
-      cam: [[0, [0.66, 0.24, -0.52], [0.3, 0.02, -0.06]], [4.2, [0.72, 0.26, -0.6], [0.38, 0.02, -0.06]], [8.4, [1.0, 0.3, -0.62], [0.62, 0.02, -0.06]], [9.2, [0.62, 0.3, -0.55], [0.28, 0.05, -0.06]], [13.2, [0.62, 0.3, -0.55], [0.28, 0.05, -0.06]], [14.6, [1.6, 1.45, -2.6], [0.25, 1.0, 0]], [17, [1.6, 1.45, -2.6], [0.25, 1.0, 0]]],
+      cam: [[0, [0.85, 0.5, -0.8], [0.22, 0.03, -0.06]], [3.8, [0.85, 0.5, -0.8], [0.25, 0.03, -0.06]], [5.6, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]], [13.2, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]], [14.6, [1.6, 1.45, -2.6], [0.25, 1.0, 0]], [17, [1.6, 1.45, -2.6], [0.25, 1.0, 0]]],
       anim: function (t, s, K) {
         K.marcar(s.marcables, null);
-        var fa = function (x) { return K.kf(x, [[0, 0], [4.5, 0], [7.8, 1], [8.6, 1], [9.2, 0], [14, 0], [15.6, 0.6], [17, 0.6]]); }, a = fa(t);
+        var fa = function (x) { return K.kf(x, [[0, 0], [5.8, 0], [7.1, 0.18], [7.6, 0.18], [8.9, 0], [14, 0], [15.4, 0.6], [17, 0.6]]); }, a = fa(t);
         var emp = K.kf(t, [[9.8, 0], [10.6, 1], [12.6, 1], [13.2, 0]]);
-        pone(s, K, { a: a, swR: 0.0012 * emp });
+        pone(s, K, { a: a, swR: 0.0015 * emp });
         s.trozos.forEach(function (o) { o.visible = false; });
-        var hR = s.hojas[1], xr = hojaX(s, 1), leng = hR.guias.map(function (g) { return g.lengua; });
-        K.marcar(leng, t < 4 ? (K.parpadeo(t, 1) ? 'foco' : null) : 'foco');
-        K.marcar(s.labioA, K.entre(t, 4, 9) ? 'foco' : null);
+        var hR = s.hojas[1], xr = hojaX(s, 1), xg = xr + 0.15, piezas = [];
+        hR.guias.forEach(function (g) { piezas.push(g.lengua, g.placa); });
+        K.marcar(piezas, t < 4 ? (K.parpadeo(t, 1) ? 'foco' : null) : 'foco');
+        K.marcar(s.corte, K.entre(t, 4, 9) ? 'foco' : null);
+        K.marcar(s.labioA, emp > 0.5 ? 'foco' : null);
+        s.flecha2.visible = false;
         s.flecha.visible = emp > 0.05;
-        if (s.flecha.visible) s.flecha.apuntar([xr - 0.15, 0.06, ZH - 0.03], [xr - 0.15, 0.06, ZH - 0.03 - 0.1 * emp]);
-        if (t < 4) { K.rotulo('Guiador', [xr - 0.15, 0.0, ZH], 'izq'); K.rotulo('Guiador', [xr + 0.15, 0.0, ZH]); }
-        else if (t < 9) { K.rotulo('Ranura', [xr + 0.32, -0.006, ZH]); K.rotulo('Guiador', [xr - 0.15, 0.0, ZH], 'izq'); }
-        else if (t < 13.5) { K.rotulo('Empuje', [xr - 0.15, 0.06, ZH - 0.13], 'izq'); if (emp > 0.5) K.rotulo('El taco topa: no pasa', [xr + 0.15, 0.0, ZH]); }
+        if (s.flecha.visible) s.flecha.apuntar([xg, 0.07, 0.0], [xg, 0.07, -0.046]);
+        if (t < 4) { K.rotulo('Guiador', [xr - 0.15, 0.0, ZH - 0.015], 'izq'); K.rotulo('Guiador', [xg, 0.0, ZH - 0.015]); }
+        else if (t < 9) { if (t > 5) { K.rotulo('Ranura', [0.47, -0.012, -0.06], 'izq'); K.rotulo('Taco', [xg, -0.004, -0.06]); K.rotulo('Hoja', [xg, 0.06, -0.06]); } }
+        else if (t < 13.5) { K.rotulo('Empujan desde el pasillo', [xg, 0.07, -0.01], 'izq'); if (emp > 0.5) K.rotulo('El taco topa: no pasa', [xg, -0.004, -0.068]); }
         else { K.rotulo('Cuelga del carro', [xr, 2.15, ZP]); K.rotulo('Guiadores', [xr + 0.15, 0.0, ZH]); }
-        K.tabla([['TACOS', 'BIEN', 'ok'], ['HOJA', emp > 0.5 ? 'NO SE MUEVE' : a > 0.01 && a < 0.99 ? 'CORRE' : 'FIRME', 'ok']]);
+        K.tabla([['TACOS', 'BIEN', 'ok'], ['HOJA', emp > 0.5 ? 'NO SE MUEVE' : a > 0.01 && a < 0.99 && Math.abs(fa(t + 0.05) - fa(t - 0.05)) > 0.001 ? 'CORRE' : 'FIRME', 'ok']]);
       }
     },
     falla: {
@@ -711,31 +725,34 @@
         [5.5, 'Falla 2: un golpe de carretilla rompió los tacos. El pie de la hoja queda suelto.'],
         [10, 'Si alguien la empuja, la hoja cede hacia el hueco. ¡Es peligro de caída!'],
         [14.5, 'Arreglo: ascensor fuera de servicio, cambiar los tacos y revisar que la hoja corra derecha.']],
-      cam: [[0, [0.72, 0.26, -0.6], [0.38, 0.02, -0.06]], [5.2, [0.72, 0.26, -0.6], [0.38, 0.02, -0.06]], [6, [0.6, 0.28, -0.56], [0.25, 0.02, -0.04]], [9.6, [0.6, 0.28, -0.56], [0.25, 0.02, -0.04]], [10.6, [1.55, 0.95, -1.75], [0.2, 0.45, -0.1]], [14.2, [1.55, 0.95, -1.75], [0.2, 0.45, -0.1]], [15, [0.72, 0.26, -0.6], [0.38, 0.02, -0.06]], [19, [0.72, 0.26, -0.6], [0.38, 0.02, -0.06]]],
+      cam: [[0, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]], [9.6, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]], [10.6, [2.1, 1.0, -1.25], [0.25, 0.55, -0.12]], [14.2, [2.1, 1.0, -1.25], [0.25, 0.55, -0.12]], [15, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]], [19, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]]],
       anim: function (t, s, K) {
         K.marcar(s.marcables, null);
-        var a, sw = 0, hR = s.hojas[1], fase = t < 5.5 ? 0 : t < 14.5 ? 1 : 2;
+        var a = 0, sw = 0, hR = s.hojas[1], fase = t < 5.5 ? 0 : t < 14.5 ? 1 : 2, emp = 0;
         if (fase === 0) {
-          var fa = function (x) { return K.kf(x, [[0, 0], [0.6, 0], [2.6, 0.8], [3.2, 0.8], [5.2, 0]]); };
-          a = fa(t); var mv = Math.abs(fa(t + 0.05) - fa(t - 0.05)) > 0.001;
-          sw = mv ? 0.0055 * Math.sin(t * 15) : 0;
-        } else if (fase === 1) { a = 0; sw = K.kf(t, [[5.5, 0], [6.2, 0.012], [10.4, 0.012], [11.6, 0.085], [13.4, 0.085], [14.3, 0.012]]); }
-        else a = K.kf(t, [[14.5, 0], [15.4, 0], [17.4, 0.8], [19, 0.8]]);
+          var fa = function (x) { return K.kf(x, [[0, 0], [0.6, 0], [1.9, 0.18], [2.4, 0.18], [3.7, 0], [4.2, 0], [4.9, 0.1], [5.4, 0]]); };
+          a = fa(t); var mv = Math.abs(fa(t + 0.05) - fa(t - 0.05)) > 0.0005;
+          sw = mv ? 0.0026 * Math.sin(t * 16) : 0.0026 * Math.sin(t * 16) * 0.3;
+        } else if (fase === 1) {
+          emp = K.kf(t, [[10.2, 0], [11.6, 1], [13.4, 1], [14.3, 0]]);
+          sw = 0.003 + 0.082 * emp;
+        } else a = K.kf(t, [[14.5, 0], [15.6, 0], [16.9, 0.18], [17.4, 0.18], [18.7, 0]]);
         pone(s, K, { a: a, swR: sw });
         hR.guias.forEach(function (g) { g.lengua.scale.z = fase === 0 ? 0.35 : 1; g.lengua.visible = fase !== 1; });
         s.trozos.forEach(function (o) { o.visible = fase === 1; });
-        var xr = hojaX(s, 1), leng = hR.guias.map(function (g) { return g.lengua; });
+        var xr = hojaX(s, 1), xg = xr + 0.15, leng = hR.guias.map(function (g) { return g.lengua; });
         K.marcar(leng, fase === 0 ? (K.parpadeo(t, 2) ? 'mal' : null) : fase === 2 ? 'foco' : null);
         K.marcar(hR.panel, fase === 1 && t > 10.6 ? (K.parpadeo(t, 2) ? 'mal' : null) : null);
         K.marcar(s.trozos, fase === 1 ? 'mal' : null);
-        var emp = fase === 1 ? K.kf(t, [[10.2, 0], [11.6, 1], [13.4, 1], [14.3, 0]]) : 0;
-        s.flecha.visible = emp > 0.05;
-        if (s.flecha.visible) s.flecha.apuntar([xr, 0.3, ZH - 0.04], [xr, 0.3, ZH - 0.06 - 0.25 * emp]);
-        if (fase === 0) { K.rotulo('Taco gastado', [xr - 0.15, 0.0, ZH], 'izq'); if (t > 1.5) K.aviso('La hoja golpetea abajo'); K.tabla([['TACOS', 'GASTADOS', 'mal'], ['HOJA', 'BAILA ABAJO', 'mal']]); }
+        s.flecha.visible = false;
+        s.flecha2.visible = emp > 0.05;
+        if (s.flecha2.visible) s.flecha2.apuntar([xr, 0.3, ZH - 0.04], [xr, 0.3, ZH - 0.06 - 0.25 * emp]);
+        if (fase === 0) { K.rotulo('Taco gastado', [xg, -0.004, -0.06]); K.rotulo('Mucho juego', [xg, 0.004, -0.07], 'izq'); if (t > 1.5) K.aviso('La hoja golpetea abajo'); K.tabla([['TACOS', 'GASTADOS', 'mal'], ['HOJA', 'BAILA ABAJO', 'mal']]); }
         else if (fase === 1) {
-          if (t < 10) K.rotulo('Taco roto', [0.1, 0.01, -0.088]); else { K.rotulo('Se va hacia el hueco', [xr, 0.05, ZH - 0.17], 'der'); if (t > 11) K.aviso('¡Peligro de caída al hueco!'); }
+          if (t < 10) { K.rotulo('Taco roto', [0.42, 0.006, -0.088]); K.rotulo('Ranura vacía', [xg, -0.006, -0.06], 'izq'); }
+          else { K.rotulo('Se va hacia el hueco', [xr, 0.05, ZH - 0.17], 'der'); if (t > 11) K.aviso('¡Peligro de caída al hueco!'); }
           K.tabla([['TACOS', 'ROTOS', 'mal'], ['HOJA', emp > 0.3 ? 'CEDE' : 'SUELTA ABAJO', 'mal']]);
-        } else { K.rotulo('Tacos nuevos', [xr - 0.15, 0.0, ZH], 'izq'); if (t > 16) K.aviso('Corre derecha en su ranura', false); K.tabla([['TACOS', 'NUEVOS', 'ok'], ['HOJA', 'FIRME', 'ok']]); }
+        } else { K.rotulo('Taco nuevo', [xg, -0.004, -0.06]); if (t > 16) K.aviso('Corre derecha en su ranura', false); K.tabla([['TACOS', 'NUEVOS', 'ok'], ['HOJA', 'FIRME', 'ok']]); }
       }
     }
   });
@@ -747,7 +764,7 @@
     fov: 34, poster: 8,
     construir: function (K) {
       var M = K.M, s = armar(K, { vista: 'pasillo', cabina: true });
-      s.moneda = K.add(K.cil(0.012, 0.003, K.mat(0xd9b04a, { metalness: 0.7, roughness: 0.3 }), 0, 0, 0, null, 18));
+      s.moneda = K.add(K.cil(0.015, 0.003, K.mat(0xd9b04a, { metalness: 0.7, roughness: 0.3 }), 0, 0, 0, null, 18)); s.marcables.push(s.moneda);
       s.piedra = K.add(new K.T.Mesh(new K.T.DodecahedronGeometry(0.011), K.mat(0x7b746a, { roughness: 1, metalness: 0 }))); s.marcables.push(s.piedra);
       s.brocha = K.add(K.grupo([K.caja(0.05, 0.02, 0.025, K.mat(0x8a5a2b), 0, 0.02, 0), K.caja(0.045, 0.012, 0.02, M.negro, 0, 0.004, 0), K.cil(0.006, 0.16, K.mat(0x8a5a2b), 0, 0.1, 0.03, null, 8)]));
       s.brocha.children[2].rotation.x = 0.6;
@@ -761,22 +778,22 @@
         [4.5, 'Tiene una ranura: por ahí corren los tacos que guían las hojas de la puerta por abajo.'],
         [9, 'Cuando la cabina para bien, las dos quedan al mismo nivel, con una rendija de unos 3 cm.'],
         [13.5, 'Si algo se te cae por esa rendija, no lo saques: cae al fondo del hueco y lo recupera el técnico.']],
-      cam: [[0, [0.95, 0.95, 1.55], [0, 0.15, -0.1]], [4.5, [0.5, 0.42, 0.62], [0.1, 0.0, -0.06]], [8.6, [0.5, 0.42, 0.62], [0.05, 0.0, -0.08]], [9.4, [1.15, 0.55, 0.75], [0, 0.0, -0.12]], [13.2, [1.1, 0.5, 0.7], [0, -0.02, -0.12]], [14.2, [0.85, 0.3, 0.45], [0.1, -0.12, -0.115]], [18, [0.85, 0.3, 0.45], [0.1, -0.15, -0.115]]],
+      cam: [[0, [0.3, 0.75, 0.95], [0, 0.0, -0.12]], [4.5, [0.25, 0.48, 0.6], [0.05, 0.0, -0.07]], [8.6, [0.25, 0.48, 0.6], [0.05, 0.0, -0.07]], [9.4, [0.32, 0.5, 0.55], [0.05, -0.01, -0.12]], [13.4, [0.32, 0.5, 0.55], [0.05, -0.01, -0.12]], [14.2, [0.3, 0.42, 0.42], [0.1, -0.12, -0.115]], [18, [0.3, 0.42, 0.42], [0.1, -0.15, -0.115]]],
       anim: function (t, s, K) {
         K.marcar(s.marcables, null);
         var fa = function (x) { return K.kf(x, [[0, 1], [4.6, 1], [6.6, 0.3], [7.6, 0.3], [9, 1]]); }, a = fa(t);
         pone(s, K, { a: a, cy: 0 });
         s.piedra.visible = false; s.brocha.visible = false; s.pers.visible = false;
-        var ym = t < 14.4 ? 0.35 : 0.35 - 4.9 * Math.pow(t - 14.4, 2) * 0.6;
-        s.moneda.visible = t > 14 && ym > -1.5; s.moneda.position.set(0.12, ym, -0.115); s.moneda.rotation.set(t * 6, 0, t * 3);
+        var ym = t < 15.2 ? 0.25 : 0.25 - 1.6 * Math.pow(t - 15.2, 2);
+        s.moneda.visible = t > 14 && ym > -1.5; s.moneda.position.set(0.12, ym, -0.115); s.moneda.rotation.set(t * 6, 0, t * 3); K.marcar(s.moneda, 'foco');
         K.marcar(s.pisadera.concat(s.pisCab), t < 4.5 ? (K.parpadeo(t, 1) ? 'foco' : null) : null);
         K.marcar([s.labioA, s.labioB], K.entre(t, 4.5, 9) ? 'foco' : null);
         var mide = K.entre(t, 9.3, 13.5);
         s.flechas.forEach(function (f) { f.visible = mide; });
-        if (mide) { s.flechas[0].apuntar([0.3, 0.012, 0.06], [0.3, 0.012, -0.098]); s.flechas[1].apuntar([0.3, 0.012, -0.29], [0.3, 0.012, -0.132]); }
-        if (t < 4.5) { K.rotulo('Pisadera del piso', [0.3, 0.0, -0.03]); K.rotulo('Pisadera de la cabina', [-0.3, 0.0, -0.17], 'izq'); }
+        if (mide) { s.flechas[0].apuntar([0.2, 0.012, 0.06], [0.2, 0.012, -0.098]); s.flechas[1].apuntar([0.2, 0.012, -0.29], [0.2, 0.012, -0.132]); }
+        if (t < 4.5) { K.rotulo('Pisadera del piso', [0.25, 0.0, -0.03]); K.rotulo('Pisadera de la cabina', [-0.25, 0.0, -0.17], 'izq'); }
         else if (t < 9) K.rotulo('Ranura', [-0.1, -0.005, -0.06], 'izq');
-        else if (t < 13.5) { K.rotulo('Rendija de 3 cm', [0.3, 0.0, -0.115]); K.rotulo('Mismo nivel', [-0.25, 0.0, -0.13], 'izq'); }
+        else if (t < 13.5) { K.rotulo('Rendija de 3 cm', [0.24, 0.0, -0.115]); K.rotulo('Mismo nivel', [-0.2, 0.0, -0.13], 'izq'); }
         else if (s.moneda.visible) K.rotulo('Moneda', s.moneda.position.clone(), 'izq');
         K.tabla([['CABINA', 'A NIVEL', 'ok'], ['PUERTA', estado(a, fa(t + 0.05) - fa(t - 0.05))[0], 'ok']]);
       }
@@ -787,7 +804,7 @@
         [5, 'Se vuelve a abrir y lo intenta otra vez. El ascensor no sale del piso.'],
         [9.5, 'Falla 2: la cabina paró más abajo que el piso. Queda un escalón y la gente se tropieza.'],
         [14, 'Arreglo: limpiar la ranura con brocha o aspiradora. Si queda escalón, el técnico regula la parada.']],
-      cam: [[0, [0.62, 0.42, 0.62], [0.2, 0.0, -0.06]], [4.6, [0.62, 0.42, 0.62], [0.2, 0.02, -0.06]], [5.6, [1.05, 1.0, 1.75], [0, 0.65, -0.1]], [9.2, [1.05, 1.0, 1.75], [0, 0.65, -0.1]], [10, [1.75, 0.75, 1.6], [0, 0.2, -0.15]], [13.8, [1.75, 0.75, 1.6], [0, 0.2, -0.15]], [14.6, [0.62, 0.42, 0.62], [0.2, 0.0, -0.06]], [19, [0.62, 0.42, 0.62], [0.2, 0.0, -0.06]]],
+      cam: [[0, [0.38, 0.45, 0.55], [0.15, 0.0, -0.06]], [4.6, [0.38, 0.45, 0.55], [0.15, 0.0, -0.06]], [5.6, [0.5, 1.15, 1.9], [0.05, 0.55, -0.1]], [9.2, [0.5, 1.15, 1.9], [0.05, 0.55, -0.1]], [10, [0.45, 0.3, 0.45], [0, -0.03, -0.15]], [11.2, [0.45, 0.3, 0.45], [0, -0.03, -0.15]], [12, [1.7, 1.3, 2.9], [0, 0.8, -0.1]], [13.8, [1.7, 1.3, 2.9], [0, 0.8, -0.1]], [14.6, [0.38, 0.45, 0.55], [0.15, 0.0, -0.06]], [19, [0.38, 0.45, 0.55], [0.15, 0.0, -0.06]]],
       anim: function (t, s, K) {
         K.marcar(s.marcables, null);
         var a, cy = 0, xs = 0.2, tope = (xs + 0.009 - 0.06 + 0.025) / CORRE;
@@ -806,16 +823,16 @@
         K.marcar(s.pisCab, K.entre(t, 9.5, 14) ? (K.parpadeo(t, 2) ? 'mal' : null) : t >= 14 ? null : null);
         K.marcar(s.labioB, t > 16.6 ? 'foco' : null);
         // persona que se tropieza con el escalón
-        if (K.entre(t, 10.3, 14)) {
-          var pz = K.kf(t, [[10.3, 1.3], [12.3, 0.08]]), cae = K.kf(t, [[12.2, 0], [12.7, 0.35], [13.6, 0.35], [14, 0.15]]);
-          s.pers.visible = true; s.pers.position.set(-0.05, 0, pz); s.pers.rotation.set(-cae, PI, 0); s.pers.caminar(t, t < 12.3 ? 1 : 0);
+        if (K.entre(t, 11.2, 14)) {
+          var pz = K.kf(t, [[11.2, 1.3], [12.7, 0.08]]), cae = K.kf(t, [[12.6, 0], [13.0, 0.35], [13.7, 0.35], [14, 0.15]]);
+          s.pers.visible = true; s.pers.position.set(-0.05, 0, pz); s.pers.rotation.set(-cae, PI, 0); s.pers.caminar(t, t < 12.7 ? 1 : 0);
           if (cae > 0.2) K.aviso('¡Cuidado con el escalón!');
         }
         if (t < 9.5) {
           K.rotulo('Piedrita', [xs, 0.004, ZH]);
           if (t > 5.5) K.aviso('El ascensor no sale del piso');
           K.tabla([['RANURA', 'TAPADA', 'mal'], ['PUERTA', golpe ? 'CHOCA' : a > 0.98 ? 'REABRE' : 'CERRANDO', golpe ? 'mal' : 'ac']]);
-        } else if (t < 14) { K.rotulo('Escalón de 5 cm', [-0.3, -0.03, -0.13], 'izq'); K.tabla([['CABINA', '5 cm ABAJO', 'mal'], ['PASAR', 'TROPIEZO', 'mal']]); }
+        } else if (t < 14) { K.rotulo('Escalón de 5 cm', [-0.15, -0.03, -0.13], 'izq'); K.tabla([['CABINA', '5 cm ABAJO', 'mal'], ['PASAR', 'TROPIEZO', 'mal']]); }
         else { if (t < 16.6) K.rotulo('Brocha', [xb, 0.03, ZH]); else K.aviso('La puerta cierra bien', false); K.tabla([['RANURA', 'LIMPIA', 'ok'], ['CABINA', 'A NIVEL', 'ok']]); }
       }
     }
