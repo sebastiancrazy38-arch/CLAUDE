@@ -702,7 +702,7 @@
       dur: 19,
       subt: function (id) {
         return id === 'cableado_hueco'
-          ? [[0, 'Falla: en la caja del piso 2 entró agua. Los bornes, donde se ajustan los cables, se sulfatan y se aflojan.'],
+          ? [[0, 'Falla: en la caja del piso 2 entró agua. Los bornes, donde se ajustan los cables, se oxidan y se aflojan.'],
             [4.5, 'La cadena de seguridad se corta en esa caja. El tablero cree que hay una puerta abierta y no arranca.'],
             [9.5, 'Todas las puertas se ven cerradas, por eso confunde. La pantalla del tablero suele decir en qué piso está el corte.'],
             [14, 'Arreglo: con el ascensor detenido, secar, limpiar y ajustar los bornes de esa caja, y ponerle bien su tapa.']]
@@ -889,7 +889,7 @@
     },
     falla: {
       dur: 19,
-      subt: [[0, 'Falla 1: un botón gastado. Lo aprietas y no se prende: la cabina no va a ese piso.'],
+      subt: [[0, 'Falla 1: un botón se gastó. Lo aprietas y no se prende: la cabina no va a ese piso.'],
         [4.5, 'Falla 2: el botón de abrir se quedó hundido. La puerta empieza a cerrar y se vuelve a abrir.'],
         [9.5, 'Con el ascensor detenido, se saca la placa: detrás están los botones y sus conectores.'],
         [14, 'Arreglo: cambiar el botón malogrado, revisar su conector y probar que cada botón se prenda y regrese solo.']],
@@ -1046,7 +1046,7 @@
     },
     falla: {
       dur: 19,
-      subt: [[0, 'Falla 1: la caja quedó sin tapa y le cayó agua de una filtración. Los bornes se mojan y se sulfatan.'],
+      subt: [[0, 'Falla 1: la caja quedó sin tapa y le cayó agua de una filtración. Los bornes se mojan y se oxidan.'],
         [4.5, 'Fallan varias cosas a la vez: la puerta no responde, el ventilador se para y se pierde la lectura del piso.'],
         [9.5, 'Falla 2: el conector del cable viajero quedó flojo. Con la vibración del viaje se suelta a ratos.'],
         [14, 'Arreglo: con el ascensor detenido y la energía cortada, secar y ajustar bornes y conectores, y poner bien la tapa.']],
@@ -1180,7 +1180,7 @@
     },
     falla: {
       dur: 19,
-      subt: [[0, 'Peligro: este técnico trabaja en la máquina sin apagar la llave y sin candado.'],
+      subt: [[0, 'Falla 1: este técnico trabaja en la máquina sin apagar la llave y sin candado. ¡Es peligroso!'],
         [4, 'Alguien llama al ascensor y la máquina arranca de golpe. Le puede atrapar la mano.'],
         [8.5, 'Falla 2: un borne flojo se calienta. La caja huele a quemado, se pone negra y la llave salta.'],
         [13.5, 'Arreglo: con la luz del edificio cortada, se ajustan o cambian los bornes. Y siempre: llave en 0, candado y tarjeta.']],
@@ -1482,7 +1482,7 @@
       subt: [[0, 'Falla: de tanto doblarse en la curva, un hilo de adentro se parte. Por fuera casi no se nota.'],
         [4.5, 'El hilo hace contacto a ratos: la luz de la cabina parpadea y el ascensor se para y luego sigue.'],
         [9.5, 'Con los años el forro se pone tieso y se cuartea, sobre todo en la curva, donde más se dobla.'],
-        [14, 'Arreglo: con el ascensor detenido, el técnico mide los hilos y pasa la señal a un hilo de reserva. Si el forro está cuarteado, cambia el cable.']],
+        [14, 'Arreglo: con el ascensor detenido, pasar la señal a un hilo de reserva. Si el forro está cuarteado, cambiar el cable.']],
       anim: function (t, s, K) {
         cvBase(s, K);
         var mal = K.parpadeo(t, 2) ? 'mal' : null;

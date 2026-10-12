@@ -439,7 +439,7 @@
       g: [[0, 'Falla 1: las pesas se soltaron dentro del marco.'],
         [4, 'Al viajar golpean el marco: se escucha un traqueteo cuando se cruza con la cabina.'],
         [8.5, 'Falla 2: los cables se estiraron. Con la cabina arriba, el contrapeso casi toca su amortiguador.'],
-        [13.5, 'Arreglo: asegurar las pesas con su traba y acortar los cables. Con el equipo detenido.']],
+        [13.5, 'Arreglo: con el equipo detenido, asegurar las pesas con su traba y acortar los cables.']],
       cams: [
         planos([[0, [2.7, 4.7, 2.6], [0.85, 4.15, 0]],
           [4, [3.4, 4.6, 6.6], [0.3, 3.6, 0], [3.5, 4.4, 6.4]],
@@ -490,7 +490,7 @@
       g: [[0, 'Falla 1: el rodamiento de la polea está seco o gastado.'],
         [4.5, 'Se escucha un chillido o un zumbido arriba, que sigue el ritmo del viaje.'],
         [9, 'Falla 2: la polea quedó chueca. Los cables rozan su borde y se gastan rápido.'],
-        [13.5, 'Arreglo: engrasar o cambiar el rodamiento y alinear la polea. Siempre con el equipo detenido.']],
+        [13.5, 'Arreglo: siempre con el equipo detenido, engrasar o cambiar el rodamiento y alinear la polea.']],
       cams: [
         planos([[0, [-0.2, 5.0, 1.6], [0.6, 5.5, 0]],
           [4.5, [0.2, 5.25, 1.0], [0.62, 5.5, 0]],
@@ -686,7 +686,7 @@
     funciona: {
       dur: 18,
       subt: [[0, 'La máquina es el motor del ascensor. Hace girar la polea, y la polea mueve los cables.'],
-        [4.5, 'Por dentro, los imanes del centro giran, jalados por bobinas que se encienden en ronda.'],
+        [4.5, 'Por dentro, los imanes del centro giran, jalados por bobinas que se encienden una tras otra.'],
         [9, 'El tablero le da más o menos fuerza: por eso arranca suave, viaja y frena suave.'],
         [13.5, 'Las máquinas antiguas tienen engranajes en aceite: el motor gira rápido y la polea, lento.']],
       anim: function (t, s, K) {
@@ -712,7 +712,7 @@
       subt: [[0, 'Falla 1: muchos viajes seguidos o un cuarto sin aire hacen que el motor se caliente.'],
         [4.5, 'Su protección lo apaga para que no se queme. El ascensor se para hasta que enfríe.'],
         [9, 'Falla 2: un rodamiento gastado hace zumbar y temblar la máquina.'],
-        [13.5, 'Arreglo: ventilar el cuarto, limpiar el ventilador y cambiar el rodamiento gastado. Con la energía cortada.']],
+        [13.5, 'Arreglo: con la energía cortada, ventilar el cuarto, limpiar el ventilador y cambiar el rodamiento gastado.']],
       anim: function (t, s, K) {
         var calor = t < 9 ? ph(t, 0.3, 5.2) * (1 - ph(t, 7.5, 9)) : 0;
         var V = [[0, 1.4], [5, 1.4], [5.6, 0], [9, 0], [9.6, 1.6], [13.5, 1.6], [14.2, 1.1], [18, 1.1]];
@@ -911,7 +911,7 @@
       dur: 16,
       subt: [[0, 'Del tablero al motor van varios cables, y cada uno tiene su trabajo.'],
         [4, 'El cable grueso lleva la fuerza: la corriente que hace girar el motor.'],
-        [8, 'Los delgados llevan avisos: uno cuenta las vueltas (el encoder) y otro abre el freno.'],
+        [8, 'Los delgados llevan avisos: uno viene del encoder, que cuenta las vueltas, y otro abre el freno.'],
         [12, 'El grueso y los delgados van por caminos separados, para no meterse ruido entre ellos.']],
       anim: function (t, s, K) {
         var a = -t * 0.9;
@@ -932,7 +932,7 @@
       subt: [[0, 'Falla 1: el forro del cable grueso se peló contra un filo de metal.'],
         [4.5, 'El cobre toca el metal: el variador se apaga, marca «fuga a tierra» y el motor se para.'],
         [9, 'Falla 2: un borne flojo en la caja del motor calienta con cada arranque y se quema.'],
-        [13.5, 'Arreglo: cortar la energía y esperar unos minutos (el variador guarda carga). Cambiar el cable y ajustar bornes.']],
+        [13.5, 'Arreglo: cortar la energía y esperar unos minutos: el variador guarda carga. Luego cambiar el cable y ajustar los bornes.']],
       anim: function (t, s, K) {
         var para = entre(t, 5, 9), a = -K.integ(function (x) { return x < 5 ? 0.9 : x < 9 ? kf(x, [[5, 0.9], [5.6, 0]]) : x < 13.5 ? 0.9 : 0.6; }, t);
         gearlessGira(s.m, a); bobinasPone(s.m, a, 0, 0);
@@ -1065,7 +1065,7 @@
       subt: [[0, 'Falla 1: los resortes quedaron disparejos. Uno está aplastado y otro casi suelto.'],
         [4.5, 'Un cable carga de más y otro casi nada: la cabina vibra y la polea se gasta dispareja.'],
         [9, 'Falla 2: una tuerca se aflojó y le falta el pasador. Al arrancar suena un «clac».'],
-        [13.5, 'Arreglo: igualar los resortes con las tuercas y poner contratuerca y pasador. Con la cabina asegurada.']],
+        [13.5, 'Arreglo: con la cabina asegurada, igualar los resortes con las tuercas y poner contratuerca y pasador.']],
       anim: function (t, s, K) {
         var f1 = t < 9, f2 = entre(t, 9, 13.5), L, baja = [0, 0, 0, 0], sin = [false, false, false, false], vib = 0, bow = null, viaje = 0;
         if (f1) { L = [0.082, LR, 0.178, LR]; bow = [2, 0.03]; if (t > 4.5) { vib = 0.003; viaje = (t - 4.5) * 0.6; } }
@@ -1256,7 +1256,7 @@
       g: [[0, 'Falla 1: el rodamiento de una polea se gastó. Zumba debajo del piso al viajar.'],
         [4.5, 'El zumbido sube con la velocidad y se siente en los pies.'],
         [9, 'Falla 2: la cinta se corrió de lado y roza el borde. Chirría y bota polvillo.'],
-        [13.5, 'Arreglo: cambiar el rodamiento y alinear la polea y la cinta. Con la cabina asegurada.']],
+        [13.5, 'Arreglo: con la cabina asegurada, cambiar el rodamiento y alinear la polea y la cinta.']],
       mov: [[0, 0.6], [8.5, 0.6], [12.5, 1.6], [13.5, 1.6], [16.5, 2.0], [17, 2.0]],
       mov2: [[0, 0.7], [0.6, 0.7], [8.5, 1.5], [9, 1.5], [13.2, 1.0], [18, 1.0]],
       cams: [

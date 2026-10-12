@@ -273,21 +273,26 @@ a { color: var(--azul); }
 .video-capitulo.ver { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .video-capitulo { transition: none; } }
 
-/* simulación de falla: barra DEBAJO del modelo, para que nunca tape el ascensor */
-.sim { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 14px; align-items: center;
-  background: var(--placa); color: var(--placa-tinta); border-left: 4px solid #f0685c; border-radius: var(--r); padding: 10px 12px; }
-.sim-cab { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; min-width: 0; }
-.sim .sim-t { font-family: var(--f-dato); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #f0685c; }
-.sim h3 { font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
-.sim .acciones { display: flex; gap: 6px; }
-.sim ol { grid-column: 1 / -1; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 6px 10px; counter-reset: paso; }
-.sim li { position: relative; padding: 6px 4px 2px 28px; border-top: 3px solid #3a4853; font-size: 14px; line-height: 1.35; color: #7f909f; counter-increment: paso; }
-.sim li::before { content: counter(paso); position: absolute; left: 2px; top: 7px; width: 19px; height: 19px; border-radius: 50%; background: #3a4853; color: #eef2f5; font: 600 12px/19px var(--f-dato); text-align: center; }
+/* simulación de falla: barra DEBAJO del modelo, para que nunca tape el ascensor.
+   Mientras dura, la escena se acorta lo justo para que el ascensor y la barra entren juntos en la pantalla:
+   app.js deja el alto de la barra en --sim-h. La barra no cambia de alto de un paso a otro (nada salta). */
+.sim { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "t a" "h a" "o o"; gap: 1px 14px; align-items: center;
+  background: var(--placa); color: var(--placa-tinta); border-left: 4px solid #f0685c; border-radius: var(--r); padding: 9px 12px 10px; }
+.sim .sim-t { grid-area: t; min-width: 0; font-family: var(--f-dato); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #ff7b6e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sim h3 { grid-area: h; min-width: 0; font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; overflow-wrap: break-word; }
+.sim .acciones { grid-area: a; display: flex; gap: 6px; }
+/* los pasos en una sola fila; si la barra es angosta, de dos en dos */
+.sim ol { grid-area: o; list-style: none; margin: 7px 0 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px 10px; counter-reset: paso; }
+@container (max-width: 520px) { .sim ol { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.sim li { padding: 5px 2px 0; border-top: 3px solid #3a4853; font-size: 14px; font-weight: 500; line-height: 1.36; color: #8d9cab; counter-increment: paso; }
+.sim li::before { content: counter(paso); display: inline-block; width: 19px; height: 19px; margin-right: 6px; border-radius: 50%; background: #3a4853; color: #eef2f5; font: 600 12px/19px var(--f-dato); text-align: center; vertical-align: 1px; }
 .sim li.ya { color: #c9d3db; border-top-color: #8b97a1; }
-.sim li.ahora { color: #ffc62b; font-weight: 600; border-top-color: #ffc62b; }
+.sim li.ahora { color: #ffc62b; border-top-color: #ffc62b; }
 .sim li.ahora::before { background: #ffc62b; color: #121b22; }
 .sim .btn.sec { color: var(--placa-tinta); border-color: #556270; }
-.escena.simulando { height: min(calc(84vh - 150px), 760px); min-height: 360px; }
+.escena.simulando { min-height: 300px;
+  height: min(84vh, 860px, calc(100vh - var(--sim-h, 200px) - 24px));
+  height: min(84vh, 860px, calc(100svh - var(--sim-h, 200px) - 24px)); }
 .escena.simulando .botonera { display: none; }
 .sim[hidden], #rep-mas[hidden] { display: none; }
 
@@ -389,10 +394,18 @@ a { color: var(--azul); }
 .dlg-cuerpo { padding: 0 14px 14px; }
 
 @media (max-width: 900px) {
-  .sim { padding: 8px 10px; gap: 6px 10px; }
+  /* en el teléfono solo el paso actual: los pasos van uno encima del otro y solo se ve el de ahora,
+     así la barra tiene siempre el alto del paso más largo y no salta */
+  .sim { grid-template-areas: "t t" "h a" "o o"; padding: 8px 10px 9px; gap: 2px 10px; }
   .sim h3 { font-size: 18px; }
-  .sim li:not(.ahora) { display: none; }   /* en el teléfono solo el paso actual */
-  .escena.simulando { height: 56vh; min-height: 320px; }
+  .sim ol { margin-top: 6px; grid-auto-flow: row; grid-template-columns: minmax(0, 1fr); }
+  .sim li { grid-area: 1 / 1; visibility: hidden; font-size: 15px; }
+  .sim li.ahora { visibility: visible; }
+  .escena.simulando { min-height: 200px;
+    height: min(max(64vh, 380px), calc(100vh - var(--sim-h, 140px) - 20px));
+    height: min(max(64vh, 380px), calc(100svh - var(--sim-h, 140px) - 20px)); }
+  /* teléfono angosto: rótulo corto y botones arriba, el nombre de la pieza con todo el ancho */
+  @media (max-width: 560px) { .sim { grid-template-areas: "t a" "h h" "o o"; } .sim .sim-largo { display: none; } .sim .sim-t { white-space: normal; line-height: 1.3; } .sim h3 { margin-top: 3px; } .sim .btn.chico { padding: 4px 9px; } }
   .video-caps button { font-size: 14px; padding: 7px 4px 5px; }
   .video-subt { font-size: 14px; }
   .video-capitulo { font-size: 19px; padding: 6px 14px; }

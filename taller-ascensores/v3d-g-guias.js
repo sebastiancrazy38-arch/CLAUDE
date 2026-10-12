@@ -369,7 +369,7 @@
     funciona: {
       dur: 18,
       subt: [[0, 'La guía va sujeta al muro con soportes: ángulos de acero anclados con pernos, más o menos cada metro y medio.'],
-        [4.5, 'No se suelda: unas grapas la aprietan contra el soporte. Así puede acomodarse un poquito si el edificio se asienta.'],
+        [4.5, 'La guía no se suelda: unas grapas la aprietan contra el soporte. Así se acomoda un poco si el edificio se asienta.'],
         [9, 'Donde termina un tramo de guía, una platina atornillada por detrás lo une con el siguiente, bien parejo.'],
         [13.5, 'Con todo firme y parejo, la zapata de la cabina pasa suave, sin golpes.']],
       cam: [[0, [1.0, 1.35, 2.6], [0, 1.15, -0.12]], [3.8, [0.9, 1.3, 2.4], [0, 1.15, -0.12]], [5, [0.36, 0.66, 0.5], [0, 0.4, -0.06]], [8.6, [0.33, 0.64, 0.52], [0, 0.4, -0.06]],
@@ -667,7 +667,7 @@
             [14, 'Arreglo: el técnico la rellena con el aceite indicado, cambia la mecha si está dura y limpia lo chorreado.']]
           : [[0, 'Falla 1: el forro de plástico se gastó. Queda espacio entre la zapata y la guía.'],
             [4.5, 'La cabina se bambolea y da golpecitos de costado durante el viaje.'],
-            [9.5, 'Falla 2: si el forro se gasta hasta el metal, el fierro raspa la guía: chirrido y rayas.'],
+            [9.5, 'Falla 2: si el forro se gasta hasta el metal, el fierro raspa la guía: chirría y la raya.'],
             [14, 'Arreglo: con el ascensor detenido y asegurado, cambiar los forros y revisar que la guía tenga su aceite.']];
       },
       anim: function (t, s, K, id) {
@@ -930,7 +930,7 @@
       dur: 18,
       subt: [[0, 'El hueco es un tubo cerrado y sin ventanas. Sin su luz, adentro no se ve nada.'],
         [4, 'En el foso hay un interruptor. El técnico lo prende y las lámparas de la pared se encienden.'],
-        [8.5, 'Hay lámparas de abajo hasta arriba, unidas por su propio cable. Así ve dónde pisa y qué toca.'],
+        [8.5, 'Hay lámparas de abajo hasta arriba, unidas por su propio cable. Así el técnico ve dónde pisa y qué toca.'],
         [13, 'Arriba, junto al tablero, hay otro interruptor. Tiene su propia llave: alumbra aunque se corte el ascensor.']],
       cam: [[0, [0.9, 0.5, 4.2], [-0.45, -0.6, -0.5]], [4, [0.4, 0.25, 3.2], [-0.7, -0.5, -0.1]], [7.4, [0.8, 0.5, 4.0], [-0.45, -0.6, -0.5]],
         [8.6, [0.9, 1.0, 3.6], [-0.4, 0.6, -1.0]], [12.6, [0.9, 7.2, 3.6], [-0.4, 6.8, -1.0]], [13.6, [0.4, 9.0, 3.6], [-0.7, 8.5, -0.2]], [18, [0.5, 9.1, 3.8], [-0.7, 8.55, -0.2]]],
@@ -1120,9 +1120,9 @@
     falla: {
       dur: 18.5,
       subt: [[0, 'Falla 1: no se lee cuánto aguanta. Lo pintaron encima o nunca lo marcaron. Así no se usa.'],
-        [4.5, 'Falla 2: le cuelgan más peso del escrito. El gancho se abre y el techo se raja: la carga puede caer.'],
+        [4.5, 'Falla 2: le cuelgan más peso que el escrito. El gancho se abre y el techo se raja: la carga puede caer.'],
         [9.5, 'Falla 3: óxido en el gancho o concreto rajado a su alrededor, por agua que se filtra de arriba.'],
-        [14, 'Arreglo: no usarlo hasta que lo revise un especialista y le marque su carga. Nunca más peso del escrito.']],
+        [14, 'Arreglo: no usarlo hasta que lo revise un especialista y le marque su carga. Nunca más peso que el escrito.']],
       cam: [[0, [-0.5, 2.25, 1.5], [0.25, 2.72, GZ]], [4.2, [-0.5, 2.25, 1.5], [0.25, 2.72, GZ]], [5.4, [-2.2, 1.6, 3.0], [0.05, 1.5, GZ]], [6.5, [-2.2, 1.6, 3.0], [0.05, 1.6, GZ]],
         [7.4, [-1.6, 1.9, 2.4], [0.05, 1.95, GZ]], [9.3, [-1.6, 1.9, 2.4], [0.05, 1.95, GZ]], [10.2, [-0.7, 2.0, 1.2], [0.05, 2.62, GZ]], [13.8, [-0.75, 2.0, 1.25], [0.05, 2.62, GZ]],
         [15, [-2.1, 1.6, 2.9], [0.1, 1.45, GZ]], [18.5, [-2.1, 1.7, 2.9], [0.1, 1.55, GZ]]],

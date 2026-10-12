@@ -349,7 +349,7 @@
       subt: [[0, 'Falla 1: el puente se dobló o se corrió. La puerta cierra, pero el puente no entra en la cajita.'],
         [4.5, 'Sin esa señal el ascensor no sale: la puerta vuelve a abrir y cerrar, una y otra vez.'],
         [8.6, 'Falla 2: el contacto está sucio. Con la vibración se abre un instante y la cabina se para de golpe.'],
-        [13.5, 'Arreglo: con el ascensor detenido, enderezar el puente, limpiar el contacto y probar. Nunca se puentea.']],
+        [13.5, 'Arreglo: con el ascensor detenido, enderezar el puente, limpiar el contacto y probar. Nunca se anula con un cable.']],
       cam: [[0, [0.3, 2.42, 0.72], [-0.03, 2.23, 0.04]], [8.4, [0.3, 2.42, 0.72], [-0.03, 2.23, 0.04]], [9.4, [0.2, 2.34, 0.55], [-0.01, 2.245, 0.04]], [13.5, C_CON[0], C_CON[1]], [18, [0.45, 2.5, 1.1], [0, 2.2, 0.03]]],
       anim: function (t, s, K) {
         var doblado = t < 8.6, sucio = K.entre(t, 8.6, 13.5);
@@ -513,7 +513,7 @@
       subt: [[0, 'Falla 1: el contacto está sucio o quemado. El gancho baja, pero la corriente no pasa bien.'],
         [4.5, 'El ascensor no sale de ese piso, o se para de golpe entre pisos cuando la puerta vibra.'],
         [8.5, 'Falla 2: el gancho está duro o sucio y no baja. La puerta queda sin trabar y el ascensor no se mueve.'],
-        [13.5, 'Arreglo: con el ascensor detenido y sin corriente, limpiar o cambiar el contacto y dejar el gancho libre. Nunca se puentea.']],
+        [13.5, 'Arreglo: sin corriente, limpiar o cambiar el contacto y dejar el gancho libre. Nunca se anula con un cable.']],
       cam: [[0, [0.46, 2.11, 0.55], [0.29, 2.045, 0.06]], [8.2, [0.46, 2.11, 0.55], [0.29, 2.045, 0.06]], [9.4, C_CERCA, M_CERCA], [13.5, C_CERCA, M_CERCA], [19, [0.46, 2.16, 0.92], [0.2, 2.03, 0.06]]],
       anim: function (t, s, K) {
         var e;

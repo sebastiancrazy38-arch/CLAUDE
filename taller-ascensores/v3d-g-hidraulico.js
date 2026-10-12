@@ -355,7 +355,7 @@
       dur: 18,
       subt: [[0, 'Falla 1: una válvula sucia no cierra bien. El aceite se regresa al tanque de a poquito.'],
         [5, 'La cabina se va bajando del piso y el motor arranca solo, a cada rato, para volver a subirla.'],
-        [10, 'Falla 2: bobina quemada. La cabina sube bien, pero ya no baja.'],
+        [10, 'Falla 2: se quemó una bobina. La cabina sube bien, pero ya no baja.'],
         [13.5, 'Arreglo: con la luz cortada y sin presión, el técnico limpia o cambia la válvula o la bobina.']],
       cam: [[0, [-1.65, 2.3, 1.25], [-2.17, 1.85, 0.12]], [4.4, [-1.65, 2.3, 1.25], [-2.17, 1.85, 0.12]], [5.6, [1.95, 2.25, 2.4], [1.0, 2.0, 0.7]], [9.4, [1.95, 2.25, 2.4], [1.0, 2.0, 0.7]],
         [10.6, [-1.75, 2.3, 1.0], [-2.12, 1.98, 0.1]], [13.5, [-1.75, 2.3, 1.0], [-2.12, 1.98, 0.1]], [18, [-1.0, 2.55, 2.5], [-2.25, 1.6, 0.15]]],
@@ -413,9 +413,9 @@
     },
     falla: {
       dur: 19,
-      subt: [[0, 'Falla 1: sellos gastados en la boca del pistón. El aceite se escapa y chorrea por el tubo.'],
+      subt: [[0, 'Falla 1: los sellos de la boca del pistón están gastados. El aceite se escapa y chorrea por el tubo.'],
         [5, 'La cabina se baja sola de a poquito y el motor tiene que volver a subirla.'],
-        [10, 'Falla 2: barra rayada. Raspa los sellos y la cabina sube a saltitos, temblando.'],
+        [10, 'Falla 2: la barra está rayada. Raspa los sellos y la cabina sube a saltitos, temblando.'],
         [14, 'Arreglo: con el ascensor detenido y bloqueado, el técnico cambia los sellos y pule o cambia la barra.']],
       cam: [[0, [-0.85, 1.95, 1.5], [0, 1.58, 0.05]], [4.4, [-0.9, 1.8, 1.8], [0, 1.15, 0.05]], [5.6, [1.95, 2.15, 2.4], [1.0, 1.9, 0.7]], [9.4, [1.95, 2.15, 2.4], [1.0, 1.9, 0.7]],
         [10.6, [-0.9, 2.4, 1.9], [0, 2.05, 0.05]], [14, [-0.9, 2.4, 1.9], [0, 2.05, 0.05]], [19, [-1.7, 1.9, 3.2], [0, 1.2, 0.1]]],
@@ -467,8 +467,8 @@
     },
     falla: {
       dur: 18.5,
-      subt: [[0, 'Falla 1: rodamiento gastado. La polea ronca y vibra cuando la cabina sube y baja.'],
-        [5, 'Falla 2: canales gastados. Los cables se comen de un lado y duran mucho menos.'],
+      subt: [[0, 'Falla 1: el rodamiento está gastado. La polea ronca y vibra cuando la cabina sube y baja.'],
+        [5, 'Falla 2: los canales se gastaron. Los cables se comen de un lado y duran mucho menos.'],
         [9.5, 'Si los cables se aflojan, un contacto detiene el ascensor para que no se salgan de la polea.'],
         [14, 'Arreglo: con el ascensor asegurado, el técnico engrasa o cambia el rodamiento y revisa cada cable.']],
       cam: [[0, [-0.85, 3.0, 1.6], [0.05, 2.6, 0]], [5, [-0.85, 3.1, 1.55], [0.05, 2.72, 0]], [9.5, [-1.3, 2.55, 2.6], [0.2, 2.2, 0.05]], [14, [-1.3, 2.55, 2.6], [0.2, 2.2, 0.05]], [18.5, [-0.9, 3.0, 1.8], [0.05, 2.6, 0]]],
@@ -519,8 +519,8 @@
     falla: {
       dur: 16,
       subt: [[0, 'Falla 1: se cierra sola al bajar muy rápido, con mucha carga o con el aceite caliente. La cabina se traba.'],
-        [5.5, 'Falla 2: sucia o trabada, en la prueba no se cierra. Es peligroso: el ascensor queda fuera de servicio.'],
-        [11, 'Arreglo: el técnico revisa la velocidad de bajada y limpia o cambia la válvula. Nunca se desregula.']],
+        [5.5, 'Falla 2: está sucia o trabada y en la prueba no se cierra. Es peligroso: el ascensor queda fuera de servicio.'],
+        [11, 'Arreglo: el técnico revisa la velocidad de bajada y limpia o cambia la válvula. Su ajuste nunca se toca.']],
       cam: [[0, [-0.6, 0.75, 1.15], [-0.05, 0.3, 0.2]], [5.5, [-0.7, 0.85, 1.35], [-0.05, 0.32, 0.22]], [11, [-0.6, 0.85, 1.35], [-0.05, 0.32, 0.2]], [16, [-0.65, 0.9, 1.5], [-0.05, 0.35, 0.22]]],
       anim: function (t, s, K) {
         var m = mov(K, A5F, t), tap = t < 5.5 ? K.ph(t, 2.85, 3.05) : t < 11 ? 0.12 * K.late(t, 3) * K.ph(t, 6.2, 6.5) : 0;
@@ -563,8 +563,8 @@
     },
     falla: {
       dur: 19.5,
-      subt: [[0, 'Falla 1: unión floja. Gotea aceite por la punta de la manguera y se forma una mancha en el piso.'],
-        [5, 'Falla 2: manguera vieja, cuarteada o rozada. Con la presión puede reventar.'],
+      subt: [[0, 'Falla 1: una unión está floja. Gotea aceite por la punta de la manguera y se forma una mancha en el piso.'],
+        [5, 'Falla 2: la manguera está vieja, cuarteada o rozada. Con la presión puede reventar.'],
         [10.5, 'Si revienta, la válvula del pistón se cierra y la cabina se detiene. No toques el chorro: aléjate y avisa.'],
         [15, 'Arreglo: con la luz cortada y sin presión, el técnico cambia la manguera entera. Nunca se parcha.']],
       cam: [[0, [-0.45, 0.62, 1.2], [-0.02, 0.22, 0.35]], [4.6, [-0.5, 0.65, 1.3], [-0.05, 0.2, 0.38]], [5.6, [-0.9, 0.9, 1.9], [-0.4, 0.15, 0.5]], [10.5, [-0.9, 0.95, 1.95], [-0.3, 0.2, 0.42]], [15, [-0.7, 1.7, 3.1], [-0.75, 0.6, 0.4]], [19.5, [-0.7, 1.7, 3.1], [-0.75, 0.6, 0.4]]],

@@ -1451,7 +1451,7 @@
      REPRODUCTOR
      ================================================================= */
   var reducido = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  var voces = null;
+  var voces = null, vocesEsperadas = false, ultCorte = -1e9;
   function vozEs() {
     if (!window.speechSynthesis) return null;
     voces = voces && voces.length ? voces : speechSynthesis.getVoices();
@@ -1461,8 +1461,28 @@
   }
   if (window.speechSynthesis && speechSynthesis.addEventListener) speechSynthesis.addEventListener('voiceschanged', function () { voces = speechSynthesis.getVoices(); });
   if (window.speechSynthesis) try { voces = speechSynthesis.getVoices(); } catch (e) { /* sin voces todavía */ }
+  // cortar la voz; justo después algunos navegadores pierden la frase nueva, por eso se anota la hora
+  function cortarVoz() {
+    if (!window.speechSynthesis) return;
+    if (speechSynthesis.speaking || speechSynthesis.pending) ultCorte = performance.now();
+    speechSynthesis.cancel();
+  }
+  // Chrome deja de hablar a los ~15 s de una misma frase: las frases muy largas se dicen en trozos más cortos
+  function trozos(txt) {
+    if (txt.length <= 170) return [txt];
+    var max = 140, sueltos = [], res = [];
+    txt.replace(/([.!?;:])\s+/g, '$1\n').split('\n').forEach(function (f) {
+      if (f.length <= max) sueltos.push(f);
+      else f.replace(/,\s+/g, ',\n').split('\n').forEach(function (x) { sueltos.push(x); });   // una frase muy larga se parte en las comas
+    });
+    sueltos.forEach(function (x) { var u = res.length - 1; if (u >= 0 && (res[u] + ' ' + x).length <= max) res[u] += ' ' + x; else if (x) res.push(x); });
+    return res.length ? res : [txt];
+  }
   function mmss(s) { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
   var vivo = null;   // un solo reproductor sonando a la vez
+  // si la página se va al fondo (otra pestaña, pantalla apagada), el video se pausa: el teléfono puede cortar la voz ahí.
+  // Al volver se toca ▶ y la frase se dice completa desde el principio.
+  document.addEventListener('visibilitychange', function () { if (document.hidden && vivo && vivo.alOcultar) vivo.alOcultar(); });
 
   V.montar = function (caja, id, op) {
     op = op || {};
@@ -1484,7 +1504,8 @@
     if (m3) m3.montar(pantalla);
     var bPlay = raiz.querySelector('[data-v="play"]'), bVoz = raiz.querySelector('[data-v="voz"]'), rango = raiz.querySelector('input'), tiempo = raiz.querySelector('.video-t'), grande = raiz.querySelector('.video-grande');
     var S = { t: op.cap === 1 ? off[1] : 0, play: false, voz: !!window.speechSynthesis, ult: -1, raf: 0, prev: 0, vivo: true,
-      hablando: false, empezo: false, vozId: 0, vozDesde: 0, vozEst: 0, limiteVoz: 0, minHasta: 0, respiro: 0, tCard: 0, utt: null };
+      hablando: false, empezo: false, vozId: 0, vozDesde: 0, vozEst: 0, limiteVoz: 0, minHasta: 0, respiro: 0, tCard: 0, utt: null,
+      mudo: 0, enClic: false, arrastre: false, tArr: 0 };
     var k = { foco: id }, card = raiz.querySelector('.video-capitulo');
     function pintarVoz() { if (bVoz) { bVoz.setAttribute('aria-pressed', String(S.voz)); bVoz.textContent = S.voz ? 'Voz: sí' : 'Voz: no'; } }
     pintarVoz();
@@ -1506,7 +1527,7 @@
       }
       var i = subIdx(c, lt), clave = c * 100 + i;
       if (clave !== S.ult) mostrarSub(c, i, clave);
-      rango.value = String(Math.round(S.t / total * 1000));
+      if (!S.arrastre) rango.value = String(Math.round(S.t / total * 1000));
       tiempo.textContent = mmss(S.t) + ' / ' + mmss(total);
       raiz.querySelectorAll('[data-cap]').forEach(function (b) { b.setAttribute('aria-pressed', String(Number(b.dataset.cap) === c)); });
     }
@@ -1514,7 +1535,7 @@
     function mostrarSub(c, i, clave) {
       var txt = caps[c].subt[i][1];
       S.ult = clave; sub.textContent = txt;
-      if (!S.play) return;
+      if (!S.play || S.arrastre) return;   // arrastrando la barra no se narra (serían pedacitos): se narra al soltarla
       S.minHasta = performance.now() + lectura(txt) * 1000;   // tiempo para leerla aunque no haya voz
       var nombre = caps[c].nombre || (c ? 'Cómo falla' : 'Cómo funciona');
       if (i === 0) mostrarCapitulo((c + 1) + ' · ' + nombre, c);
@@ -1528,37 +1549,47 @@
     function lectura(txt) { return Math.max(2.5, txt.length / 15 + 1); }   // segundos para leer la frase
     function estimar(txt) { return 0.5 + txt.length / 13; }                // segundos que tarda la voz, más o menos
     function hablar(txt) {
-      var mio = ++S.vozId, ahora = performance.now();
-      S.hablando = true; S.empezo = false; S.vozDesde = ahora; S.vozEst = estimar(txt);
-      S.limiteVoz = ahora + 4000 + S.vozEst * 2000;   // si el navegador nunca avisa que terminó, no se espera para siempre
+      var mio = ++S.vozId, enClic = S.enClic;
+      S.hablando = true; S.empezo = false; S.mudo = 0; S.vozEst = estimar(txt); marcarInicio();
       if (!window.speechSynthesis) { S.hablando = false; return; }
       var ss = speechSynthesis, intentos = 0;
       function decir() {
         if (mio !== S.vozId || !S.play) return;
+        // recién se cortó otra voz: algunos navegadores pierden la frase que se pide enseguida, se espera un momento
+        var resto = ultCorte + 250 - performance.now();
+        if (resto > 0) { setTimeout(decir, resto); return; }
         var v = vozEs();
-        if (!v && !(voces && voces.length) && intentos++ < 8) { setTimeout(decir, 150); return; }   // las voces aún están cargando
-        var u = new SpeechSynthesisUtterance(txt);
-        u.lang = v ? v.lang : 'es-PE'; if (v) u.voice = v; u.rate = 1;
-        u.onstart = function () { if (mio !== S.vozId) return; S.empezo = true; S.vozDesde = performance.now(); S.limiteVoz = S.vozDesde + 4000 + S.vozEst * 2000; };
-        // solo cuenta el aviso de ESTA frase (uno tardío de otra frase no la corta)
-        u.onend = u.onerror = function () {
-          if (mio !== S.vozId) return;
-          var t = performance.now();
-          S.hablando = false; S.respiro = t + 550;   // una pausa corta antes de la frase siguiente
-          // algunos teléfonos avisan «terminé» mucho antes de terminar: entonces se espera lo que dura la frase
-          if (t - S.vozDesde < S.vozEst * 450) S.respiro = Math.max(S.respiro, S.vozDesde + S.vozEst * 1000 + 300);
-        };
-        S.utt = u;   // guardarla: si el navegador la pierde, nunca avisa que terminó
-        // sin cancel(): si la frase anterior aún suena, esta espera su turno en la cola en vez de cortarla
-        ss.speak(u);
+        // las voces aún están cargando: se espera un poco, una sola vez, y nunca dentro del clic (algunos teléfonos solo dejan hablar ahí)
+        if (!v && !(voces && voces.length) && !enClic && !vocesEsperadas) { if (intentos++ < 8) { setTimeout(decir, 150); return; } vocesEsperadas = true; }
+        if (ss.paused) ss.resume();   // una voz que quedó en pausa (al volver a la página) no dejaría hablar
+        var partes = trozos(txt), lista = [];
+        marcarInicio();
+        partes.forEach(function (p, j) {
+          var u = new SpeechSynthesisUtterance(p);
+          u.lang = v ? v.lang : 'es-PE'; if (v) u.voice = v; u.rate = 1;
+          u.onstart = function () { if (mio !== S.vozId || S.empezo) return; S.empezo = true; marcarInicio(); };
+          // solo cuenta el aviso del último trozo de ESTA frase (uno tardío de otra frase no la corta)
+          if (j === partes.length - 1) u.onend = u.onerror = function () { if (mio === S.vozId) termino(); };
+          lista.push(u);
+          // sin cancel(): si la frase anterior aún suena, esta espera su turno en la cola en vez de cortarla
+          ss.speak(u);
+        });
+        S.utt = lista;   // guardarlas: si el navegador las pierde, nunca avisa que terminaron
         // si a los 5 s no empezó y no suena nada, la voz no funciona en este equipo: el video sigue con el tiempo de lectura
         setTimeout(function () { if (mio === S.vozId && S.hablando && !S.empezo && !ss.speaking && !ss.pending) S.hablando = false; }, 5000);
       }
       decir();
     }
+    function marcarInicio() { S.vozDesde = performance.now(); S.limiteVoz = S.vozDesde + 4000 + S.vozEst * 2000; }   // si nunca avisa que terminó, no se espera para siempre
+    function termino() {   // la frase terminó: una pausa corta antes de la siguiente
+      var t = performance.now();
+      S.hablando = false; S.mudo = 0; S.respiro = t + 550;
+      // algunos teléfonos avisan «terminé» mucho antes de terminar: entonces se espera lo que dura la frase
+      if (t - S.vozDesde < S.vozEst * 450) S.respiro = Math.max(S.respiro, S.vozDesde + S.vozEst * 1000 + 300);
+    }
     function callar() {
       S.vozId++; S.hablando = false; S.respiro = 0; S.utt = null;
-      if (window.speechSynthesis && (vivo === ctl || !vivo)) speechSynthesis.cancel();
+      if (vivo === ctl || !vivo) cortarVoz();
     }
     function sigCorte(t) {   // dónde termina el subtítulo que se ve en t (el siguiente o el fin del capítulo); mismo criterio que subIdx
       var c = capEn(t), s = caps[c].subt, i = subIdx(c, t - off[c]);
@@ -1566,8 +1597,14 @@
     }
     function tick(now) {
       if (!S.play) return;
-      var dt = Math.min(0.1, (now - (S.prev || now)) / 1000); S.prev = now;
-      if (S.hablando && now > S.limiteVoz) S.hablando = false;
+      var dt = Math.min(0.1, (now - (S.prev || now)) / 1000), ss = window.speechSynthesis; S.prev = now;
+      // la voz ya empezó y el navegador ya no suena: terminó aunque no llegó el aviso (Chrome a veces no lo manda)
+      if (S.hablando && S.empezo && ss && !ss.speaking && !ss.pending) { if (!S.mudo) S.mudo = now; else if (now - S.mudo > 400) termino(); } else S.mudo = 0;
+      if (S.hablando && now > S.limiteVoz) {
+        // demasiado tiempo: la voz se trabó (sigue «hablando» sin sonido); se suelta para que la frase siguiente sí suene
+        S.hablando = false; S.vozId++;
+        if (ss && vivo === ctl && (ss.speaking || ss.pending)) cortarVoz();
+      }
       // segundos reales que todavía necesita la frase actual (voz, lectura y una pequeña pausa al final)
       var falta = Math.max(0, (S.minHasta - now) / 1000, (S.respiro - now) / 1000);
       if (S.hablando) falta = Math.max(falta, S.vozEst - (now - S.vozDesde) / 1000, 0.3);
@@ -1577,17 +1614,18 @@
       var nt = S.t + dt * vel;
       if (falta > 0 && nt >= corte) nt = Math.max(S.t, corte - 0.0005);
       S.t = nt;
-      if (S.t >= total) { S.t = total; dibujar(); pausa(); S.t = 0; S.ult = -1; grande.hidden = false; grande.textContent = '↻'; grande.setAttribute('aria-label', 'Ver otra vez'); return; }
+      if (S.t >= total) { S.t = total; dibujar(); terminar(); return; }
       dibujar();
       S.raf = requestAnimationFrame(tick);
     }
     function play() {
       if (vivo && vivo !== ctl) vivo.pausa();
-      vivo = ctl; S.play = true; S.prev = 0; S.ult = -1; S.minHasta = 0; S.respiro = 0; grande.hidden = true;
-      if (window.speechSynthesis && (speechSynthesis.speaking || speechSynthesis.pending)) { S.vozId++; speechSynthesis.cancel(); }   // empezar limpio
+      vivo = ctl; S.play = true; S.prev = 0; S.ult = -1; S.minHasta = 0; S.respiro = 0; S.arrastre = false; clearTimeout(S.tArr); verGrande(false); grande.hidden = true;
+      if (window.speechSynthesis && (speechSynthesis.speaking || speechSynthesis.pending)) { S.vozId++; cortarVoz(); }   // empezar limpio
       bPlay.textContent = '❚❚'; bPlay.setAttribute('aria-label', 'Pausa');
       cancelAnimationFrame(S.raf);
-      dibujar();   // la primera frase se narra aquí mismo, dentro del clic (algunos teléfonos solo dejan hablar así)
+      S.enClic = true;
+      try { dibujar(); } finally { S.enClic = false; }   // la primera frase se narra aquí mismo, dentro del clic (algunos teléfonos solo dejan hablar así)
       S.raf = requestAnimationFrame(tick);
     }
     function pausa() {
@@ -1595,18 +1633,31 @@
       bPlay.textContent = '▶'; bPlay.setAttribute('aria-label', 'Reproducir');
       callar();
     }
-    function parar(sinDibujo) { pausa(); clearTimeout(S.tCard); S.vivo = false; if (vivo === ctl) vivo = null; var x = m3; m3 = null; if (x) x.destruir(); }
+    // fin natural: la última frase ya terminó; no se llama a cancel() por si el final aún suena (teléfonos que avisan antes)
+    function terminar() {
+      S.play = false; cancelAnimationFrame(S.raf); S.vozId++; S.hablando = false;
+      bPlay.textContent = '▶'; bPlay.setAttribute('aria-label', 'Reproducir');
+      S.t = 0; S.ult = -1; verGrande(true);
+    }
+    function verGrande(fin) { grande.hidden = false; grande.textContent = fin ? '↻' : '▶'; grande.setAttribute('aria-label', fin ? 'Ver otra vez' : 'Reproducir el video'); }
+    function parar(sinDibujo) { pausa(); clearTimeout(S.tCard); clearTimeout(S.tArr); S.vivo = false; if (vivo === ctl) vivo = null; var x = m3; m3 = null; if (x) x.destruir(); }
     // ir: salta a un segundo del video y lo dibuja (también lo usan las pruebas)
-    var ctl = { pausa: pausa, parar: parar, play: play, ir: function (t) { S.t = Math.max(0, Math.min(total, t)); S.ult = -1; dibujar(); }, total: total, off: off, caps: caps, tipo: m3 ? '3d' : '2d' };
+    var ctl = { pausa: pausa, parar: parar, play: play, ir: function (t) { if (S.play) callar(); S.t = Math.max(0, Math.min(total, t)); S.ult = -1; dibujar(); }, total: total, off: off, caps: caps, tipo: m3 ? '3d' : '2d',
+      alOcultar: function () { if (S.play) { pausa(); verGrande(false); } } };
     if (m3) m3.alSoltar = function () { if (!raiz.isConnected) { parar(true); return; } if (S.play) pausa(); grande.hidden = false; };
 
     grande.addEventListener('click', play);
     bPlay.addEventListener('click', function () { if (S.play) pausa(); else play(); });
     if (bVoz) bVoz.addEventListener('click', function () {
       S.voz = !S.voz; pintarVoz();
-      if (S.voz && S.play) { var c = capEn(S.t); hablar(caps[c].subt[subIdx(c, S.t - off[c])][1]); } else if (!S.voz) callar();
+      if (S.voz && S.play) { var c = capEn(S.t); S.enClic = true; hablar(caps[c].subt[subIdx(c, S.t - off[c])][1]); S.enClic = false; } else if (!S.voz) callar();
     });
-    rango.addEventListener('input', function () { callar(); S.t = Number(rango.value) / 1000 * total; S.ult = -1; dibujar(); });
+    rango.addEventListener('input', function () {
+      callar(); S.t = Number(rango.value) / 1000 * total; S.ult = -1; S.arrastre = true; dibujar();
+      // al soltar (o al quedarse quieta un momento) se narra la frase completa donde quedó
+      clearTimeout(S.tArr);
+      S.tArr = setTimeout(function () { S.arrastre = false; if (S.play && raiz.isConnected) { S.ult = -1; dibujar(); } }, 350);
+    });
     raiz.querySelector('.video-caps').addEventListener('click', function (e) {
       var b = e.target.closest('[data-cap]'); if (!b) return;
       callar(); S.t = off[Number(b.dataset.cap)]; S.ult = -1;
@@ -1617,7 +1668,8 @@
     if (window.ResizeObserver) new ResizeObserver(function () { if (!S.play && raiz.isConnected) dibujar(true); }).observe(pantalla);
     // primer cuadro: el que explica mejor la pieza
     S.t = op.cap === 1 ? off[1] + 0.5 : 0.5; dibujar(); S.t = op.cap === 1 ? off[1] : 0; S.ult = -1;
-    if (op.auto && !reducido) play();
+    // video del diálogo: arranca solo; con «menos movimiento» no arranca, pero el otro video tampoco sigue hablando detrás
+    if (op.auto) { if (!reducido) play(); else if (vivo && vivo !== ctl) vivo.pausa(); }
     return ctl;
   };
   function escH(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }

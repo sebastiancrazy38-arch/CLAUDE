@@ -250,7 +250,7 @@
       subt: [[0, 'Falla 1: se aflojan los tornillos. Un panel vibra y zumba cuando la cabina viaja.'],
         [5, 'Falla 2: una luz parpadea y se apaga. Casi siempre es su fuente de corriente.'],
         [9.5, 'Falla 3: el piso se despega y se levanta una esquina. La gente se puede tropezar.'],
-        [14, 'Arreglo, con el ascensor parado: ajustar los tornillos, cambiar la fuente de la luz y pegar el piso.']],
+        [14, 'Arreglo: con el ascensor parado, ajustar los tornillos, cambiar la fuente de la luz y pegar el piso.']],
       cam: [[0, [1.25, 1.42, 0.42], [-0.55, 1.3, 0.02]], [4.4, [1.18, 1.4, 0.4], [-0.55, 1.3, 0.02]], [5.6, [1.6, 1.15, 0.55], [-0.1, 2.0, -0.05]], [9.0, [1.55, 1.13, 0.52], [-0.1, 2.0, -0.05]],
         [10.2, [1.4, 1.0, 0.82], [-0.1, 0.05, 0.3]], [13.6, [1.36, 0.98, 0.8], [-0.1, 0.05, 0.3]], [15.0, [2.5, 1.55, 1.15], [-0.15, 1.05, -0.05]], [18.5, [2.6, 1.6, 1.2], [-0.15, 1.05, -0.05]]],
       anim: function (t, s, K) {
@@ -387,7 +387,7 @@
     },
     falla: {
       dur: 19,
-      subt: [[0, 'Falla: el pesacargas está descalibrado (desajustado). Con solo 2 personas marca lleno.'],
+      subt: [[0, 'Falla: el pesacargas se descalibró: ya no pesa bien. Con solo 2 personas marca lleno.'],
         [5, 'Suena el zumbador y la puerta no cierra. La gente cree que el ascensor está malogrado.'],
         [9.5, 'Arreglo: con la cabina vacía, el técnico aprieta el botón de cero.'],
         [14.2, 'Luego pone pesas de peso conocido y revisa que marque lo mismo. Así queda calibrado.']],
@@ -523,7 +523,7 @@
       dur: 19,
       subt: [[0, 'Falla: la llave se trabó en «inspección». El técnico no la puede volver a «normal».'],
         [5, 'Así el ascensor no atiende a nadie: la gente llama y la cabina no viene.'],
-        [10, 'Lo mismo pasa si el técnico se olvida el botón rojo de parada apretado.'],
+        [10, 'Lo mismo pasa si el técnico deja apretado el botón rojo de parada.'],
         [14.2, 'Arreglo: cambiar la llave malograda. Al terminar: llave en «normal» y botón rojo suelto.']],
       cam: [[0, [0.86, 1.42, 1.1], [0.29, 0.97, 0.38]], [4.4, [0.84, 1.4, 1.08], [0.29, 0.97, 0.38]], [6.0, [2.2, -0.6, 3.8], [0.15, -0.95, 0.85]], [9.4, [2.15, -0.62, 3.75], [0.15, -0.95, 0.85]],
         [10.8, [0.86, 1.42, 1.1], [0.29, 0.97, 0.38]], [13.8, [0.84, 1.4, 1.08], [0.29, 0.97, 0.38]], [15.0, [1.25, 1.75, 1.75], [0.25, 1.0, 0.3]], [19, [1.3, 1.78, 1.8], [0.25, 1.0, 0.3]]],
@@ -757,7 +757,7 @@
     funciona: {
       dur: 18,
       subt: [[0, 'Dentro de la cabina hay una luz chica de emergencia y un botón de alarma amarillo.'],
-        [4.4, 'Si se va la luz, todo queda oscuro… y enseguida se prende sola la luz de emergencia.'],
+        [4.4, 'Si se va la luz, todo queda oscuro. Enseguida se prende sola la luz de emergencia.'],
         [9, 'Esa luz funciona con su propia batería, que está encima de la cabina.'],
         [13.5, 'Si alguien se queda encerrado, aprieta la alarma: suena la sirena y lo vienen a rescatar.']],
       cam: [[0, [1.9, 1.72, 0.85], [-0.3, 1.66, 0.0]], [4.2, [1.85, 1.7, 0.82], [-0.3, 1.66, 0.0]], [8.6, [1.85, 1.7, 0.82], [-0.3, 1.66, 0.0]],

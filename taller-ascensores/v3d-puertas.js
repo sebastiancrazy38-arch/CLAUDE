@@ -41,8 +41,8 @@
     },
     funciona: {
       dur: 15,
-      subt: [[0, 'La cortina de luz son dos reglas en el borde de la puerta. Una lanza rayos de luz invisibles y la otra los recibe.'],
-        [3, 'Mientras la puerta se cierra, revisa todo el tiempo que lleguen todos los rayos.'],
+      subt: [[0, 'La cortina de luz son dos reglas en la puerta. Una lanza rayos invisibles y la otra los recibe.'],
+        [3, 'Mientras la puerta cierra, revisa que lleguen todos los rayos.'],
         [5.6, 'Si una persona corta un rayo, la puerta se abre de nuevo sin tocarla.'],
         [9, 'Cuando ya no hay nadie, espera un momento y vuelve a cerrar.']],
       cam: [[0, [1.5, 1.7, 2.6], [0, 1.0, 0]], [3, [1.0, 1.35, 2.1], [0, 1.0, 0]], [6.5, [2.3, 1.5, 1.2], [0, 1.0, 0]], [9.5, [1.3, 1.4, 2.2], [0, 1.0, 0]], [15, [1.5, 1.7, 2.6], [0, 1.0, 0]]],
@@ -61,7 +61,7 @@
     falla: {
       dur: 19,
       subt: [[0, 'Falla: la regla está sucia o golpeada. Un rayo queda cortado aunque no haya nadie.'],
-        [4, 'La puerta cierra, se abre, cierra, se abre… y el ascensor no sale del piso.'],
+        [4, 'La puerta cierra y se vuelve a abrir, una y otra vez. El ascensor no sale del piso.'],
         [12, 'Arreglo: limpiar las reglas con un paño seco, revisar que estén derechas y que su cable no esté pelado.']],
       cam: [[0, [0.9, 1.0, 1.4], [0.15, 0.7, 0]], [4, [1.5, 1.6, 2.5], [0, 1.0, 0]], [12, [0.8, 0.9, 1.2], [0.2, 0.65, 0.05]], [19, [1.3, 1.4, 2.2], [0, 1.0, 0]]],
       anim: function (t, s, K) {

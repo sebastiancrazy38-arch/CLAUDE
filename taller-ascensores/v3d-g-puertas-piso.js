@@ -393,7 +393,7 @@
     },
     funciona: {
       dur: 18,
-      subt: [[0, 'Esto hay encima de cada puerta de piso, visto desde dentro del hueco: es el cabezal.'],
+      subt: [[0, 'Encima de cada puerta de piso, visto desde dentro del hueco, está el cabezal.'],
         [4.5, 'Cada hoja cuelga de un carro con ruedas. Las ruedas corren sobre un riel, como un tren.'],
         [9, 'Un cable une las dos hojas: la cabina empuja una y el cable mueve la otra.'],
         [13.5, 'Al cerrar, la pesa del costado baja y jala la puerta para que quede bien cerrada.']],
@@ -724,7 +724,7 @@
       subt: [[0, 'Falla 1: el taco está gastado y quedó delgado. La hoja baila abajo y golpetea al moverse.'],
         [5.5, 'Falla 2: un golpe de carretilla rompió los tacos. El pie de la hoja queda suelto.'],
         [10, 'Si alguien la empuja, la hoja cede hacia el hueco. ¡Es peligro de caída!'],
-        [14.5, 'Arreglo: ascensor fuera de servicio, cambiar los tacos y revisar que la hoja corra derecha.']],
+        [14.5, 'Arreglo: con el ascensor fuera de servicio, cambiar los tacos y revisar que la hoja corra derecha.']],
       cam: [[0, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]], [9.6, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]], [10.6, [2.1, 1.0, -1.25], [0.25, 0.55, -0.12]], [14.2, [2.1, 1.0, -1.25], [0.25, 0.55, -0.12]], [15, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]], [19, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]]],
       anim: function (t, s, K) {
         K.marcar(s.marcables, null);
@@ -776,7 +776,7 @@
       dur: 18,
       subt: [[0, 'La pisadera es el umbral de aluminio que pisas al entrar. Hay una en el piso y otra en la cabina.'],
         [4.5, 'Tiene una ranura: por ahí corren los tacos que guían las hojas de la puerta por abajo.'],
-        [9, 'Cuando la cabina para bien, las dos quedan al mismo nivel, con una rendija de unos 3 cm.'],
+        [9, 'Cuando la cabina para bien, las dos quedan al mismo nivel, con una rendija de unos 3 centímetros.'],
         [13.5, 'Si algo se te cae por esa rendija, no lo saques: cae al fondo del hueco y lo recupera el técnico.']],
       cam: [[0, [0.3, 0.75, 0.95], [0, 0.0, -0.12]], [4.5, [0.25, 0.48, 0.6], [0.05, 0.0, -0.07]], [8.6, [0.25, 0.48, 0.6], [0.05, 0.0, -0.07]], [9.4, [0.32, 0.5, 0.55], [0.05, -0.01, -0.12]], [13.4, [0.32, 0.5, 0.55], [0.05, -0.01, -0.12]], [14.2, [0.34, 0.4, 0.42], [0.1, -0.04, -0.09]], [18, [0.34, 0.4, 0.42], [0.1, -0.06, -0.1]]],
       anim: function (t, s, K) {

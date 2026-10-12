@@ -50,7 +50,7 @@
       subt: [[0, 'La baranda es la reja amarilla del techo de la cabina. Protege al técnico cuando trabaja arriba.'],
         [4, 'En muchos ascensores es plegable: el técnico la levanta apenas sube al techo.'],
         [8, 'Si se acerca al borde, la baranda lo detiene y no cae al vacío del hueco.'],
-        [12, 'Un contacto avisa al tablero que la baranda está arriba: el ascensor solo se mueve despacio, en modo inspección.'],
+        [12, 'Un contacto avisa que la baranda está arriba: el ascensor solo se mueve despacio, en modo inspección.'],
         [16, 'Al terminar, la baja y la traba. Recién ahí el ascensor vuelve a funcionar normal.']],
       cam: [[0, [3.6, 4.6, 4.2], [0.2, 2.6, 0]], [4, [3.4, 3.9, 3.5], [0.4, 2.7, 0.1]], [8, [1.6, 4.0, 4.4], [0.3, 2.8, 0.1]], [12, [3.6, 3.4, 2.4], [0.5, 2.5, 0.4]], [16, [3.4, 4.2, 3.6], [0.3, 2.6, 0]], [20, [3.6, 4.6, 4.2], [0.2, 2.6, 0]]],
       anim: function (t, s, K) {
@@ -73,7 +73,7 @@
     },
     falla: {
       dur: 19,
-      subt: [[0, 'Falla 1: tornillos flojos. La baranda se mueve y suena cuando la cabina viaja.'],
+      subt: [[0, 'Falla 1: hay tornillos flojos. La baranda se mueve y suena cuando la cabina viaja.'],
         [5, 'Falla 2: quedó levantada o su contacto se desajustó. El ascensor no vuelve al servicio normal.'],
         [10.5, 'Falla 3: un golpe dobló un tramo. Ya no protege bien y puede chocar con algo del hueco.'],
         [14.5, 'Arreglo: ajustar los tornillos, revisar la traba y el contacto, y cambiar los tramos doblados.']],

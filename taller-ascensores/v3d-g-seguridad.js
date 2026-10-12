@@ -209,7 +209,7 @@
       dur: 19.5,
       subt: [[0, 'Falla 1: la canaleta de la polea, por donde pasa el cable, se gastó con los años.'],
         [4, 'Cuando el gancho traba la polea, el cable resbala y sigue de largo: no jala el paracaídas a tiempo.'],
-        [9, 'Falla 2: pesas sucias u oxidadas. El limitador se dispara a velocidad normal y la cabina se clava sin motivo.'],
+        [9, 'Falla 2: las pesas están sucias u oxidadas. El limitador se dispara a velocidad normal y la cabina se clava sin motivo.'],
         [14.5, 'Arreglo: limpiarlo, probarlo y cambiar la polea y el cable gastados. Viene sellado: no se regula a mano.']],
       cam: [[0, [0.3, 1.35, 0.62], [0, 1.08, 0]], [4, [0.42, 1.25, 0.88], [0, 1.04, 0]], [9, [0.5, 1.12, 0.8], [0.02, 1.0, 0]], [14.5, [0.6, 1.2, 1.0], [0, 0.97, 0]], [19.5, [0.6, 1.2, 1.05], [0, 0.96, 0]]],
       anim: function (t, s, K) {
@@ -388,7 +388,7 @@
       dur: 19,
       subt: [[0, 'Falla 1: con los años el cable se estira, como un elástico viejo.'],
         [4, 'La pesa de abajo baja poco a poco hasta apretar su interruptor. El ascensor se para y no arranca.'],
-        [9.5, 'Falla 2: hilos rotos. El cable se pela con el roce y se puede cortar.'],
+        [9.5, 'Falla 2: con el roce, se rompen hilos del cable. Así se pela y se puede cortar.'],
         [14, 'Arreglo: con el ascensor detenido, se acorta el cable y la pesa vuelve a su altura. Con hilos rotos, se cambia.']],
       cam: [[0, [2.2, 2.9, 9.6], [-0.45, 2.45, 0]], [3.6, [0.3, 1.15, 2.4], [-1.05, 0.42, 0.2]], [9, [0.3, 1.15, 2.4], [-1.05, 0.42, 0.2]], [10.2, [-0.2, 3.4, 2.2], [-1.05, 3.0, 0.2]], [13.6, [-0.2, 3.4, 2.2], [-1.05, 3.0, 0.2]], [14.8, [1.4, 2.6, 7.4], [-0.5, 2.3, 0]], [19, [1.5, 2.6, 7.6], [-0.5, 2.3, 0]]],
       anim: function (t, s, K) {
@@ -419,7 +419,7 @@
     construir: function (K) { return armarLazo(K); },
     funciona: {
       dur: 18.5,
-      subt: [[0, 'La polea tensora está en el fondo del hueco (el foso). Es una rueda con una pesa colgando.'],
+      subt: [[0, 'La polea tensora está en el foso, el fondo del hueco. Es una rueda con una pesa colgando.'],
         [4.5, 'Por ella da la vuelta el cable del limitador. Cuando la cabina viaja, la rueda gira.'],
         [8.5, 'La pesa jala el cable hacia abajo y lo mantiene estirado, para que no patine arriba en el limitador.'],
         [13, 'Debajo de la pesa hay un interruptor. Si la pesa baja demasiado, lo aprieta y el ascensor se detiene.']],
@@ -442,7 +442,7 @@
     falla: {
       dur: 19,
       subt: [[0, 'Falla 1: el cable del limitador se estiró con los años. La pesa baja poco a poco.'],
-        [4.5, 'Hasta que aprieta su interruptor: el ascensor se detiene y queda bloqueado.'],
+        [4.5, 'Al final aprieta su interruptor: el ascensor se detiene y queda bloqueado.'],
         [9.5, 'Falla 2: agua y óxido en el foso. La pesa se traba, el cable queda flojo y baila.'],
         [14, 'Arreglo: acortar el cable, secar el foso y dejar que la pesa cuelgue libre, sin tocar nada.']],
       cam: [[0, [0.3, 1.1, 2.2], [-1.05, 0.42, 0.2]], [4.5, [-0.4, 0.8, 1.6], [-1.2, 0.28, 0.15]], [9.3, [-0.4, 0.8, 1.6], [-1.2, 0.28, 0.15]], [10.2, [0.2, 1.6, 3.3], [-1.05, 1.15, 0.2]], [13.6, [0.2, 1.6, 3.3], [-1.05, 1.15, 0.2]], [14.6, [0.3, 1.1, 2.3], [-1.05, 0.42, 0.2]], [19, [0.3, 1.1, 2.3], [-1.05, 0.42, 0.2]]],
@@ -647,7 +647,7 @@
       subt: [[0, 'Junto a la palanca del paracaídas hay un interruptor pequeño, con una ruedita apoyada en la palanca.'],
         [4.5, 'Si la cabina se embala, el cable del limitador jala la palanca hacia arriba y las cuñas muerden el riel.'],
         [8.5, 'La palanca empuja la ruedita y el interruptor se abre: el motor se queda sin corriente al instante.'],
-        [12.5, 'Así la máquina no sigue jalando una cabina clavada. El interruptor queda trabado hasta que el técnico lo rearma.']],
+        [12.5, 'Así la máquina no sigue jalando una cabina clavada. Queda trabado hasta que el técnico lo vuelve a armar.']],
       cam: [[0, [0.5, 0.0, 0.5], [0.15, -0.08, 0.0]], [4.2, [0.5, 0.0, 0.5], [0.15, -0.08, 0.0]], [5.6, [0.55, 0.05, 0.75], [0.08, -0.06, 0.0]], [8.2, [0.55, 0.05, 0.75], [0.08, -0.06, 0.0]], [9.4, [0.48, -0.03, 0.42], [0.18, -0.08, -0.01]], [12.3, [0.48, -0.03, 0.42], [0.18, -0.08, -0.01]], [13.5, [0.55, 0.0, 0.55], [0.15, -0.07, 0.0]], [19, [0.55, 0.0, 0.6], [0.14, -0.06, 0.0]]],
       anim: function (t, s, K) {
         var o = cunaFunciona(t, K);
@@ -664,10 +664,10 @@
     },
     falla: {
       dur: 18.5,
-      subt: [[0, 'Falla 1: después de una prueba, la palanca regresó a su sitio, pero nadie rearmó el interruptor.'],
+      subt: [[0, 'Falla 1: después de una prueba, la palanca regresó a su sitio, pero nadie volvió a armar el interruptor.'],
         [4.5, 'Las cuñas están sueltas, pero el ascensor no arranca: el tablero ve el interruptor abierto.'],
         [9, 'Falla 2: el interruptor quedó muy pegado a la palanca. Con la vibración se abre y el ascensor se para de golpe.'],
-        [14, 'Arreglo: el técnico lo rearma, lo separa un poquito de la palanca y aprieta sus cables. Nunca se puentea.']],
+        [14, 'Arreglo: el técnico lo vuelve a armar, lo separa un poco de la palanca y ajusta sus cables. Nunca se anula con un cable.']],
       cam: [[0, [0.5, 0.0, 0.5], [0.13, -0.08, 0.0]], [4.5, [0.42, -0.04, 0.4], [0.18, -0.09, 0.0]], [9, [0.42, -0.04, 0.4], [0.18, -0.09, 0.0]], [10, [0.5, 0.05, 0.6], [0.12, -0.05, 0.0]], [13.8, [0.5, 0.05, 0.6], [0.12, -0.05, 0.0]], [14.8, [0.36, -0.03, 0.34], [0.2, -0.08, -0.01]], [18.5, [0.45, 0.0, 0.5], [0.15, -0.07, 0.0]]],
       anim: function (t, s, K) {
         var o;
@@ -803,7 +803,7 @@
       dur: 19,
       subt: [[0, 'Falla 1: el tope de goma se puso duro y se agrietó con los años.'],
         [4.5, 'Cuando el contrapeso cae encima, la goma se rompe y no amortigua: el golpe sacude todo.'],
-        [9.5, 'Falla 2: el tope de aceite. Su pistón se quedó hundido y su interruptor no deja arrancar al ascensor.'],
+        [9.5, 'Falla 2: en el tope de aceite, el pistón se quedó hundido. Su interruptor no deja arrancar al ascensor.'],
         [14.5, 'Arreglo: cambiar la goma agrietada, poner aceite al tope y ver que su pistón suba solo. Luego se prueba.']],
       cam: [[0, [1.3, 1.05, 0.5], [CWX, 0.45, CWZ]], [4.4, [1.3, 1.05, 0.5], [CWX, 0.45, CWZ]], [5.2, [1.8, 1.4, 1.2], [0.35, 0.65, -0.55]], [9.2, [1.8, 1.4, 1.2], [0.35, 0.65, -0.55]], [10.2, [1.0, 1.0, 1.6], [AX, 0.62, AZ]], [14.2, [1.0, 1.0, 1.6], [AX, 0.62, AZ]], [15.2, [1.7, 1.25, 2.4], [0.15, 0.55, -0.25]], [19, [1.8, 1.3, 2.6], [0.15, 0.55, -0.25]]],
       anim: function (t, s, K) {
@@ -925,7 +925,7 @@
       subt: [[0, 'Falla 1: la ruedita del final de carrera se rompió y se cayó.'],
         [4, 'La cabina se pasa del piso, la leva no encuentra la ruedita y el ascensor no se detiene.'],
         [9.5, 'Falla 2: el interruptor se corrió hacia abajo. La cabina se para antes de llegar al piso y queda bloqueada.'],
-        [14.5, 'Arreglo: con el ascensor detenido, cambiar la ruedita y poner el interruptor en su sitio. Nunca se puentea.']],
+        [14.5, 'Arreglo: con el ascensor detenido, cambiar la ruedita y poner el interruptor en su sitio. Nunca se anula con un cable.']],
       cam: [[0, [-1.35, 5.25, 1.45], [-0.72, 5.08, 0.35]], [4, [-1.6, 5.25, 2.0], [-0.7, 5.05, 0.3]], [9.3, [-1.6, 5.25, 2.0], [-0.7, 5.05, 0.3]], [10.2, [-1.5, 4.95, 1.8], [-0.72, 4.75, 0.35]], [14.3, [-1.5, 4.95, 1.8], [-0.72, 4.75, 0.35]], [15.3, [-1.4, 5.2, 1.6], [-0.72, 5.03, 0.35]], [19, [-1.45, 5.2, 1.7], [-0.72, 5.03, 0.35]]],
       anim: function (t, s, K) {
         var e;

@@ -51,7 +51,7 @@
     // posición de un punto del brazo (altura h sobre el pivote) con el brazo abierto un ángulo a
     funciona: {
       dur: 18,
-      subt: [[0, 'El freno es como el de una bicicleta: dos zapatas aprietan una rueda de metal (el tambor) para que el motor no gire.'],
+      subt: [[0, 'El freno es como el de una bicicleta: dos zapatas aprietan una rueda de metal, el tambor, y el motor no gira.'],
         [4.5, 'Sin corriente, los resortes aprietan las zapatas. Por eso, si se va la luz, el ascensor queda frenado.'],
         [8.5, 'Para viajar, el tablero manda corriente a la bobina: se vuelve imán, separa las zapatas y el tambor gira.'],
         [13, 'Dos interruptores pequeños, los micros, avisan al tablero que el freno abrió de verdad.']],
@@ -73,7 +73,7 @@
       subt: [[0, 'Falla 1: un micro se movió de su sitio. El freno abre, pero el micro no se entera.'],
         [4.5, 'El tablero cree que el freno sigue cerrado: no deja arrancar y muestra «error de freno».'],
         [9, 'Falla 2: las zapatas están gastadas o con aceite. El freno aprieta pero patina, y la cabina se pasa del piso.'],
-        [14.5, 'Arreglo: ajustar el micro y cambiar las zapatas gastadas. Siempre con la cabina vacía y asegurada.']],
+        [14.5, 'Arreglo: siempre con la cabina vacía y asegurada, ajustar el micro y cambiar las zapatas gastadas.']],
       cam: [[0, [-1.09, 0.74, 1.5], [-0.42, 0.32, 0.1]], [8.5, [-0.96, 0.77, 1.57], [-0.4, 0.34, 0.1]], [9.5, [1.05, 0.88, 1.38], [0, 0.42, 0.05]], [14, [1.19, 0.95, 1.45], [0, 0.42, 0.05]], [18.5, [1.68, 1.16, 2.17], [0, 0.42, 0]]],
       anim: function (t, s, K) {
         if (t < 9) {

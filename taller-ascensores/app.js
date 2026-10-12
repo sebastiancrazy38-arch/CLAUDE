@@ -316,7 +316,7 @@
       ASC.pintarDisplay(String(p + 1)); $('#visor7').textContent = String(p + 1); ultimoP = p;
     }
     S.moviendo = false;
-    $('#sim').hidden = true; escena.classList.remove('simulando');
+    $('#sim').hidden = true; escena.classList.remove('simulando'); escena.style.removeProperty('--sim-h');
     if (!sinPintar) { aplicar(); pintarBotonera(); }
   }
   function simularFalla(id) {
@@ -331,18 +331,23 @@
     S.moviendo = true; S.hover = null;
     pintarBotonera(); pintarSim();
     guion(tipo, id);
-    // que se vean juntos el ascensor y los pasos (la barra va debajo del modelo)
-    requestAnimationFrame(() => {
-      const r = escena.getBoundingClientRect(), b = $('#sim').getBoundingClientRect();
-      if (r.top < 0 || b.bottom > window.innerHeight) escena.scrollIntoView({ behavior: reducido ? 'auto' : 'smooth', block: 'start' });
-    });
+    // que se vean juntos el ascensor y los pasos: la barra va debajo del modelo y la escena ya se acortó para que
+    // ambos entren. Si algo queda fuera, la página salta (sin animar, para no perderse el comienzo de la falla).
+    const r = escena.getBoundingClientRect(), b = $('#sim').getBoundingClientRect(), vh = window.innerHeight;
+    if (r.top < 0 || b.bottom > vh) {
+      const dy = r.top < 0 || b.bottom - r.top > vh ? r.top : Math.min(r.top, b.bottom - vh + 12);
+      window.scrollTo({ top: window.scrollY + dy, behavior: 'auto' });
+    }
   }
   function pintarSim() {
     const s = S.sim, el = $('#sim'); escena.classList.toggle('simulando', !!s); if (!s) { el.hidden = true; return; }
     el.hidden = false;
-    el.innerHTML = `<div class="sim-cab"><p class="sim-t">Simulación de falla${s.paso >= 0 ? ` · paso ${s.paso + 1} de ${s.pasos.length}` : ''}</p><h3>${esc(nom(s.id))}</h3></div>
+    el.innerHTML = `<p class="sim-t"><span class="sim-largo">Simulación de falla · </span>paso ${Math.max(1, s.paso + 1)} de ${s.pasos.length}</p><h3>${esc(nom(s.id))}</h3>
       <div class="acciones"><button type="button" class="btn oro chico" data-sim="repetir">Repetir</button><button type="button" class="btn sec chico" data-sim="fin">Terminar</button></div>
-      <ol>${s.pasos.map((p, i) => `<li class="${i < s.paso ? 'ya' : i === s.paso ? 'ahora' : ''}">${esc(p)}</li>`).join('')}</ol>`;
+      <ol>${s.pasos.map((p, i) => `<li class="${i < s.paso ? 'ya' : i === s.paso ? 'ahora' : ''}"${i === s.paso ? ' aria-current="step"' : ''}>${esc(p)}</li>`).join('')}</ol>`;
+    // la escena deja sitio justo para la barra (CSS: .escena.simulando usa --sim-h), y la cámara se entera ya
+    const h = Math.ceil(el.getBoundingClientRect().height);
+    if (h && h !== s.alto) { s.alto = h; escena.style.setProperty('--sim-h', h + 'px'); medir(); }
   }
   // utilidades del guion
   function en(ms, fn) { const s = S.sim; if (!s) return; s.timers.push(setTimeout(() => { if (S.sim === s) fn(); }, ms)); }
