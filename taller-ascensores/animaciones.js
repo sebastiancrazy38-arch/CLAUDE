@@ -1483,6 +1483,13 @@
   // si la página se va al fondo (otra pestaña, pantalla apagada), el video se pausa: el teléfono puede cortar la voz ahí.
   // Al volver se toca ▶ y la frase se dice completa desde el principio.
   document.addEventListener('visibilitychange', function () { if (document.hidden && vivo && vivo.alOcultar) vivo.alOcultar(); });
+  // pantalla completa: íconos y la tecla Esc para el modo de respaldo (cuando el navegador no deja la pantalla completa real)
+  var ICONO_FULL = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>';
+  var ICONO_SALIR = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg>';
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var v = document.querySelector('.video.video-full'); if (v && v._salirFull) { e.preventDefault(); v._salirFull(); }
+  });
 
   V.montar = function (caja, id, op) {
     op = op || {};
@@ -1497,7 +1504,7 @@
       '<div class="video-ctl"><button type="button" class="video-btn" data-v="play" aria-label="Reproducir">▶</button>' +
       '<input type="range" min="0" max="1000" value="0" step="1" aria-label="Avance del video">' +
       '<span class="video-t">0:00 / ' + mmss(total) + '</span>' +
-      (window.speechSynthesis ? '<button type="button" class="video-btn voz" data-v="voz" aria-pressed="true" title="Narración con voz (activada)">Voz: sí</button>' : '') + '</div>' +
+      (window.speechSynthesis ? '<button type="button" class="video-btn voz" data-v="voz" aria-pressed="true" title="Narración con voz (activada)">Voz: sí</button>' : '') + '<button type="button" class="video-btn full" data-v="full" aria-pressed="false" aria-label="Ver en pantalla completa" title="Pantalla completa">' + ICONO_FULL + '</button>' + '</div>' +
       '<div class="video-caps" role="group" aria-label="Capítulos"><button type="button" data-cap="0" aria-pressed="true">1 · Cómo funciona</button><button type="button" data-cap="1" aria-pressed="false">2 · Cómo falla</button></div></div>';
     var raiz = caja.firstChild, pantalla = raiz.querySelector('.video-pantalla'), cv = raiz.querySelector('canvas'), ctx = cv ? cv.getContext('2d') : null, sub = raiz.querySelector('.video-subt');
     var es3D = !!m3;
@@ -1664,6 +1671,28 @@
       if (S.play) dibujar(); else play();
     });
     raiz.addEventListener('keydown', function (e) { if (e.key === ' ' && e.target === raiz) { e.preventDefault(); if (S.play) pausa(); else play(); } });
+    // pantalla completa: la real del navegador; si no la deja (por ejemplo dentro de otra página o en iPhone), el video cubre toda la ventana
+    var bFull = raiz.querySelector('[data-v="full"]');
+    function enFull() { return document.fullscreenElement === raiz || document.webkitFullscreenElement === raiz || raiz.classList.contains('video-full'); }
+    function pintarFull() {
+      var on = enFull();
+      bFull.setAttribute('aria-pressed', String(on)); bFull.innerHTML = on ? ICONO_SALIR : ICONO_FULL;
+      bFull.setAttribute('aria-label', on ? 'Salir de pantalla completa' : 'Ver en pantalla completa'); bFull.title = on ? 'Salir de pantalla completa (Esc)' : 'Pantalla completa';
+      if (!S.play && raiz.isConnected) dibujar(true);
+    }
+    function fullRespaldo() { raiz.classList.add('video-full'); pintarFull(); }
+    raiz._salirFull = function () { raiz.classList.remove('video-full'); pintarFull(); };
+    bFull.addEventListener('click', function () {
+      if (enFull()) {
+        if (raiz.classList.contains('video-full')) raiz._salirFull();
+        else { var sal = document.exitFullscreen || document.webkitExitFullscreen; if (sal) { try { var q = sal.call(document); if (q && q.catch) q.catch(function () {}); } catch (e) { /* ya salió */ } } }
+        return;
+      }
+      var pedir = raiz.requestFullscreen || raiz.webkitRequestFullscreen;
+      if (!pedir) { fullRespaldo(); return; }
+      try { var pr = pedir.call(raiz); if (pr && pr.catch) pr.catch(fullRespaldo); } catch (e) { fullRespaldo(); }
+    });
+    raiz.addEventListener('fullscreenchange', pintarFull); raiz.addEventListener('webkitfullscreenchange', pintarFull);
     if (window.matchMedia) { var mq = window.matchMedia('(prefers-color-scheme: dark)'); if (mq.addEventListener) mq.addEventListener('change', function () { if (!S.play && raiz.isConnected) dibujar(true); }); }
     if (window.ResizeObserver) new ResizeObserver(function () { if (!S.play && raiz.isConnected) dibujar(true); }).observe(pantalla);
     // primer cuadro: el que explica mejor la pieza
