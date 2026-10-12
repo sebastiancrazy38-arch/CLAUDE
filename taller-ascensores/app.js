@@ -331,13 +331,18 @@
     S.moviendo = true; S.hover = null;
     pintarBotonera(); pintarSim();
     guion(tipo, id);
+    // que se vean juntos el ascensor y los pasos (la barra va debajo del modelo)
+    requestAnimationFrame(() => {
+      const r = escena.getBoundingClientRect(), b = $('#sim').getBoundingClientRect();
+      if (r.top < 0 || b.bottom > window.innerHeight) escena.scrollIntoView({ behavior: reducido ? 'auto' : 'smooth', block: 'start' });
+    });
   }
   function pintarSim() {
     const s = S.sim, el = $('#sim'); escena.classList.toggle('simulando', !!s); if (!s) { el.hidden = true; return; }
     el.hidden = false;
-    el.innerHTML = `<p class="sim-t">Simulación de falla</p><h3>${esc(nom(s.id))}</h3>
-      <ol>${s.pasos.map((p, i) => `<li class="${i < s.paso ? 'ya' : i === s.paso ? 'ahora' : ''}">${esc(p)}</li>`).join('')}</ol>
-      <div class="acciones"><button type="button" class="btn oro chico" data-sim="repetir">Repetir</button><button type="button" class="btn sec chico" data-sim="fin">Terminar</button></div>`;
+    el.innerHTML = `<div class="sim-cab"><p class="sim-t">Simulación de falla${s.paso >= 0 ? ` · paso ${s.paso + 1} de ${s.pasos.length}` : ''}</p><h3>${esc(nom(s.id))}</h3></div>
+      <div class="acciones"><button type="button" class="btn oro chico" data-sim="repetir">Repetir</button><button type="button" class="btn sec chico" data-sim="fin">Terminar</button></div>
+      <ol>${s.pasos.map((p, i) => `<li class="${i < s.paso ? 'ya' : i === s.paso ? 'ahora' : ''}">${esc(p)}</li>`).join('')}</ol>`;
   }
   // utilidades del guion
   function en(ms, fn) { const s = S.sim; if (!s) return; s.timers.push(setTimeout(() => { if (S.sim === s) fn(); }, ms)); }

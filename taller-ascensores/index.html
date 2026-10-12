@@ -265,16 +265,29 @@ a { color: var(--azul); }
 .v3-aviso.mal { border-left-color: #ff4a3b; }
 .v3-girar { position: absolute; right: 8px; bottom: 6px; padding: 1px 7px; border-radius: var(--r); font-size: 11px; color: var(--tinta2); background: color-mix(in srgb, var(--sup2) 75%, transparent); pointer-events: none; }
 .video-pantalla.v3 .video-grande { z-index: 2; }
+/* cartel de capítulo: avisa el cambio de tema antes de hablar de la falla */
+.video-capitulo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; pointer-events: none; opacity: 0; transition: opacity 0.35s;
+  background: rgb(18 27 34 / 0.9); color: #eef2f5; border-left: 5px solid #3ccf7f; border-radius: 2px; padding: 8px 20px; white-space: nowrap;
+  font-family: var(--f-titulo); font-weight: 700; font-size: 26px; letter-spacing: 0.04em; text-transform: uppercase; }
+.video-capitulo.mal { border-left-color: #ff4a3b; }
+.video-capitulo.ver { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .video-capitulo { transition: none; } }
 
-/* simulación de falla sobre el modelo */
-.sim { position: absolute; right: 10px; top: 10px; width: min(340px, 46%); max-height: calc(100% - 20px); overflow-y: auto; z-index: 3; display: flex; flex-direction: column; gap: 7px;
-  background: var(--placa); color: var(--placa-tinta); border-left: 4px solid #f0685c; border-radius: 2px; padding: 10px 12px 12px; box-shadow: 0 4px 16px rgb(0 0 0 / 0.28); }
+/* simulación de falla: barra DEBAJO del modelo, para que nunca tape el ascensor */
+.sim { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 14px; align-items: center;
+  background: var(--placa); color: var(--placa-tinta); border-left: 4px solid #f0685c; border-radius: var(--r); padding: 10px 12px; }
+.sim-cab { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; min-width: 0; }
 .sim .sim-t { font-family: var(--f-dato); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #f0685c; }
-.sim h3 { font-size: 21px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
-.sim ol { padding-left: 20px; display: flex; flex-direction: column; gap: 5px; font-size: 14px; line-height: 1.35; color: #7f909f; }
-.sim li.ya { color: #c9d3db; }
-.sim li.ahora { color: #ffc62b; font-weight: 600; }
+.sim h3 { font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
+.sim .acciones { display: flex; gap: 6px; }
+.sim ol { grid-column: 1 / -1; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 6px 10px; counter-reset: paso; }
+.sim li { position: relative; padding: 6px 4px 2px 28px; border-top: 3px solid #3a4853; font-size: 14px; line-height: 1.35; color: #7f909f; counter-increment: paso; }
+.sim li::before { content: counter(paso); position: absolute; left: 2px; top: 7px; width: 19px; height: 19px; border-radius: 50%; background: #3a4853; color: #eef2f5; font: 600 12px/19px var(--f-dato); text-align: center; }
+.sim li.ya { color: #c9d3db; border-top-color: #8b97a1; }
+.sim li.ahora { color: #ffc62b; font-weight: 600; border-top-color: #ffc62b; }
+.sim li.ahora::before { background: #ffc62b; color: #121b22; }
 .sim .btn.sec { color: var(--placa-tinta); border-color: #556270; }
+.escena.simulando { height: min(calc(84vh - 150px), 760px); min-height: 360px; }
 .escena.simulando .botonera { display: none; }
 .sim[hidden], #rep-mas[hidden] { display: none; }
 
@@ -376,12 +389,13 @@ a { color: var(--azul); }
 .dlg-cuerpo { padding: 0 14px 14px; }
 
 @media (max-width: 900px) {
-  .sim { left: 10px; right: 10px; top: auto; bottom: 10px; width: auto; max-height: 45%; padding: 8px 10px 10px; gap: 5px; }
+  .sim { padding: 8px 10px; gap: 6px 10px; }
   .sim h3 { font-size: 18px; }
-  .sim ol { list-style: none; padding-left: 0; }
-  .sim li:not(.ahora) { display: none; }   /* en el teléfono solo el paso actual, para que se vea el ascensor */
+  .sim li:not(.ahora) { display: none; }   /* en el teléfono solo el paso actual */
+  .escena.simulando { height: 56vh; min-height: 320px; }
   .video-caps button { font-size: 14px; padding: 7px 4px 5px; }
   .video-subt { font-size: 14px; }
+  .video-capitulo { font-size: 19px; padding: 6px 14px; }
   .v3-rot { font-size: 13px; padding: 0 5px; }
   .v3-tabla { font-size: 10px; min-width: 0; padding: 4px 7px; }
   .v3-aviso { font-size: 13px; }
@@ -434,8 +448,8 @@ a { color: var(--azul); }
           <button type="button" class="t" id="b-rayos" aria-pressed="true">Ver rayos</button>
         </div>
         <div class="pista-uso" id="pista-uso">Arrastra para girar · rueda o pellizco para acercar</div>
-        <div class="sim" id="sim" hidden aria-live="polite"></div>
       </div>
+      <div class="sim" id="sim" hidden aria-live="polite"></div>
       <p class="placa" id="placa"></p>
       <label class="rueda" for="sens"><span>Fuerza de la rueda</span><input type="range" id="sens" min="5" max="60" step="1" value="19"><output id="sens-v" for="sens">19 %</output></label>
       </div>
