@@ -267,16 +267,34 @@ a { color: var(--azul); }
 .v3-aviso.mal { border-left-color: #ff4a3b; }
 .v3-girar { position: absolute; right: 8px; bottom: 6px; padding: 1px 7px; border-radius: var(--r); font-size: 11px; color: var(--tinta2); background: color-mix(in srgb, var(--sup2) 75%, transparent); pointer-events: none; }
 .video-pantalla.v3 .video-grande { z-index: 2; }
+/* cartel de capítulo: avisa el cambio de tema antes de hablar de la falla */
+.video-capitulo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; pointer-events: none; opacity: 0; transition: opacity 0.35s;
+  background: rgb(18 27 34 / 0.9); color: #eef2f5; border-left: 5px solid #3ccf7f; border-radius: 2px; padding: 8px 20px; white-space: nowrap;
+  font-family: var(--f-titulo); font-weight: 700; font-size: 26px; letter-spacing: 0.04em; text-transform: uppercase; }
+.video-capitulo.mal { border-left-color: #ff4a3b; }
+.video-capitulo.ver { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .video-capitulo { transition: none; } }
 
-/* simulación de falla sobre el modelo */
-.sim { position: absolute; right: 10px; top: 10px; width: min(340px, 46%); max-height: calc(100% - 20px); overflow-y: auto; z-index: 3; display: flex; flex-direction: column; gap: 7px;
-  background: var(--placa); color: var(--placa-tinta); border-left: 4px solid #f0685c; border-radius: 2px; padding: 10px 12px 12px; box-shadow: 0 4px 16px rgb(0 0 0 / 0.28); }
-.sim .sim-t { font-family: var(--f-dato); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #f0685c; }
-.sim h3 { font-size: 21px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
-.sim ol { padding-left: 20px; display: flex; flex-direction: column; gap: 5px; font-size: 14px; line-height: 1.35; color: #7f909f; }
-.sim li.ya { color: #c9d3db; }
-.sim li.ahora { color: #ffc62b; font-weight: 600; }
+/* simulación de falla: barra DEBAJO del modelo, para que nunca tape el ascensor.
+   Mientras dura, la escena se acorta lo justo para que el ascensor y la barra entren juntos en la pantalla:
+   app.js deja el alto de la barra en --sim-h. La barra no cambia de alto de un paso a otro (nada salta). */
+.sim { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "t a" "h a" "o o"; gap: 1px 14px; align-items: center;
+  background: var(--placa); color: var(--placa-tinta); border-left: 4px solid #f0685c; border-radius: var(--r); padding: 9px 12px 10px; }
+.sim .sim-t { grid-area: t; min-width: 0; font-family: var(--f-dato); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #ff7b6e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sim h3 { grid-area: h; min-width: 0; font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; overflow-wrap: break-word; }
+.sim .acciones { grid-area: a; display: flex; gap: 6px; }
+/* los pasos en una sola fila; si la barra es angosta, de dos en dos */
+.sim ol { grid-area: o; list-style: none; margin: 7px 0 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px 10px; counter-reset: paso; }
+@container (max-width: 520px) { .sim ol { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.sim li { padding: 5px 2px 0; border-top: 3px solid #3a4853; font-size: 14px; font-weight: 500; line-height: 1.36; color: #8d9cab; counter-increment: paso; }
+.sim li::before { content: counter(paso); display: inline-block; width: 19px; height: 19px; margin-right: 6px; border-radius: 50%; background: #3a4853; color: #eef2f5; font: 600 12px/19px var(--f-dato); text-align: center; vertical-align: 1px; }
+.sim li.ya { color: #c9d3db; border-top-color: #8b97a1; }
+.sim li.ahora { color: #ffc62b; border-top-color: #ffc62b; }
+.sim li.ahora::before { background: #ffc62b; color: #121b22; }
 .sim .btn.sec { color: var(--placa-tinta); border-color: #556270; }
+.escena.simulando { min-height: 300px;
+  height: min(84vh, 860px, calc(100vh - var(--sim-h, 200px) - 24px));
+  height: min(84vh, 860px, calc(100svh - var(--sim-h, 200px) - 24px)); }
 .escena.simulando .botonera { display: none; }
 .sim[hidden], #rep-mas[hidden] { display: none; }
 
@@ -378,12 +396,21 @@ a { color: var(--azul); }
 .dlg-cuerpo { padding: 0 14px 14px; }
 
 @media (max-width: 900px) {
-  .sim { left: 10px; right: 10px; top: auto; bottom: 10px; width: auto; max-height: 45%; padding: 8px 10px 10px; gap: 5px; }
+  /* en el teléfono solo el paso actual: los pasos van uno encima del otro y solo se ve el de ahora,
+     así la barra tiene siempre el alto del paso más largo y no salta */
+  .sim { grid-template-areas: "t t" "h a" "o o"; padding: 8px 10px 9px; gap: 2px 10px; }
   .sim h3 { font-size: 18px; }
-  .sim ol { list-style: none; padding-left: 0; }
-  .sim li:not(.ahora) { display: none; }   /* en el teléfono solo el paso actual, para que se vea el ascensor */
+  .sim ol { margin-top: 6px; grid-auto-flow: row; grid-template-columns: minmax(0, 1fr); }
+  .sim li { grid-area: 1 / 1; visibility: hidden; font-size: 15px; }
+  .sim li.ahora { visibility: visible; }
+  .escena.simulando { min-height: 200px;
+    height: min(max(64vh, 380px), calc(100vh - var(--sim-h, 140px) - 20px));
+    height: min(max(64vh, 380px), calc(100svh - var(--sim-h, 140px) - 20px)); }
+  /* teléfono angosto: rótulo corto y botones arriba, el nombre de la pieza con todo el ancho */
+  @media (max-width: 560px) { .sim { grid-template-areas: "t a" "h h" "o o"; } .sim .sim-largo { display: none; } .sim .sim-t { white-space: normal; line-height: 1.3; } .sim h3 { margin-top: 3px; } .sim .btn.chico { padding: 4px 9px; } }
   .video-caps button { font-size: 14px; padding: 7px 4px 5px; }
   .video-subt { font-size: 14px; }
+  .video-capitulo { font-size: 19px; padding: 6px 14px; }
   .v3-rot { font-size: 13px; padding: 0 5px; }
   .v3-tabla { font-size: 10px; min-width: 0; padding: 4px 7px; }
   .v3-aviso { font-size: 13px; }
@@ -436,8 +463,8 @@ a { color: var(--azul); }
           <button type="button" class="t" id="b-rayos" aria-pressed="true">Ver rayos</button>
         </div>
         <div class="pista-uso" id="pista-uso">Arrastra para girar · rueda o pellizco para acercar</div>
-        <div class="sim" id="sim" hidden aria-live="polite"></div>
       </div>
+      <div class="sim" id="sim" hidden aria-live="polite"></div>
       <p class="placa" id="placa"></p>
       <label class="rueda" for="sens"><span>Fuerza de la rueda</span><input type="range" id="sens" min="5" max="60" step="1" value="19"><output id="sens-v" for="sens">19 %</output></label>
       </div>
@@ -30715,7 +30742,7 @@ ASC.codigos = [
      REPRODUCTOR
      ================================================================= */
   var reducido = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  var voces = null;
+  var voces = null, vocesEsperadas = false, ultCorte = -1e9;
   function vozEs() {
     if (!window.speechSynthesis) return null;
     voces = voces && voces.length ? voces : speechSynthesis.getVoices();
@@ -30724,8 +30751,29 @@ ASC.codigos = [
     return voces.filter(function (x) { return /^es/i.test(x.lang || ''); })[0] || null;
   }
   if (window.speechSynthesis && speechSynthesis.addEventListener) speechSynthesis.addEventListener('voiceschanged', function () { voces = speechSynthesis.getVoices(); });
+  if (window.speechSynthesis) try { voces = speechSynthesis.getVoices(); } catch (e) { /* sin voces todavía */ }
+  // cortar la voz; justo después algunos navegadores pierden la frase nueva, por eso se anota la hora
+  function cortarVoz() {
+    if (!window.speechSynthesis) return;
+    if (speechSynthesis.speaking || speechSynthesis.pending) ultCorte = performance.now();
+    speechSynthesis.cancel();
+  }
+  // Chrome deja de hablar a los ~15 s de una misma frase: las frases muy largas se dicen en trozos más cortos
+  function trozos(txt) {
+    if (txt.length <= 170) return [txt];
+    var max = 140, sueltos = [], res = [];
+    txt.replace(/([.!?;:])\s+/g, '$1\n').split('\n').forEach(function (f) {
+      if (f.length <= max) sueltos.push(f);
+      else f.replace(/,\s+/g, ',\n').split('\n').forEach(function (x) { sueltos.push(x); });   // una frase muy larga se parte en las comas
+    });
+    sueltos.forEach(function (x) { var u = res.length - 1; if (u >= 0 && (res[u] + ' ' + x).length <= max) res[u] += ' ' + x; else if (x) res.push(x); });
+    return res.length ? res : [txt];
+  }
   function mmss(s) { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
   var vivo = null;   // un solo reproductor sonando a la vez
+  // si la página se va al fondo (otra pestaña, pantalla apagada), el video se pausa: el teléfono puede cortar la voz ahí.
+  // Al volver se toca ▶ y la frase se dice completa desde el principio.
+  document.addEventListener('visibilitychange', function () { if (document.hidden && vivo && vivo.alOcultar) vivo.alOcultar(); });
 
   V.montar = function (caja, id, op) {
     op = op || {};
@@ -30735,19 +30783,23 @@ ASC.codigos = [
     var caps = info.caps, off = [0, caps[0].dur], total = caps[0].dur + caps[1].dur;
     caja.innerHTML = '<div class="video" tabindex="-1">' +
       '<div class="video-pantalla' + (m3 ? ' v3' : '') + '" role="img" aria-label="Video: cómo funciona y cómo falla ' + escH(info.titulo) + '">' + (m3 ? '' : '<canvas></canvas>') +
-      '<button type="button" class="video-grande" aria-label="Reproducir el video">▶</button></div>' +
+      '<div class="video-capitulo" aria-hidden="true"></div><button type="button" class="video-grande" aria-label="Reproducir el video">▶</button></div>' +
       '<p class="video-subt" aria-live="polite"></p>' +
       '<div class="video-ctl"><button type="button" class="video-btn" data-v="play" aria-label="Reproducir">▶</button>' +
       '<input type="range" min="0" max="1000" value="0" step="1" aria-label="Avance del video">' +
       '<span class="video-t">0:00 / ' + mmss(total) + '</span>' +
-      (window.speechSynthesis ? '<button type="button" class="video-btn voz" data-v="voz" aria-pressed="false" title="Narrar con la voz del navegador">Voz</button>' : '') + '</div>' +
+      (window.speechSynthesis ? '<button type="button" class="video-btn voz" data-v="voz" aria-pressed="true" title="Narración con voz (activada)">Voz: sí</button>' : '') + '</div>' +
       '<div class="video-caps" role="group" aria-label="Capítulos"><button type="button" data-cap="0" aria-pressed="true">1 · Cómo funciona</button><button type="button" data-cap="1" aria-pressed="false">2 · Cómo falla</button></div></div>';
     var raiz = caja.firstChild, pantalla = raiz.querySelector('.video-pantalla'), cv = raiz.querySelector('canvas'), ctx = cv ? cv.getContext('2d') : null, sub = raiz.querySelector('.video-subt');
     var es3D = !!m3;
     if (m3) m3.montar(pantalla);
     var bPlay = raiz.querySelector('[data-v="play"]'), bVoz = raiz.querySelector('[data-v="voz"]'), rango = raiz.querySelector('input'), tiempo = raiz.querySelector('.video-t'), grande = raiz.querySelector('.video-grande');
-    var S = { t: op.cap === 1 ? off[1] : 0, play: false, voz: false, ult: -1, raf: 0, prev: 0, hablando: false, vivo: true };
-    var k = { foco: id };
+    var S = { t: op.cap === 1 ? off[1] : 0, play: false, voz: !!window.speechSynthesis, ult: -1, raf: 0, prev: 0, vivo: true,
+      hablando: false, empezo: false, vozId: 0, vozDesde: 0, vozEst: 0, limiteVoz: 0, minHasta: 0, respiro: 0, tCard: 0, utt: null,
+      mudo: 0, enClic: false, arrastre: false, tArr: 0 };
+    var k = { foco: id }, card = raiz.querySelector('.video-capitulo');
+    function pintarVoz() { if (bVoz) { bVoz.setAttribute('aria-pressed', String(S.voz)); bVoz.textContent = S.voz ? 'Voz: sí' : 'Voz: no'; } }
+    pintarVoz();
 
     function capEn(t) { return t < off[1] ? 0 : 1; }
     function subIdx(c, lt) { var s = caps[c].subt, i = 0; for (var j = 0; j < s.length; j++) if (lt >= s[j][0]) i = j; return i; }
@@ -30765,72 +30817,150 @@ ASC.codigos = [
         try { caps[c].dib(lt, k); } catch (e) { /* un cuadro que no se pudo dibujar no detiene el video */ if (window.console) console.warn(e); }
       }
       var i = subIdx(c, lt), clave = c * 100 + i;
-      if (clave !== S.ult) { S.ult = clave; sub.textContent = caps[c].subt[i][1]; if (S.voz && S.play) hablar(caps[c].subt[i][1]); }
-      rango.value = String(Math.round(S.t / total * 1000));
+      if (clave !== S.ult) mostrarSub(c, i, clave);
+      if (!S.arrastre) rango.value = String(Math.round(S.t / total * 1000));
       tiempo.textContent = mmss(S.t) + ' / ' + mmss(total);
       raiz.querySelectorAll('[data-cap]').forEach(function (b) { b.setAttribute('aria-pressed', String(Number(b.dataset.cap) === c)); });
     }
-    function hablar(txt) {
-      if (!window.speechSynthesis) return;
-      speechSynthesis.cancel();
-      var u = new SpeechSynthesisUtterance(txt), v = vozEs();
-      u.lang = v ? v.lang : 'es-PE'; if (v) u.voice = v; u.rate = 1.02;
-      // si el navegador nunca avisa que terminó, la imagen no se queda esperando para siempre
-      S.hablando = true; S.limiteVoz = performance.now() + 2500 + txt.split(/\s+/).length * 600;
-      u.onend = u.onerror = function () { S.hablando = false; };
-      speechSynthesis.speak(u);
+    // cada frase se muestra y se narra completa; el video la espera (ver tick)
+    function mostrarSub(c, i, clave) {
+      var txt = caps[c].subt[i][1];
+      S.ult = clave; sub.textContent = txt;
+      if (!S.play || S.arrastre) return;   // arrastrando la barra no se narra (serían pedacitos): se narra al soltarla
+      S.minHasta = performance.now() + lectura(txt) * 1000;   // tiempo para leerla aunque no haya voz
+      var nombre = caps[c].nombre || (c ? 'Cómo falla' : 'Cómo funciona');
+      if (i === 0) mostrarCapitulo((c + 1) + ' · ' + nombre, c);
+      if (S.voz) hablar((i === 0 ? (c ? 'Ahora veamos cómo falla. ' : 'Cómo funciona. ') : '') + txt);
     }
-    function sigCorte(t) {   // próximo cambio de subtítulo (o fin de capítulo) después de t
-      var c = capEn(t), s = caps[c].subt, lt = t - off[c];
-      for (var j = 0; j < s.length; j++) if (s[j][0] > lt + 1e-6) return off[c] + s[j][0];
-      return off[c] + caps[c].dur;
+    function mostrarCapitulo(t, c) {
+      if (!card) return;
+      card.textContent = t; card.classList.toggle('mal', c === 1); card.classList.add('ver');
+      clearTimeout(S.tCard); S.tCard = setTimeout(function () { card.classList.remove('ver'); }, 2300);
+    }
+    function lectura(txt) { return Math.max(2.5, txt.length / 15 + 1); }   // segundos para leer la frase
+    function estimar(txt) { return 0.5 + txt.length / 13; }                // segundos que tarda la voz, más o menos
+    function hablar(txt) {
+      var mio = ++S.vozId, enClic = S.enClic;
+      S.hablando = true; S.empezo = false; S.mudo = 0; S.vozEst = estimar(txt); marcarInicio();
+      if (!window.speechSynthesis) { S.hablando = false; return; }
+      var ss = speechSynthesis, intentos = 0;
+      function decir() {
+        if (mio !== S.vozId || !S.play) return;
+        // recién se cortó otra voz: algunos navegadores pierden la frase que se pide enseguida, se espera un momento
+        var resto = ultCorte + 250 - performance.now();
+        if (resto > 0) { setTimeout(decir, resto); return; }
+        var v = vozEs();
+        // las voces aún están cargando: se espera un poco, una sola vez, y nunca dentro del clic (algunos teléfonos solo dejan hablar ahí)
+        if (!v && !(voces && voces.length) && !enClic && !vocesEsperadas) { if (intentos++ < 8) { setTimeout(decir, 150); return; } vocesEsperadas = true; }
+        if (ss.paused) ss.resume();   // una voz que quedó en pausa (al volver a la página) no dejaría hablar
+        var partes = trozos(txt), lista = [];
+        marcarInicio();
+        partes.forEach(function (p, j) {
+          var u = new SpeechSynthesisUtterance(p);
+          u.lang = v ? v.lang : 'es-PE'; if (v) u.voice = v; u.rate = 1;
+          u.onstart = function () { if (mio !== S.vozId || S.empezo) return; S.empezo = true; marcarInicio(); };
+          // solo cuenta el aviso del último trozo de ESTA frase (uno tardío de otra frase no la corta)
+          if (j === partes.length - 1) u.onend = u.onerror = function () { if (mio === S.vozId) termino(); };
+          lista.push(u);
+          // sin cancel(): si la frase anterior aún suena, esta espera su turno en la cola en vez de cortarla
+          ss.speak(u);
+        });
+        S.utt = lista;   // guardarlas: si el navegador las pierde, nunca avisa que terminaron
+        // si a los 5 s no empezó y no suena nada, la voz no funciona en este equipo: el video sigue con el tiempo de lectura
+        setTimeout(function () { if (mio === S.vozId && S.hablando && !S.empezo && !ss.speaking && !ss.pending) S.hablando = false; }, 5000);
+      }
+      decir();
+    }
+    function marcarInicio() { S.vozDesde = performance.now(); S.limiteVoz = S.vozDesde + 4000 + S.vozEst * 2000; }   // si nunca avisa que terminó, no se espera para siempre
+    function termino() {   // la frase terminó: una pausa corta antes de la siguiente
+      var t = performance.now();
+      S.hablando = false; S.mudo = 0; S.respiro = t + 550;
+      // algunos teléfonos avisan «terminé» mucho antes de terminar: entonces se espera lo que dura la frase
+      if (t - S.vozDesde < S.vozEst * 450) S.respiro = Math.max(S.respiro, S.vozDesde + S.vozEst * 1000 + 300);
+    }
+    function callar() {
+      S.vozId++; S.hablando = false; S.respiro = 0; S.utt = null;
+      if (vivo === ctl || !vivo) cortarVoz();
+    }
+    function sigCorte(t) {   // dónde termina el subtítulo que se ve en t (el siguiente o el fin del capítulo); mismo criterio que subIdx
+      var c = capEn(t), s = caps[c].subt, i = subIdx(c, t - off[c]);
+      return off[c] + (i + 1 < s.length ? s[i + 1][0] : caps[c].dur);
     }
     function tick(now) {
       if (!S.play) return;
-      var dt = Math.min(0.1, (now - (S.prev || now)) / 1000); S.prev = now;
-      var nt = S.t + dt;
-      if (S.hablando && now > S.limiteVoz) S.hablando = false;
-      if (S.voz && S.hablando) { var corte = sigCorte(S.t); if (nt >= corte) nt = corte - 0.001; }   // la imagen espera a la voz
+      var dt = Math.min(0.1, (now - (S.prev || now)) / 1000), ss = window.speechSynthesis; S.prev = now;
+      // la voz ya empezó y el navegador ya no suena: terminó aunque no llegó el aviso (Chrome a veces no lo manda)
+      if (S.hablando && S.empezo && ss && !ss.speaking && !ss.pending) { if (!S.mudo) S.mudo = now; else if (now - S.mudo > 400) termino(); } else S.mudo = 0;
+      if (S.hablando && now > S.limiteVoz) {
+        // demasiado tiempo: la voz se trabó (sigue «hablando» sin sonido); se suelta para que la frase siguiente sí suene
+        S.hablando = false; S.vozId++;
+        if (ss && vivo === ctl && (ss.speaking || ss.pending)) cortarVoz();
+      }
+      // segundos reales que todavía necesita la frase actual (voz, lectura y una pequeña pausa al final)
+      var falta = Math.max(0, (S.minHasta - now) / 1000, (S.respiro - now) / 1000);
+      if (S.hablando) falta = Math.max(falta, S.vozEst - (now - S.vozDesde) / 1000, 0.3);
+      var corte = sigCorte(S.t), vel = 1;
+      // si la frase necesita más tiempo, la imagen va más lenta y al final la espera: nunca se corta ni se pasa al otro tema
+      if (falta > 0) vel = Math.max(0.3, Math.min(1, (corte - S.t) / falta));
+      var nt = S.t + dt * vel;
+      if (falta > 0 && nt >= corte) nt = Math.max(S.t, corte - 0.0005);
       S.t = nt;
-      if (S.t >= total) { S.t = total; dibujar(); pausa(); S.t = 0; S.ult = -1; grande.hidden = false; grande.textContent = '↻'; grande.setAttribute('aria-label', 'Ver otra vez'); return; }
+      if (S.t >= total) { S.t = total; dibujar(); terminar(); return; }
       dibujar();
       S.raf = requestAnimationFrame(tick);
     }
     function play() {
       if (vivo && vivo !== ctl) vivo.pausa();
-      vivo = ctl; S.play = true; S.prev = 0; S.ult = -1; grande.hidden = true;
+      vivo = ctl; S.play = true; S.prev = 0; S.ult = -1; S.minHasta = 0; S.respiro = 0; S.arrastre = false; clearTimeout(S.tArr); verGrande(false); grande.hidden = true;
+      if (window.speechSynthesis && (speechSynthesis.speaking || speechSynthesis.pending)) { S.vozId++; cortarVoz(); }   // empezar limpio
       bPlay.textContent = '❚❚'; bPlay.setAttribute('aria-label', 'Pausa');
+      cancelAnimationFrame(S.raf);
+      S.enClic = true;
+      try { dibujar(); } finally { S.enClic = false; }   // la primera frase se narra aquí mismo, dentro del clic (algunos teléfonos solo dejan hablar así)
       S.raf = requestAnimationFrame(tick);
     }
     function pausa() {
       S.play = false; cancelAnimationFrame(S.raf);
       bPlay.textContent = '▶'; bPlay.setAttribute('aria-label', 'Reproducir');
-      if (window.speechSynthesis && vivo === ctl) speechSynthesis.cancel();
-      S.hablando = false;
+      callar();
     }
-    function parar(sinDibujo) { pausa(); S.vivo = false; if (vivo === ctl) vivo = null; var x = m3; m3 = null; if (x) x.destruir(); }
+    // fin natural: la última frase ya terminó; no se llama a cancel() por si el final aún suena (teléfonos que avisan antes)
+    function terminar() {
+      S.play = false; cancelAnimationFrame(S.raf); S.vozId++; S.hablando = false;
+      bPlay.textContent = '▶'; bPlay.setAttribute('aria-label', 'Reproducir');
+      S.t = 0; S.ult = -1; verGrande(true);
+    }
+    function verGrande(fin) { grande.hidden = false; grande.textContent = fin ? '↻' : '▶'; grande.setAttribute('aria-label', fin ? 'Ver otra vez' : 'Reproducir el video'); }
+    function parar(sinDibujo) { pausa(); clearTimeout(S.tCard); clearTimeout(S.tArr); S.vivo = false; if (vivo === ctl) vivo = null; var x = m3; m3 = null; if (x) x.destruir(); }
     // ir: salta a un segundo del video y lo dibuja (también lo usan las pruebas)
-    var ctl = { pausa: pausa, parar: parar, play: play, ir: function (t) { S.t = Math.max(0, Math.min(total, t)); S.ult = -1; dibujar(); }, total: total, off: off, tipo: m3 ? '3d' : '2d' };
+    var ctl = { pausa: pausa, parar: parar, play: play, ir: function (t) { if (S.play) callar(); S.t = Math.max(0, Math.min(total, t)); S.ult = -1; dibujar(); }, total: total, off: off, caps: caps, tipo: m3 ? '3d' : '2d',
+      alOcultar: function () { if (S.play) { pausa(); verGrande(false); } } };
     if (m3) m3.alSoltar = function () { if (!raiz.isConnected) { parar(true); return; } if (S.play) pausa(); grande.hidden = false; };
 
     grande.addEventListener('click', play);
     bPlay.addEventListener('click', function () { if (S.play) pausa(); else play(); });
     if (bVoz) bVoz.addEventListener('click', function () {
-      S.voz = !S.voz; bVoz.setAttribute('aria-pressed', String(S.voz));
-      if (S.voz && S.play) { var c = capEn(S.t); hablar(caps[c].subt[subIdx(c, S.t - off[c])][1]); } else if (!S.voz && window.speechSynthesis) { speechSynthesis.cancel(); S.hablando = false; }
+      S.voz = !S.voz; pintarVoz();
+      if (S.voz && S.play) { var c = capEn(S.t); S.enClic = true; hablar(caps[c].subt[subIdx(c, S.t - off[c])][1]); S.enClic = false; } else if (!S.voz) callar();
     });
-    rango.addEventListener('input', function () { S.t = Number(rango.value) / 1000 * total; S.ult = -1; if (window.speechSynthesis && S.voz) speechSynthesis.cancel(); S.hablando = false; dibujar(); });
+    rango.addEventListener('input', function () {
+      callar(); S.t = Number(rango.value) / 1000 * total; S.ult = -1; S.arrastre = true; dibujar();
+      // al soltar (o al quedarse quieta un momento) se narra la frase completa donde quedó
+      clearTimeout(S.tArr);
+      S.tArr = setTimeout(function () { S.arrastre = false; if (S.play && raiz.isConnected) { S.ult = -1; dibujar(); } }, 350);
+    });
     raiz.querySelector('.video-caps').addEventListener('click', function (e) {
       var b = e.target.closest('[data-cap]'); if (!b) return;
-      S.t = off[Number(b.dataset.cap)]; S.ult = -1; S.hablando = false; if (window.speechSynthesis && S.voz) speechSynthesis.cancel();
-      dibujar(); if (!S.play) play();
+      callar(); S.t = off[Number(b.dataset.cap)]; S.ult = -1;
+      if (S.play) dibujar(); else play();
     });
     raiz.addEventListener('keydown', function (e) { if (e.key === ' ' && e.target === raiz) { e.preventDefault(); if (S.play) pausa(); else play(); } });
     if (window.matchMedia) { var mq = window.matchMedia('(prefers-color-scheme: dark)'); if (mq.addEventListener) mq.addEventListener('change', function () { if (!S.play && raiz.isConnected) dibujar(true); }); }
     if (window.ResizeObserver) new ResizeObserver(function () { if (!S.play && raiz.isConnected) dibujar(true); }).observe(pantalla);
     // primer cuadro: el que explica mejor la pieza
     S.t = op.cap === 1 ? off[1] + 0.5 : 0.5; dibujar(); S.t = op.cap === 1 ? off[1] : 0; S.ult = -1;
-    if (op.auto && !reducido) play();
+    // video del diálogo: arranca solo; con «menos movimiento» no arranca, pero el otro video tampoco sigue hablando detrás
+    if (op.auto) { if (!reducido) play(); else if (vivo && vivo !== ctl) vivo.pausa(); }
     return ctl;
   };
   function escH(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -31335,7 +31465,7 @@ ASC.codigos = [
     // posición de un punto del brazo (altura h sobre el pivote) con el brazo abierto un ángulo a
     funciona: {
       dur: 18,
-      subt: [[0, 'El freno es como el de una bicicleta: dos zapatas aprietan una rueda de metal (el tambor) para que el motor no gire.'],
+      subt: [[0, 'El freno es como el de una bicicleta: dos zapatas aprietan una rueda de metal, el tambor, y el motor no gira.'],
         [4.5, 'Sin corriente, los resortes aprietan las zapatas. Por eso, si se va la luz, el ascensor queda frenado.'],
         [8.5, 'Para viajar, el tablero manda corriente a la bobina: se vuelve imán, separa las zapatas y el tambor gira.'],
         [13, 'Dos interruptores pequeños, los micros, avisan al tablero que el freno abrió de verdad.']],
@@ -31357,7 +31487,7 @@ ASC.codigos = [
       subt: [[0, 'Falla 1: un micro se movió de su sitio. El freno abre, pero el micro no se entera.'],
         [4.5, 'El tablero cree que el freno sigue cerrado: no deja arrancar y muestra «error de freno».'],
         [9, 'Falla 2: las zapatas están gastadas o con aceite. El freno aprieta pero patina, y la cabina se pasa del piso.'],
-        [14.5, 'Arreglo: ajustar el micro y cambiar las zapatas gastadas. Siempre con la cabina vacía y asegurada.']],
+        [14.5, 'Arreglo: siempre con la cabina vacía y asegurada, ajustar el micro y cambiar las zapatas gastadas.']],
       cam: [[0, [-1.09, 0.74, 1.5], [-0.42, 0.32, 0.1]], [8.5, [-0.96, 0.77, 1.57], [-0.4, 0.34, 0.1]], [9.5, [1.05, 0.88, 1.38], [0, 0.42, 0.05]], [14, [1.19, 0.95, 1.45], [0, 0.42, 0.05]], [18.5, [1.68, 1.16, 2.17], [0, 0.42, 0]]],
       anim: function (t, s, K) {
         if (t < 9) {
@@ -31455,7 +31585,7 @@ ASC.codigos = [
       subt: [[0, 'La baranda es la reja amarilla del techo de la cabina. Protege al técnico cuando trabaja arriba.'],
         [4, 'En muchos ascensores es plegable: el técnico la levanta apenas sube al techo.'],
         [8, 'Si se acerca al borde, la baranda lo detiene y no cae al vacío del hueco.'],
-        [12, 'Un contacto avisa al tablero que la baranda está arriba: el ascensor solo se mueve despacio, en modo inspección.'],
+        [12, 'Un contacto avisa que la baranda está arriba: el ascensor solo se mueve despacio, en modo inspección.'],
         [16, 'Al terminar, la baja y la traba. Recién ahí el ascensor vuelve a funcionar normal.']],
       cam: [[0, [3.6, 4.6, 4.2], [0.2, 2.6, 0]], [4, [3.4, 3.9, 3.5], [0.4, 2.7, 0.1]], [8, [1.6, 4.0, 4.4], [0.3, 2.8, 0.1]], [12, [3.6, 3.4, 2.4], [0.5, 2.5, 0.4]], [16, [3.4, 4.2, 3.6], [0.3, 2.6, 0]], [20, [3.6, 4.6, 4.2], [0.2, 2.6, 0]]],
       anim: function (t, s, K) {
@@ -31478,7 +31608,7 @@ ASC.codigos = [
     },
     falla: {
       dur: 19,
-      subt: [[0, 'Falla 1: tornillos flojos. La baranda se mueve y suena cuando la cabina viaja.'],
+      subt: [[0, 'Falla 1: hay tornillos flojos. La baranda se mueve y suena cuando la cabina viaja.'],
         [5, 'Falla 2: quedó levantada o su contacto se desajustó. El ascensor no vuelve al servicio normal.'],
         [10.5, 'Falla 3: un golpe dobló un tramo. Ya no protege bien y puede chocar con algo del hueco.'],
         [14.5, 'Arreglo: ajustar los tornillos, revisar la traba y el contacto, y cambiar los tramos doblados.']],
@@ -31544,8 +31674,8 @@ ASC.codigos = [
     },
     funciona: {
       dur: 15,
-      subt: [[0, 'La cortina de luz son dos reglas en el borde de la puerta. Una lanza rayos de luz invisibles y la otra los recibe.'],
-        [3, 'Mientras la puerta se cierra, revisa todo el tiempo que lleguen todos los rayos.'],
+      subt: [[0, 'La cortina de luz son dos reglas en la puerta. Una lanza rayos invisibles y la otra los recibe.'],
+        [3, 'Mientras la puerta cierra, revisa que lleguen todos los rayos.'],
         [5.6, 'Si una persona corta un rayo, la puerta se abre de nuevo sin tocarla.'],
         [9, 'Cuando ya no hay nadie, espera un momento y vuelve a cerrar.']],
       cam: [[0, [1.5, 1.7, 2.6], [0, 1.0, 0]], [3, [1.0, 1.35, 2.1], [0, 1.0, 0]], [6.5, [2.3, 1.5, 1.2], [0, 1.0, 0]], [9.5, [1.3, 1.4, 2.2], [0, 1.0, 0]], [15, [1.5, 1.7, 2.6], [0, 1.0, 0]]],
@@ -31564,7 +31694,7 @@ ASC.codigos = [
     falla: {
       dur: 19,
       subt: [[0, 'Falla: la regla está sucia o golpeada. Un rayo queda cortado aunque no haya nadie.'],
-        [4, 'La puerta cierra, se abre, cierra, se abre… y el ascensor no sale del piso.'],
+        [4, 'La puerta cierra y se vuelve a abrir, una y otra vez. El ascensor no sale del piso.'],
         [12, 'Arreglo: limpiar las reglas con un paño seco, revisar que estén derechas y que su cable no esté pelado.']],
       cam: [[0, [0.9, 1.0, 1.4], [0.15, 0.7, 0]], [4, [1.5, 1.6, 2.5], [0, 1.0, 0]], [12, [0.8, 0.9, 1.2], [0.2, 0.65, 0.05]], [19, [1.3, 1.4, 2.2], [0, 1.0, 0]]],
       anim: function (t, s, K) {
@@ -31995,7 +32125,7 @@ ASC.codigos = [
     },
     funciona: {
       dur: 18,
-      subt: [[0, 'Esto hay encima de cada puerta de piso, visto desde dentro del hueco: es el cabezal.'],
+      subt: [[0, 'Encima de cada puerta de piso, visto desde dentro del hueco, está el cabezal.'],
         [4.5, 'Cada hoja cuelga de un carro con ruedas. Las ruedas corren sobre un riel, como un tren.'],
         [9, 'Un cable une las dos hojas: la cabina empuja una y el cable mueve la otra.'],
         [13.5, 'Al cerrar, la pesa del costado baja y jala la puerta para que quede bien cerrada.']],
@@ -32326,7 +32456,7 @@ ASC.codigos = [
       subt: [[0, 'Falla 1: el taco está gastado y quedó delgado. La hoja baila abajo y golpetea al moverse.'],
         [5.5, 'Falla 2: un golpe de carretilla rompió los tacos. El pie de la hoja queda suelto.'],
         [10, 'Si alguien la empuja, la hoja cede hacia el hueco. ¡Es peligro de caída!'],
-        [14.5, 'Arreglo: ascensor fuera de servicio, cambiar los tacos y revisar que la hoja corra derecha.']],
+        [14.5, 'Arreglo: con el ascensor fuera de servicio, cambiar los tacos y revisar que la hoja corra derecha.']],
       cam: [[0, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]], [9.6, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]], [10.6, [2.1, 1.0, -1.25], [0.25, 0.55, -0.12]], [14.2, [2.1, 1.0, -1.25], [0.25, 0.55, -0.12]], [15, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]], [19, [0.68, 0.075, -0.075], [XG, 0.0, -0.06]]],
       anim: function (t, s, K) {
         K.marcar(s.marcables, null);
@@ -32378,7 +32508,7 @@ ASC.codigos = [
       dur: 18,
       subt: [[0, 'La pisadera es el umbral de aluminio que pisas al entrar. Hay una en el piso y otra en la cabina.'],
         [4.5, 'Tiene una ranura: por ahí corren los tacos que guían las hojas de la puerta por abajo.'],
-        [9, 'Cuando la cabina para bien, las dos quedan al mismo nivel, con una rendija de unos 3 cm.'],
+        [9, 'Cuando la cabina para bien, las dos quedan al mismo nivel, con una rendija de unos 3 centímetros.'],
         [13.5, 'Si algo se te cae por esa rendija, no lo saques: cae al fondo del hueco y lo recupera el técnico.']],
       cam: [[0, [0.3, 0.75, 0.95], [0, 0.0, -0.12]], [4.5, [0.25, 0.48, 0.6], [0.05, 0.0, -0.07]], [8.6, [0.25, 0.48, 0.6], [0.05, 0.0, -0.07]], [9.4, [0.32, 0.5, 0.55], [0.05, -0.01, -0.12]], [13.4, [0.32, 0.5, 0.55], [0.05, -0.01, -0.12]], [14.2, [0.34, 0.4, 0.42], [0.1, -0.04, -0.09]], [18, [0.34, 0.4, 0.42], [0.1, -0.06, -0.1]]],
       anim: function (t, s, K) {
@@ -32794,7 +32924,7 @@ ASC.codigos = [
       subt: [[0, 'Falla 1: el puente se dobló o se corrió. La puerta cierra, pero el puente no entra en la cajita.'],
         [4.5, 'Sin esa señal el ascensor no sale: la puerta vuelve a abrir y cerrar, una y otra vez.'],
         [8.6, 'Falla 2: el contacto está sucio. Con la vibración se abre un instante y la cabina se para de golpe.'],
-        [13.5, 'Arreglo: con el ascensor detenido, enderezar el puente, limpiar el contacto y probar. Nunca se puentea.']],
+        [13.5, 'Arreglo: con el ascensor detenido, enderezar el puente, limpiar el contacto y probar. Nunca se anula con un cable.']],
       cam: [[0, [0.3, 2.42, 0.72], [-0.03, 2.23, 0.04]], [8.4, [0.3, 2.42, 0.72], [-0.03, 2.23, 0.04]], [9.4, [0.2, 2.34, 0.55], [-0.01, 2.245, 0.04]], [13.5, C_CON[0], C_CON[1]], [18, [0.45, 2.5, 1.1], [0, 2.2, 0.03]]],
       anim: function (t, s, K) {
         var doblado = t < 8.6, sucio = K.entre(t, 8.6, 13.5);
@@ -32958,7 +33088,7 @@ ASC.codigos = [
       subt: [[0, 'Falla 1: el contacto está sucio o quemado. El gancho baja, pero la corriente no pasa bien.'],
         [4.5, 'El ascensor no sale de ese piso, o se para de golpe entre pisos cuando la puerta vibra.'],
         [8.5, 'Falla 2: el gancho está duro o sucio y no baja. La puerta queda sin trabar y el ascensor no se mueve.'],
-        [13.5, 'Arreglo: con el ascensor detenido y sin corriente, limpiar o cambiar el contacto y dejar el gancho libre. Nunca se puentea.']],
+        [13.5, 'Arreglo: sin corriente, limpiar o cambiar el contacto y dejar el gancho libre. Nunca se anula con un cable.']],
       cam: [[0, [0.46, 2.11, 0.55], [0.29, 2.045, 0.06]], [8.2, [0.46, 2.11, 0.55], [0.29, 2.045, 0.06]], [9.4, C_CERCA, M_CERCA], [13.5, C_CERCA, M_CERCA], [19, [0.46, 2.16, 0.92], [0.2, 2.03, 0.06]]],
       anim: function (t, s, K) {
         var e;
@@ -33479,7 +33609,7 @@ ASC.codigos = [
       g: [[0, 'Falla 1: las pesas se soltaron dentro del marco.'],
         [4, 'Al viajar golpean el marco: se escucha un traqueteo cuando se cruza con la cabina.'],
         [8.5, 'Falla 2: los cables se estiraron. Con la cabina arriba, el contrapeso casi toca su amortiguador.'],
-        [13.5, 'Arreglo: asegurar las pesas con su traba y acortar los cables. Con el equipo detenido.']],
+        [13.5, 'Arreglo: con el equipo detenido, asegurar las pesas con su traba y acortar los cables.']],
       cams: [
         planos([[0, [2.7, 4.7, 2.6], [0.85, 4.15, 0]],
           [4, [3.4, 4.6, 6.6], [0.3, 3.6, 0], [3.5, 4.4, 6.4]],
@@ -33530,7 +33660,7 @@ ASC.codigos = [
       g: [[0, 'Falla 1: el rodamiento de la polea está seco o gastado.'],
         [4.5, 'Se escucha un chillido o un zumbido arriba, que sigue el ritmo del viaje.'],
         [9, 'Falla 2: la polea quedó chueca. Los cables rozan su borde y se gastan rápido.'],
-        [13.5, 'Arreglo: engrasar o cambiar el rodamiento y alinear la polea. Siempre con el equipo detenido.']],
+        [13.5, 'Arreglo: siempre con el equipo detenido, engrasar o cambiar el rodamiento y alinear la polea.']],
       cams: [
         planos([[0, [-0.2, 5.0, 1.6], [0.6, 5.5, 0]],
           [4.5, [0.2, 5.25, 1.0], [0.62, 5.5, 0]],
@@ -33726,7 +33856,7 @@ ASC.codigos = [
     funciona: {
       dur: 18,
       subt: [[0, 'La máquina es el motor del ascensor. Hace girar la polea, y la polea mueve los cables.'],
-        [4.5, 'Por dentro, los imanes del centro giran, jalados por bobinas que se encienden en ronda.'],
+        [4.5, 'Por dentro, los imanes del centro giran, jalados por bobinas que se encienden una tras otra.'],
         [9, 'El tablero le da más o menos fuerza: por eso arranca suave, viaja y frena suave.'],
         [13.5, 'Las máquinas antiguas tienen engranajes en aceite: el motor gira rápido y la polea, lento.']],
       anim: function (t, s, K) {
@@ -33752,7 +33882,7 @@ ASC.codigos = [
       subt: [[0, 'Falla 1: muchos viajes seguidos o un cuarto sin aire hacen que el motor se caliente.'],
         [4.5, 'Su protección lo apaga para que no se queme. El ascensor se para hasta que enfríe.'],
         [9, 'Falla 2: un rodamiento gastado hace zumbar y temblar la máquina.'],
-        [13.5, 'Arreglo: ventilar el cuarto, limpiar el ventilador y cambiar el rodamiento gastado. Con la energía cortada.']],
+        [13.5, 'Arreglo: con la energía cortada, ventilar el cuarto, limpiar el ventilador y cambiar el rodamiento gastado.']],
       anim: function (t, s, K) {
         var calor = t < 9 ? ph(t, 0.3, 5.2) * (1 - ph(t, 7.5, 9)) : 0;
         var V = [[0, 1.4], [5, 1.4], [5.6, 0], [9, 0], [9.6, 1.6], [13.5, 1.6], [14.2, 1.1], [18, 1.1]];
@@ -33951,7 +34081,7 @@ ASC.codigos = [
       dur: 16,
       subt: [[0, 'Del tablero al motor van varios cables, y cada uno tiene su trabajo.'],
         [4, 'El cable grueso lleva la fuerza: la corriente que hace girar el motor.'],
-        [8, 'Los delgados llevan avisos: uno cuenta las vueltas (el encoder) y otro abre el freno.'],
+        [8, 'Los delgados llevan avisos: uno viene del encoder, que cuenta las vueltas, y otro abre el freno.'],
         [12, 'El grueso y los delgados van por caminos separados, para no meterse ruido entre ellos.']],
       anim: function (t, s, K) {
         var a = -t * 0.9;
@@ -33972,7 +34102,7 @@ ASC.codigos = [
       subt: [[0, 'Falla 1: el forro del cable grueso se peló contra un filo de metal.'],
         [4.5, 'El cobre toca el metal: el variador se apaga, marca «fuga a tierra» y el motor se para.'],
         [9, 'Falla 2: un borne flojo en la caja del motor calienta con cada arranque y se quema.'],
-        [13.5, 'Arreglo: cortar la energía y esperar unos minutos (el variador guarda carga). Cambiar el cable y ajustar bornes.']],
+        [13.5, 'Arreglo: cortar la energía y esperar unos minutos: el variador guarda carga. Luego cambiar el cable y ajustar los bornes.']],
       anim: function (t, s, K) {
         var para = entre(t, 5, 9), a = -K.integ(function (x) { return x < 5 ? 0.9 : x < 9 ? kf(x, [[5, 0.9], [5.6, 0]]) : x < 13.5 ? 0.9 : 0.6; }, t);
         gearlessGira(s.m, a); bobinasPone(s.m, a, 0, 0);
@@ -34105,7 +34235,7 @@ ASC.codigos = [
       subt: [[0, 'Falla 1: los resortes quedaron disparejos. Uno está aplastado y otro casi suelto.'],
         [4.5, 'Un cable carga de más y otro casi nada: la cabina vibra y la polea se gasta dispareja.'],
         [9, 'Falla 2: una tuerca se aflojó y le falta el pasador. Al arrancar suena un «clac».'],
-        [13.5, 'Arreglo: igualar los resortes con las tuercas y poner contratuerca y pasador. Con la cabina asegurada.']],
+        [13.5, 'Arreglo: con la cabina asegurada, igualar los resortes con las tuercas y poner contratuerca y pasador.']],
       anim: function (t, s, K) {
         var f1 = t < 9, f2 = entre(t, 9, 13.5), L, baja = [0, 0, 0, 0], sin = [false, false, false, false], vib = 0, bow = null, viaje = 0;
         if (f1) { L = [0.082, LR, 0.178, LR]; bow = [2, 0.03]; if (t > 4.5) { vib = 0.003; viaje = (t - 4.5) * 0.6; } }
@@ -34296,7 +34426,7 @@ ASC.codigos = [
       g: [[0, 'Falla 1: el rodamiento de una polea se gastó. Zumba debajo del piso al viajar.'],
         [4.5, 'El zumbido sube con la velocidad y se siente en los pies.'],
         [9, 'Falla 2: la cinta se corrió de lado y roza el borde. Chirría y bota polvillo.'],
-        [13.5, 'Arreglo: cambiar el rodamiento y alinear la polea y la cinta. Con la cabina asegurada.']],
+        [13.5, 'Arreglo: con la cabina asegurada, cambiar el rodamiento y alinear la polea y la cinta.']],
       mov: [[0, 0.6], [8.5, 0.6], [12.5, 1.6], [13.5, 1.6], [16.5, 2.0], [17, 2.0]],
       mov2: [[0, 0.7], [0.6, 0.7], [8.5, 1.5], [9, 1.5], [13.2, 1.0], [18, 1.0]],
       cams: [
@@ -34718,7 +34848,7 @@ ASC.codigos = [
       dur: 19.5,
       subt: [[0, 'Falla 1: la canaleta de la polea, por donde pasa el cable, se gastó con los años.'],
         [4, 'Cuando el gancho traba la polea, el cable resbala y sigue de largo: no jala el paracaídas a tiempo.'],
-        [9, 'Falla 2: pesas sucias u oxidadas. El limitador se dispara a velocidad normal y la cabina se clava sin motivo.'],
+        [9, 'Falla 2: las pesas están sucias u oxidadas. El limitador se dispara a velocidad normal y la cabina se clava sin motivo.'],
         [14.5, 'Arreglo: limpiarlo, probarlo y cambiar la polea y el cable gastados. Viene sellado: no se regula a mano.']],
       cam: [[0, [0.3, 1.35, 0.62], [0, 1.08, 0]], [4, [0.42, 1.25, 0.88], [0, 1.04, 0]], [9, [0.5, 1.12, 0.8], [0.02, 1.0, 0]], [14.5, [0.6, 1.2, 1.0], [0, 0.97, 0]], [19.5, [0.6, 1.2, 1.05], [0, 0.96, 0]]],
       anim: function (t, s, K) {
@@ -34897,7 +35027,7 @@ ASC.codigos = [
       dur: 19,
       subt: [[0, 'Falla 1: con los años el cable se estira, como un elástico viejo.'],
         [4, 'La pesa de abajo baja poco a poco hasta apretar su interruptor. El ascensor se para y no arranca.'],
-        [9.5, 'Falla 2: hilos rotos. El cable se pela con el roce y se puede cortar.'],
+        [9.5, 'Falla 2: con el roce, se rompen hilos del cable. Así se pela y se puede cortar.'],
         [14, 'Arreglo: con el ascensor detenido, se acorta el cable y la pesa vuelve a su altura. Con hilos rotos, se cambia.']],
       cam: [[0, [2.2, 2.9, 9.6], [-0.45, 2.45, 0]], [3.6, [0.3, 1.15, 2.4], [-1.05, 0.42, 0.2]], [9, [0.3, 1.15, 2.4], [-1.05, 0.42, 0.2]], [10.2, [-0.2, 3.4, 2.2], [-1.05, 3.0, 0.2]], [13.6, [-0.2, 3.4, 2.2], [-1.05, 3.0, 0.2]], [14.8, [1.4, 2.6, 7.4], [-0.5, 2.3, 0]], [19, [1.5, 2.6, 7.6], [-0.5, 2.3, 0]]],
       anim: function (t, s, K) {
@@ -34928,7 +35058,7 @@ ASC.codigos = [
     construir: function (K) { return armarLazo(K); },
     funciona: {
       dur: 18.5,
-      subt: [[0, 'La polea tensora está en el fondo del hueco (el foso). Es una rueda con una pesa colgando.'],
+      subt: [[0, 'La polea tensora está en el foso, el fondo del hueco. Es una rueda con una pesa colgando.'],
         [4.5, 'Por ella da la vuelta el cable del limitador. Cuando la cabina viaja, la rueda gira.'],
         [8.5, 'La pesa jala el cable hacia abajo y lo mantiene estirado, para que no patine arriba en el limitador.'],
         [13, 'Debajo de la pesa hay un interruptor. Si la pesa baja demasiado, lo aprieta y el ascensor se detiene.']],
@@ -34951,7 +35081,7 @@ ASC.codigos = [
     falla: {
       dur: 19,
       subt: [[0, 'Falla 1: el cable del limitador se estiró con los años. La pesa baja poco a poco.'],
-        [4.5, 'Hasta que aprieta su interruptor: el ascensor se detiene y queda bloqueado.'],
+        [4.5, 'Al final aprieta su interruptor: el ascensor se detiene y queda bloqueado.'],
         [9.5, 'Falla 2: agua y óxido en el foso. La pesa se traba, el cable queda flojo y baila.'],
         [14, 'Arreglo: acortar el cable, secar el foso y dejar que la pesa cuelgue libre, sin tocar nada.']],
       cam: [[0, [0.3, 1.1, 2.2], [-1.05, 0.42, 0.2]], [4.5, [-0.4, 0.8, 1.6], [-1.2, 0.28, 0.15]], [9.3, [-0.4, 0.8, 1.6], [-1.2, 0.28, 0.15]], [10.2, [0.2, 1.6, 3.3], [-1.05, 1.15, 0.2]], [13.6, [0.2, 1.6, 3.3], [-1.05, 1.15, 0.2]], [14.6, [0.3, 1.1, 2.3], [-1.05, 0.42, 0.2]], [19, [0.3, 1.1, 2.3], [-1.05, 0.42, 0.2]]],
@@ -35156,7 +35286,7 @@ ASC.codigos = [
       subt: [[0, 'Junto a la palanca del paracaídas hay un interruptor pequeño, con una ruedita apoyada en la palanca.'],
         [4.5, 'Si la cabina se embala, el cable del limitador jala la palanca hacia arriba y las cuñas muerden el riel.'],
         [8.5, 'La palanca empuja la ruedita y el interruptor se abre: el motor se queda sin corriente al instante.'],
-        [12.5, 'Así la máquina no sigue jalando una cabina clavada. El interruptor queda trabado hasta que el técnico lo rearma.']],
+        [12.5, 'Así la máquina no sigue jalando una cabina clavada. Queda trabado hasta que el técnico lo vuelve a armar.']],
       cam: [[0, [0.5, 0.0, 0.5], [0.15, -0.08, 0.0]], [4.2, [0.5, 0.0, 0.5], [0.15, -0.08, 0.0]], [5.6, [0.55, 0.05, 0.75], [0.08, -0.06, 0.0]], [8.2, [0.55, 0.05, 0.75], [0.08, -0.06, 0.0]], [9.4, [0.48, -0.03, 0.42], [0.18, -0.08, -0.01]], [12.3, [0.48, -0.03, 0.42], [0.18, -0.08, -0.01]], [13.5, [0.55, 0.0, 0.55], [0.15, -0.07, 0.0]], [19, [0.55, 0.0, 0.6], [0.14, -0.06, 0.0]]],
       anim: function (t, s, K) {
         var o = cunaFunciona(t, K);
@@ -35173,10 +35303,10 @@ ASC.codigos = [
     },
     falla: {
       dur: 18.5,
-      subt: [[0, 'Falla 1: después de una prueba, la palanca regresó a su sitio, pero nadie rearmó el interruptor.'],
+      subt: [[0, 'Falla 1: después de una prueba, la palanca regresó a su sitio, pero nadie volvió a armar el interruptor.'],
         [4.5, 'Las cuñas están sueltas, pero el ascensor no arranca: el tablero ve el interruptor abierto.'],
         [9, 'Falla 2: el interruptor quedó muy pegado a la palanca. Con la vibración se abre y el ascensor se para de golpe.'],
-        [14, 'Arreglo: el técnico lo rearma, lo separa un poquito de la palanca y aprieta sus cables. Nunca se puentea.']],
+        [14, 'Arreglo: el técnico lo vuelve a armar, lo separa un poco de la palanca y ajusta sus cables. Nunca se anula con un cable.']],
       cam: [[0, [0.5, 0.0, 0.5], [0.13, -0.08, 0.0]], [4.5, [0.42, -0.04, 0.4], [0.18, -0.09, 0.0]], [9, [0.42, -0.04, 0.4], [0.18, -0.09, 0.0]], [10, [0.5, 0.05, 0.6], [0.12, -0.05, 0.0]], [13.8, [0.5, 0.05, 0.6], [0.12, -0.05, 0.0]], [14.8, [0.36, -0.03, 0.34], [0.2, -0.08, -0.01]], [18.5, [0.45, 0.0, 0.5], [0.15, -0.07, 0.0]]],
       anim: function (t, s, K) {
         var o;
@@ -35312,7 +35442,7 @@ ASC.codigos = [
       dur: 19,
       subt: [[0, 'Falla 1: el tope de goma se puso duro y se agrietó con los años.'],
         [4.5, 'Cuando el contrapeso cae encima, la goma se rompe y no amortigua: el golpe sacude todo.'],
-        [9.5, 'Falla 2: el tope de aceite. Su pistón se quedó hundido y su interruptor no deja arrancar al ascensor.'],
+        [9.5, 'Falla 2: en el tope de aceite, el pistón se quedó hundido. Su interruptor no deja arrancar al ascensor.'],
         [14.5, 'Arreglo: cambiar la goma agrietada, poner aceite al tope y ver que su pistón suba solo. Luego se prueba.']],
       cam: [[0, [1.3, 1.05, 0.5], [CWX, 0.45, CWZ]], [4.4, [1.3, 1.05, 0.5], [CWX, 0.45, CWZ]], [5.2, [1.8, 1.4, 1.2], [0.35, 0.65, -0.55]], [9.2, [1.8, 1.4, 1.2], [0.35, 0.65, -0.55]], [10.2, [1.0, 1.0, 1.6], [AX, 0.62, AZ]], [14.2, [1.0, 1.0, 1.6], [AX, 0.62, AZ]], [15.2, [1.7, 1.25, 2.4], [0.15, 0.55, -0.25]], [19, [1.8, 1.3, 2.6], [0.15, 0.55, -0.25]]],
       anim: function (t, s, K) {
@@ -35434,7 +35564,7 @@ ASC.codigos = [
       subt: [[0, 'Falla 1: la ruedita del final de carrera se rompió y se cayó.'],
         [4, 'La cabina se pasa del piso, la leva no encuentra la ruedita y el ascensor no se detiene.'],
         [9.5, 'Falla 2: el interruptor se corrió hacia abajo. La cabina se para antes de llegar al piso y queda bloqueada.'],
-        [14.5, 'Arreglo: con el ascensor detenido, cambiar la ruedita y poner el interruptor en su sitio. Nunca se puentea.']],
+        [14.5, 'Arreglo: con el ascensor detenido, cambiar la ruedita y poner el interruptor en su sitio. Nunca se anula con un cable.']],
       cam: [[0, [-1.35, 5.25, 1.45], [-0.72, 5.08, 0.35]], [4, [-1.6, 5.25, 2.0], [-0.7, 5.05, 0.3]], [9.3, [-1.6, 5.25, 2.0], [-0.7, 5.05, 0.3]], [10.2, [-1.5, 4.95, 1.8], [-0.72, 4.75, 0.35]], [14.3, [-1.5, 4.95, 1.8], [-0.72, 4.75, 0.35]], [15.3, [-1.4, 5.2, 1.6], [-0.72, 5.03, 0.35]], [19, [-1.45, 5.2, 1.7], [-0.72, 5.03, 0.35]]],
       anim: function (t, s, K) {
         var e;
@@ -35986,7 +36116,7 @@ ASC.codigos = [
       subt: [[0, 'Falla 1: se aflojan los tornillos. Un panel vibra y zumba cuando la cabina viaja.'],
         [5, 'Falla 2: una luz parpadea y se apaga. Casi siempre es su fuente de corriente.'],
         [9.5, 'Falla 3: el piso se despega y se levanta una esquina. La gente se puede tropezar.'],
-        [14, 'Arreglo, con el ascensor parado: ajustar los tornillos, cambiar la fuente de la luz y pegar el piso.']],
+        [14, 'Arreglo: con el ascensor parado, ajustar los tornillos, cambiar la fuente de la luz y pegar el piso.']],
       cam: [[0, [1.25, 1.42, 0.42], [-0.55, 1.3, 0.02]], [4.4, [1.18, 1.4, 0.4], [-0.55, 1.3, 0.02]], [5.6, [1.6, 1.15, 0.55], [-0.1, 2.0, -0.05]], [9.0, [1.55, 1.13, 0.52], [-0.1, 2.0, -0.05]],
         [10.2, [1.4, 1.0, 0.82], [-0.1, 0.05, 0.3]], [13.6, [1.36, 0.98, 0.8], [-0.1, 0.05, 0.3]], [15.0, [2.5, 1.55, 1.15], [-0.15, 1.05, -0.05]], [18.5, [2.6, 1.6, 1.2], [-0.15, 1.05, -0.05]]],
       anim: function (t, s, K) {
@@ -36123,7 +36253,7 @@ ASC.codigos = [
     },
     falla: {
       dur: 19,
-      subt: [[0, 'Falla: el pesacargas está descalibrado (desajustado). Con solo 2 personas marca lleno.'],
+      subt: [[0, 'Falla: el pesacargas se descalibró: ya no pesa bien. Con solo 2 personas marca lleno.'],
         [5, 'Suena el zumbador y la puerta no cierra. La gente cree que el ascensor está malogrado.'],
         [9.5, 'Arreglo: con la cabina vacía, el técnico aprieta el botón de cero.'],
         [14.2, 'Luego pone pesas de peso conocido y revisa que marque lo mismo. Así queda calibrado.']],
@@ -36259,7 +36389,7 @@ ASC.codigos = [
       dur: 19,
       subt: [[0, 'Falla: la llave se trabó en «inspección». El técnico no la puede volver a «normal».'],
         [5, 'Así el ascensor no atiende a nadie: la gente llama y la cabina no viene.'],
-        [10, 'Lo mismo pasa si el técnico se olvida el botón rojo de parada apretado.'],
+        [10, 'Lo mismo pasa si el técnico deja apretado el botón rojo de parada.'],
         [14.2, 'Arreglo: cambiar la llave malograda. Al terminar: llave en «normal» y botón rojo suelto.']],
       cam: [[0, [0.86, 1.42, 1.1], [0.29, 0.97, 0.38]], [4.4, [0.84, 1.4, 1.08], [0.29, 0.97, 0.38]], [6.0, [2.2, -0.6, 3.8], [0.15, -0.95, 0.85]], [9.4, [2.15, -0.62, 3.75], [0.15, -0.95, 0.85]],
         [10.8, [0.86, 1.42, 1.1], [0.29, 0.97, 0.38]], [13.8, [0.84, 1.4, 1.08], [0.29, 0.97, 0.38]], [15.0, [1.25, 1.75, 1.75], [0.25, 1.0, 0.3]], [19, [1.3, 1.78, 1.8], [0.25, 1.0, 0.3]]],
@@ -36493,7 +36623,7 @@ ASC.codigos = [
     funciona: {
       dur: 18,
       subt: [[0, 'Dentro de la cabina hay una luz chica de emergencia y un botón de alarma amarillo.'],
-        [4.4, 'Si se va la luz, todo queda oscuro… y enseguida se prende sola la luz de emergencia.'],
+        [4.4, 'Si se va la luz, todo queda oscuro. Enseguida se prende sola la luz de emergencia.'],
         [9, 'Esa luz funciona con su propia batería, que está encima de la cabina.'],
         [13.5, 'Si alguien se queda encerrado, aprieta la alarma: suena la sirena y lo vienen a rescatar.']],
       cam: [[0, [1.9, 1.72, 0.85], [-0.3, 1.66, 0.0]], [4.2, [1.85, 1.7, 0.82], [-0.3, 1.66, 0.0]], [8.6, [1.85, 1.7, 0.82], [-0.3, 1.66, 0.0]],
@@ -36947,7 +37077,7 @@ ASC.codigos = [
     funciona: {
       dur: 18,
       subt: [[0, 'La guía va sujeta al muro con soportes: ángulos de acero anclados con pernos, más o menos cada metro y medio.'],
-        [4.5, 'No se suelda: unas grapas la aprietan contra el soporte. Así puede acomodarse un poquito si el edificio se asienta.'],
+        [4.5, 'La guía no se suelda: unas grapas la aprietan contra el soporte. Así se acomoda un poco si el edificio se asienta.'],
         [9, 'Donde termina un tramo de guía, una platina atornillada por detrás lo une con el siguiente, bien parejo.'],
         [13.5, 'Con todo firme y parejo, la zapata de la cabina pasa suave, sin golpes.']],
       cam: [[0, [1.0, 1.35, 2.6], [0, 1.15, -0.12]], [3.8, [0.9, 1.3, 2.4], [0, 1.15, -0.12]], [5, [0.36, 0.66, 0.5], [0, 0.4, -0.06]], [8.6, [0.33, 0.64, 0.52], [0, 0.4, -0.06]],
@@ -37245,7 +37375,7 @@ ASC.codigos = [
             [14, 'Arreglo: el técnico la rellena con el aceite indicado, cambia la mecha si está dura y limpia lo chorreado.']]
           : [[0, 'Falla 1: el forro de plástico se gastó. Queda espacio entre la zapata y la guía.'],
             [4.5, 'La cabina se bambolea y da golpecitos de costado durante el viaje.'],
-            [9.5, 'Falla 2: si el forro se gasta hasta el metal, el fierro raspa la guía: chirrido y rayas.'],
+            [9.5, 'Falla 2: si el forro se gasta hasta el metal, el fierro raspa la guía: chirría y la raya.'],
             [14, 'Arreglo: con el ascensor detenido y asegurado, cambiar los forros y revisar que la guía tenga su aceite.']];
       },
       anim: function (t, s, K, id) {
@@ -37508,7 +37638,7 @@ ASC.codigos = [
       dur: 18,
       subt: [[0, 'El hueco es un tubo cerrado y sin ventanas. Sin su luz, adentro no se ve nada.'],
         [4, 'En el foso hay un interruptor. El técnico lo prende y las lámparas de la pared se encienden.'],
-        [8.5, 'Hay lámparas de abajo hasta arriba, unidas por su propio cable. Así ve dónde pisa y qué toca.'],
+        [8.5, 'Hay lámparas de abajo hasta arriba, unidas por su propio cable. Así el técnico ve dónde pisa y qué toca.'],
         [13, 'Arriba, junto al tablero, hay otro interruptor. Tiene su propia llave: alumbra aunque se corte el ascensor.']],
       cam: [[0, [0.9, 0.5, 4.2], [-0.45, -0.6, -0.5]], [4, [0.4, 0.25, 3.2], [-0.7, -0.5, -0.1]], [7.4, [0.8, 0.5, 4.0], [-0.45, -0.6, -0.5]],
         [8.6, [0.9, 1.0, 3.6], [-0.4, 0.6, -1.0]], [12.6, [0.9, 7.2, 3.6], [-0.4, 6.8, -1.0]], [13.6, [0.4, 9.0, 3.6], [-0.7, 8.5, -0.2]], [18, [0.5, 9.1, 3.8], [-0.7, 8.55, -0.2]]],
@@ -37698,9 +37828,9 @@ ASC.codigos = [
     falla: {
       dur: 18.5,
       subt: [[0, 'Falla 1: no se lee cuánto aguanta. Lo pintaron encima o nunca lo marcaron. Así no se usa.'],
-        [4.5, 'Falla 2: le cuelgan más peso del escrito. El gancho se abre y el techo se raja: la carga puede caer.'],
+        [4.5, 'Falla 2: le cuelgan más peso que el escrito. El gancho se abre y el techo se raja: la carga puede caer.'],
         [9.5, 'Falla 3: óxido en el gancho o concreto rajado a su alrededor, por agua que se filtra de arriba.'],
-        [14, 'Arreglo: no usarlo hasta que lo revise un especialista y le marque su carga. Nunca más peso del escrito.']],
+        [14, 'Arreglo: no usarlo hasta que lo revise un especialista y le marque su carga. Nunca más peso que el escrito.']],
       cam: [[0, [-0.5, 2.25, 1.5], [0.25, 2.72, GZ]], [4.2, [-0.5, 2.25, 1.5], [0.25, 2.72, GZ]], [5.4, [-2.2, 1.6, 3.0], [0.05, 1.5, GZ]], [6.5, [-2.2, 1.6, 3.0], [0.05, 1.6, GZ]],
         [7.4, [-1.6, 1.9, 2.4], [0.05, 1.95, GZ]], [9.3, [-1.6, 1.9, 2.4], [0.05, 1.95, GZ]], [10.2, [-0.7, 2.0, 1.2], [0.05, 2.62, GZ]], [13.8, [-0.75, 2.0, 1.25], [0.05, 2.62, GZ]],
         [15, [-2.1, 1.6, 2.9], [0.1, 1.45, GZ]], [18.5, [-2.1, 1.7, 2.9], [0.1, 1.55, GZ]]],
@@ -38588,7 +38718,7 @@ ASC.codigos = [
       dur: 19,
       subt: function (id) {
         return id === 'cableado_hueco'
-          ? [[0, 'Falla: en la caja del piso 2 entró agua. Los bornes, donde se ajustan los cables, se sulfatan y se aflojan.'],
+          ? [[0, 'Falla: en la caja del piso 2 entró agua. Los bornes, donde se ajustan los cables, se oxidan y se aflojan.'],
             [4.5, 'La cadena de seguridad se corta en esa caja. El tablero cree que hay una puerta abierta y no arranca.'],
             [9.5, 'Todas las puertas se ven cerradas, por eso confunde. La pantalla del tablero suele decir en qué piso está el corte.'],
             [14, 'Arreglo: con el ascensor detenido, secar, limpiar y ajustar los bornes de esa caja, y ponerle bien su tapa.']]
@@ -38775,7 +38905,7 @@ ASC.codigos = [
     },
     falla: {
       dur: 19,
-      subt: [[0, 'Falla 1: un botón gastado. Lo aprietas y no se prende: la cabina no va a ese piso.'],
+      subt: [[0, 'Falla 1: un botón se gastó. Lo aprietas y no se prende: la cabina no va a ese piso.'],
         [4.5, 'Falla 2: el botón de abrir se quedó hundido. La puerta empieza a cerrar y se vuelve a abrir.'],
         [9.5, 'Con el ascensor detenido, se saca la placa: detrás están los botones y sus conectores.'],
         [14, 'Arreglo: cambiar el botón malogrado, revisar su conector y probar que cada botón se prenda y regrese solo.']],
@@ -38932,7 +39062,7 @@ ASC.codigos = [
     },
     falla: {
       dur: 19,
-      subt: [[0, 'Falla 1: la caja quedó sin tapa y le cayó agua de una filtración. Los bornes se mojan y se sulfatan.'],
+      subt: [[0, 'Falla 1: la caja quedó sin tapa y le cayó agua de una filtración. Los bornes se mojan y se oxidan.'],
         [4.5, 'Fallan varias cosas a la vez: la puerta no responde, el ventilador se para y se pierde la lectura del piso.'],
         [9.5, 'Falla 2: el conector del cable viajero quedó flojo. Con la vibración del viaje se suelta a ratos.'],
         [14, 'Arreglo: con el ascensor detenido y la energía cortada, secar y ajustar bornes y conectores, y poner bien la tapa.']],
@@ -39066,7 +39196,7 @@ ASC.codigos = [
     },
     falla: {
       dur: 19,
-      subt: [[0, 'Peligro: este técnico trabaja en la máquina sin apagar la llave y sin candado.'],
+      subt: [[0, 'Falla 1: este técnico trabaja en la máquina sin apagar la llave y sin candado. ¡Es peligroso!'],
         [4, 'Alguien llama al ascensor y la máquina arranca de golpe. Le puede atrapar la mano.'],
         [8.5, 'Falla 2: un borne flojo se calienta. La caja huele a quemado, se pone negra y la llave salta.'],
         [13.5, 'Arreglo: con la luz del edificio cortada, se ajustan o cambian los bornes. Y siempre: llave en 0, candado y tarjeta.']],
@@ -39368,7 +39498,7 @@ ASC.codigos = [
       subt: [[0, 'Falla: de tanto doblarse en la curva, un hilo de adentro se parte. Por fuera casi no se nota.'],
         [4.5, 'El hilo hace contacto a ratos: la luz de la cabina parpadea y el ascensor se para y luego sigue.'],
         [9.5, 'Con los años el forro se pone tieso y se cuartea, sobre todo en la curva, donde más se dobla.'],
-        [14, 'Arreglo: con el ascensor detenido, el técnico mide los hilos y pasa la señal a un hilo de reserva. Si el forro está cuarteado, cambia el cable.']],
+        [14, 'Arreglo: con el ascensor detenido, pasar la señal a un hilo de reserva. Si el forro está cuarteado, cambiar el cable.']],
       anim: function (t, s, K) {
         cvBase(s, K);
         var mal = K.parpadeo(t, 2) ? 'mal' : null;
@@ -39882,7 +40012,7 @@ ASC.codigos = [
       dur: 18,
       subt: [[0, 'Falla 1: una válvula sucia no cierra bien. El aceite se regresa al tanque de a poquito.'],
         [5, 'La cabina se va bajando del piso y el motor arranca solo, a cada rato, para volver a subirla.'],
-        [10, 'Falla 2: bobina quemada. La cabina sube bien, pero ya no baja.'],
+        [10, 'Falla 2: se quemó una bobina. La cabina sube bien, pero ya no baja.'],
         [13.5, 'Arreglo: con la luz cortada y sin presión, el técnico limpia o cambia la válvula o la bobina.']],
       cam: [[0, [-1.65, 2.3, 1.25], [-2.17, 1.85, 0.12]], [4.4, [-1.65, 2.3, 1.25], [-2.17, 1.85, 0.12]], [5.6, [1.95, 2.25, 2.4], [1.0, 2.0, 0.7]], [9.4, [1.95, 2.25, 2.4], [1.0, 2.0, 0.7]],
         [10.6, [-1.75, 2.3, 1.0], [-2.12, 1.98, 0.1]], [13.5, [-1.75, 2.3, 1.0], [-2.12, 1.98, 0.1]], [18, [-1.0, 2.55, 2.5], [-2.25, 1.6, 0.15]]],
@@ -39940,9 +40070,9 @@ ASC.codigos = [
     },
     falla: {
       dur: 19,
-      subt: [[0, 'Falla 1: sellos gastados en la boca del pistón. El aceite se escapa y chorrea por el tubo.'],
+      subt: [[0, 'Falla 1: los sellos de la boca del pistón están gastados. El aceite se escapa y chorrea por el tubo.'],
         [5, 'La cabina se baja sola de a poquito y el motor tiene que volver a subirla.'],
-        [10, 'Falla 2: barra rayada. Raspa los sellos y la cabina sube a saltitos, temblando.'],
+        [10, 'Falla 2: la barra está rayada. Raspa los sellos y la cabina sube a saltitos, temblando.'],
         [14, 'Arreglo: con el ascensor detenido y bloqueado, el técnico cambia los sellos y pule o cambia la barra.']],
       cam: [[0, [-0.85, 1.95, 1.5], [0, 1.58, 0.05]], [4.4, [-0.9, 1.8, 1.8], [0, 1.15, 0.05]], [5.6, [1.95, 2.15, 2.4], [1.0, 1.9, 0.7]], [9.4, [1.95, 2.15, 2.4], [1.0, 1.9, 0.7]],
         [10.6, [-0.9, 2.4, 1.9], [0, 2.05, 0.05]], [14, [-0.9, 2.4, 1.9], [0, 2.05, 0.05]], [19, [-1.7, 1.9, 3.2], [0, 1.2, 0.1]]],
@@ -39994,8 +40124,8 @@ ASC.codigos = [
     },
     falla: {
       dur: 18.5,
-      subt: [[0, 'Falla 1: rodamiento gastado. La polea ronca y vibra cuando la cabina sube y baja.'],
-        [5, 'Falla 2: canales gastados. Los cables se comen de un lado y duran mucho menos.'],
+      subt: [[0, 'Falla 1: el rodamiento está gastado. La polea ronca y vibra cuando la cabina sube y baja.'],
+        [5, 'Falla 2: los canales se gastaron. Los cables se comen de un lado y duran mucho menos.'],
         [9.5, 'Si los cables se aflojan, un contacto detiene el ascensor para que no se salgan de la polea.'],
         [14, 'Arreglo: con el ascensor asegurado, el técnico engrasa o cambia el rodamiento y revisa cada cable.']],
       cam: [[0, [-0.85, 3.0, 1.6], [0.05, 2.6, 0]], [5, [-0.85, 3.1, 1.55], [0.05, 2.72, 0]], [9.5, [-1.3, 2.55, 2.6], [0.2, 2.2, 0.05]], [14, [-1.3, 2.55, 2.6], [0.2, 2.2, 0.05]], [18.5, [-0.9, 3.0, 1.8], [0.05, 2.6, 0]]],
@@ -40046,8 +40176,8 @@ ASC.codigos = [
     falla: {
       dur: 16,
       subt: [[0, 'Falla 1: se cierra sola al bajar muy rápido, con mucha carga o con el aceite caliente. La cabina se traba.'],
-        [5.5, 'Falla 2: sucia o trabada, en la prueba no se cierra. Es peligroso: el ascensor queda fuera de servicio.'],
-        [11, 'Arreglo: el técnico revisa la velocidad de bajada y limpia o cambia la válvula. Nunca se desregula.']],
+        [5.5, 'Falla 2: está sucia o trabada y en la prueba no se cierra. Es peligroso: el ascensor queda fuera de servicio.'],
+        [11, 'Arreglo: el técnico revisa la velocidad de bajada y limpia o cambia la válvula. Su ajuste nunca se toca.']],
       cam: [[0, [-0.6, 0.75, 1.15], [-0.05, 0.3, 0.2]], [5.5, [-0.7, 0.85, 1.35], [-0.05, 0.32, 0.22]], [11, [-0.6, 0.85, 1.35], [-0.05, 0.32, 0.2]], [16, [-0.65, 0.9, 1.5], [-0.05, 0.35, 0.22]]],
       anim: function (t, s, K) {
         var m = mov(K, A5F, t), tap = t < 5.5 ? K.ph(t, 2.85, 3.05) : t < 11 ? 0.12 * K.late(t, 3) * K.ph(t, 6.2, 6.5) : 0;
@@ -40090,8 +40220,8 @@ ASC.codigos = [
     },
     falla: {
       dur: 19.5,
-      subt: [[0, 'Falla 1: unión floja. Gotea aceite por la punta de la manguera y se forma una mancha en el piso.'],
-        [5, 'Falla 2: manguera vieja, cuarteada o rozada. Con la presión puede reventar.'],
+      subt: [[0, 'Falla 1: una unión está floja. Gotea aceite por la punta de la manguera y se forma una mancha en el piso.'],
+        [5, 'Falla 2: la manguera está vieja, cuarteada o rozada. Con la presión puede reventar.'],
         [10.5, 'Si revienta, la válvula del pistón se cierra y la cabina se detiene. No toques el chorro: aléjate y avisa.'],
         [15, 'Arreglo: con la luz cortada y sin presión, el técnico cambia la manguera entera. Nunca se parcha.']],
       cam: [[0, [-0.45, 0.62, 1.2], [-0.02, 0.22, 0.35]], [4.6, [-0.5, 0.65, 1.3], [-0.05, 0.2, 0.38]], [5.6, [-0.9, 0.9, 1.9], [-0.4, 0.15, 0.5]], [10.5, [-0.9, 0.95, 1.95], [-0.3, 0.2, 0.42]], [15, [-0.7, 1.7, 3.1], [-0.75, 0.6, 0.4]], [19.5, [-0.7, 1.7, 3.1], [-0.75, 0.6, 0.4]]],
@@ -40492,7 +40622,7 @@ ASC.codigos = [
       ASC.pintarDisplay(String(p + 1)); $('#visor7').textContent = String(p + 1); ultimoP = p;
     }
     S.moviendo = false;
-    $('#sim').hidden = true; escena.classList.remove('simulando');
+    $('#sim').hidden = true; escena.classList.remove('simulando'); escena.style.removeProperty('--sim-h');
     if (!sinPintar) { aplicar(); pintarBotonera(); }
   }
   function simularFalla(id) {
@@ -40507,13 +40637,23 @@ ASC.codigos = [
     S.moviendo = true; S.hover = null;
     pintarBotonera(); pintarSim();
     guion(tipo, id);
+    // que se vean juntos el ascensor y los pasos: la barra va debajo del modelo y la escena ya se acortó para que
+    // ambos entren. Si algo queda fuera, la página salta (sin animar, para no perderse el comienzo de la falla).
+    const r = escena.getBoundingClientRect(), b = $('#sim').getBoundingClientRect(), vh = window.innerHeight;
+    if (r.top < 0 || b.bottom > vh) {
+      const dy = r.top < 0 || b.bottom - r.top > vh ? r.top : Math.min(r.top, b.bottom - vh + 12);
+      window.scrollTo({ top: window.scrollY + dy, behavior: 'auto' });
+    }
   }
   function pintarSim() {
     const s = S.sim, el = $('#sim'); escena.classList.toggle('simulando', !!s); if (!s) { el.hidden = true; return; }
     el.hidden = false;
-    el.innerHTML = `<p class="sim-t">Simulación de falla</p><h3>${esc(nom(s.id))}</h3>
-      <ol>${s.pasos.map((p, i) => `<li class="${i < s.paso ? 'ya' : i === s.paso ? 'ahora' : ''}">${esc(p)}</li>`).join('')}</ol>
-      <div class="acciones"><button type="button" class="btn oro chico" data-sim="repetir">Repetir</button><button type="button" class="btn sec chico" data-sim="fin">Terminar</button></div>`;
+    el.innerHTML = `<p class="sim-t"><span class="sim-largo">Simulación de falla · </span>paso ${Math.max(1, s.paso + 1)} de ${s.pasos.length}</p><h3>${esc(nom(s.id))}</h3>
+      <div class="acciones"><button type="button" class="btn oro chico" data-sim="repetir">Repetir</button><button type="button" class="btn sec chico" data-sim="fin">Terminar</button></div>
+      <ol>${s.pasos.map((p, i) => `<li class="${i < s.paso ? 'ya' : i === s.paso ? 'ahora' : ''}"${i === s.paso ? ' aria-current="step"' : ''}>${esc(p)}</li>`).join('')}</ol>`;
+    // la escena deja sitio justo para la barra (CSS: .escena.simulando usa --sim-h), y la cámara se entera ya
+    const h = Math.ceil(el.getBoundingClientRect().height);
+    if (h && h !== s.alto) { s.alto = h; escena.style.setProperty('--sim-h', h + 'px'); medir(); }
   }
   // utilidades del guion
   function en(ms, fn) { const s = S.sim; if (!s) return; s.timers.push(setTimeout(() => { if (S.sim === s) fn(); }, ms)); }
