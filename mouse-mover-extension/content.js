@@ -1,22 +1,25 @@
 // Mueve un cursor virtual de lado a lado y dispara eventos mousemove reales
 // sobre los elementos de la página.
 (() => {
-  if (window.__mouseMoverLoaded) return;
-  window.__mouseMoverLoaded = true;
+  // Si ya había una copia de este script en la página (por ejemplo, de antes
+  // de actualizar la extensión), la apagamos para que no haya dos flechas.
+  window.__mouseMoverStop?.();
 
   const DEFAULTS = { active: false, speed: 400, distance: 80, showCursor: true };
   let settings = { ...DEFAULTS };
+  let dead = false;
   let x = 0;
   let dir = 1;
   let lastTime = 0;
   let rafId = null;
+  let heartbeat = null;
   let cursorEl = null;
 
   function createCursor() {
     if (cursorEl) return;
     cursorEl = document.createElement('div');
     cursorEl.innerHTML =
-      '<svg width="22" height="22" viewBox="0 0 24 24"><path d="M3 2l7 19 2.5-7.5L20 11z" fill="#ef4444" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>';
+      '<svg width="32" height="32" viewBox="0 0 24 24"><path d="M3 2l7 19 2.5-7.5L20 11z" fill="#ef4444" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>';
     Object.assign(cursorEl.style, {
       position: 'fixed',
       top: '0',
@@ -48,10 +51,7 @@
     target.dispatchEvent(new MouseEvent('mousemove', init));
   }
 
-  function step(time) {
-    const dt = lastTime ? (time - lastTime) / 1000 : 0;
-    lastTime = time;
-
+  function move(dt) {
     const { min, max } = bounds();
     x += dir * settings.speed * dt;
     if (x >= max) { x = max; dir = -1; }
@@ -60,7 +60,21 @@
     const y = window.innerHeight / 2;
     if (cursorEl) cursorEl.style.transform = `translate(${x}px, ${y}px)`;
     dispatchMove(x, y);
+  }
 
+  // Tras actualizar o desinstalar la extensión, esta copia queda huérfana.
+  function extensionAlive() {
+    try {
+      return Boolean(chrome.runtime?.id);
+    } catch {
+      return false;
+    }
+  }
+
+  function step(time) {
+    if (!extensionAlive()) return shutdown();
+    move(lastTime ? (time - lastTime) / 1000 : 0);
+    lastTime = time;
     rafId = requestAnimationFrame(step);
   }
 
@@ -69,37 +83,58 @@
     x = bounds().min;
     dir = 1;
     lastTime = 0;
-    if (settings.showCursor) createCursor();
     rafId = requestAnimationFrame(step);
+    // Con la pestaña en segundo plano o la ventana minimizada Chrome pausa la
+    // animación; seguimos enviando un movimiento por segundo para que la
+    // página note actividad.
+    heartbeat = setInterval(() => {
+      if (!extensionAlive()) return shutdown();
+      if (performance.now() - lastTime > 1000) move(0.1);
+    }, 1000);
   }
 
   function stop() {
     if (rafId) cancelAnimationFrame(rafId);
+    clearInterval(heartbeat);
     rafId = null;
+    heartbeat = null;
     removeCursor();
   }
 
   function apply() {
+    if (dead) return;
     if (!settings.active) return stop();
     if (settings.showCursor) createCursor(); else removeCursor();
     start();
   }
 
-  chrome.storage.local.get(DEFAULTS, (s) => {
-    settings = s;
-    apply();
-  });
-
-  chrome.storage.onChanged.addListener((changes, area) => {
+  function onStorageChange(changes, area) {
     if (area !== 'local') return;
     for (const [key, { newValue }] of Object.entries(changes)) settings[key] = newValue;
     apply();
-  });
+  }
 
-  // Atajo rápido: Alt+Shift+M para iniciar/detener.
-  window.addEventListener('keydown', (e) => {
-    if (e.altKey && e.shiftKey && e.code === 'KeyM') {
-      chrome.storage.local.set({ active: !settings.active });
+  function onMessage(msg, _sender, sendResponse) {
+    if (msg === 'mouse-mover:ping') sendResponse(true);
+  }
+
+  function shutdown() {
+    dead = true;
+    stop();
+    try {
+      chrome.storage.onChanged.removeListener(onStorageChange);
+      chrome.runtime.onMessage.removeListener(onMessage);
+    } catch {
+      // La extensión ya no existe; no hay nada que quitar.
     }
+    if (window.__mouseMoverStop === shutdown) delete window.__mouseMoverStop;
+  }
+
+  window.__mouseMoverStop = shutdown;
+  chrome.storage.onChanged.addListener(onStorageChange);
+  chrome.runtime.onMessage.addListener(onMessage);
+  chrome.storage.local.get(DEFAULTS, (s) => {
+    settings = s;
+    apply();
   });
 })();

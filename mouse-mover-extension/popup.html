@@ -3,14 +3,17 @@
 <head>
   <meta charset="utf-8">
   <style>
-    body { font-family: system-ui, sans-serif; width: 240px; margin: 0; padding: 14px; background: #111827; color: #f9fafb; }
+    body { font-family: system-ui, sans-serif; width: 260px; margin: 0; padding: 14px; background: #111827; color: #f9fafb; }
     h1 { font-size: 16px; margin: 0 0 12px; }
     label { display: block; font-size: 12px; margin: 10px 0 4px; color: #d1d5db; }
     input[type=range] { width: 100%; }
     .row { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 12px; }
     button { width: 100%; margin-top: 14px; padding: 10px; border: 0; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; background: #22c55e; color: #052e16; }
     button.on { background: #ef4444; color: #fff; }
-    small { display: block; margin-top: 10px; color: #9ca3af; font-size: 11px; }
+    #status { margin: 12px 0 0; padding: 8px; border-radius: 8px; font-size: 12px; line-height: 1.4; background: #1f2937; }
+    #status.warn { background: #78350f; color: #fef3c7; }
+    #status.ok { background: #14532d; color: #dcfce7; }
+    small { display: block; margin-top: 10px; color: #9ca3af; font-size: 11px; line-height: 1.4; }
   </style>
 </head>
 <body>
@@ -28,8 +31,14 @@
   </div>
 
   <button id="toggle">Iniciar</button>
-  <small>Atajo: Alt+Shift+M en cualquier página.</small>
+  <p id="status"></p>
 
+  <small>Atajo: Alt+Shift+M.</small>
+  <small>Chrome no permite que una extensión mueva tu puntero real: lo que se
+    mueve es la flecha roja dentro de la página. Para mover el puntero real usa
+    <b>mover-mouse-windows.bat</b> (está en la misma carpeta).</small>
+
+  <script src="common.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>
